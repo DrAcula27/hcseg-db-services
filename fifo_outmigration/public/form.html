@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Chum Outmigration - Union River Summer Chum FIFO</title>
+    <link rel="stylesheet" href="form.css" />
+    <script src="form.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Daily Trap Sample Form</h1>
+      <h2>
+        Chum Outmigration Data Input for the Union River Summer Chum
+        FIFO Project
+      </h2>
+      <h3>All form fields are required.</h3>
+    </header>
+
+    <!-- Display API response message -->
+    <div id="responseMessage"></div>
+
+    <form id="trapSampleForm">
+      <fieldset class="feedback-input">
+        <legend>Date:</legend>
+        <input
+          name="date"
+          type="date"
+          id="date"
+          required
+          class="feedback-input"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Time:</legend>
+        <input
+          name="time"
+          type="time"
+          id="time"
+          class="feedback-input"
+          required
+        />
+      </fieldset>
+      <fieldset class="feedback-input" id="trapOperating">
+        <legend>Trap Operating?</legend>
+        <div>
+          <input
+            type="radio"
+            id="yes"
+            name="trapOperating"
+            value="Y"
+          />
+          <label for="yes">Y</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="no"
+            name="trapOperating"
+            value="N"
+          />
+          <label for="no">N</label>
+        </div>
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>RPM:</legend>
+        <input
+          name="rpm"
+          type="number"
+          id="rpm"
+          class="feedback-input"
+          step="0.1"
+          placeholder="If not rotating, type 0"
+          required
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Debris:</legend>
+        <select name="debris" id="debris-select">
+          <option value="">--Please choose an option--</option>
+          <option value="light">Light</option>
+          <option value="moderate">Moderate</option>
+          <option value="heavy">Heavy</option>
+          <option value="null">null</option>
+        </select>
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Visibility:</legend>
+        <select name="visibility" id="visibility-select">
+          <option value="">--Please choose an option--</option>
+          <option value="none">None</option>
+          <option value="poor">Poor</option>
+          <option value="good">Good</option>
+          <option value="very-good">Very Good</option>
+          <option value="excellent">Excellent</option>
+          <option value="null">null</option>
+        </select>
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Flow:</legend>
+        <select name="flow" id="flow-select">
+          <option value="">--Please choose an option--</option>
+          <option value="low">Low</option>
+          <option value="medium-low">Medium-Low</option>
+          <option value="medium">Medium</option>
+          <option value="medium-high">Medium-High</option>
+          <option value="high">High</option>
+          <option value="flooding">Flooding</option>
+          <option value="null">null</option>
+        </select>
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Water Temperature (°C):</legend>
+        <input
+          name="waterTemp"
+          type="number"
+          id="waterTemp"
+          class="feedback-input"
+          placeholder="If there is no reading, type 0"
+          step="0.1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Hobo Logger Temperature (°C):</legend>
+        <input
+          name="hoboTemp"
+          type="number"
+          id="hoboTemp"
+          class="feedback-input"
+          placeholder="If there is no reading, type 0"
+          step="0.001"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chum Fry:</legend>
+        <input
+          name="chumFry"
+          type="number"
+          id="chumFry"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chum Fry Morts:</legend>
+        <input
+          name="chumFryMort"
+          type="number"
+          id="chumFryMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chum Alevin:</legend>
+        <input
+          name="chumAlevin"
+          type="number"
+          id="chumAlevin"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chum DNA Samples Taken:</legend>
+        <input
+          name="chumDNATaken"
+          type="number"
+          id="chumDNATaken"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Range of Chum DNA IDs:</legend>
+        <input
+          name="chumDNAIDs"
+          type="text"
+          id="chumDNAIDs"
+          class="feedback-input"
+          placeholder="If there are none, type -"
+          required
+          title="if none, type -"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chum Marked:</legend>
+        <input
+          name="chumMarked"
+          type="number"
+          id="chumMarked"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Marked Chum Released:</legend>
+        <input
+          name="markedChumReleased"
+          type="number"
+          id="markedChumReleased"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Marked Chum Recaptured:</legend>
+        <input
+          name="markedChumRecap"
+          type="number"
+          id="markedChumRecap"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Marked Chum Morts:</legend>
+        <input
+          name="markedChumMort"
+          type="number"
+          id="markedChumMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Coho Fry:</legend>
+        <input
+          name="cohoFry"
+          type="number"
+          id="cohoFry"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Coho Parr:</legend>
+        <input
+          name="cohoParr"
+          type="number"
+          id="cohoParr"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Coho Marked:</legend>
+        <input
+          name="cohoMarked"
+          type="number"
+          id="cohoMarked"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Marked Coho Recaptured:</legend>
+        <input
+          name="markedCohoRecap"
+          type="number"
+          id="markedCohoRecap"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chinook Fry:</legend>
+        <input
+          name="chinookFry"
+          type="number"
+          id="chinookFry"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Chinook Parr:</legend>
+        <input
+          name="chinookParr"
+          type="number"
+          id="chinookParr"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Pink Fry:</legend>
+        <input
+          name="pinkFry"
+          type="number"
+          id="pinkFry"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Sculpin:</legend>
+        <input
+          name="sculpin"
+          type="number"
+          id="sculpin"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Cutthroat Trout:</legend>
+        <input
+          name="cutthroat"
+          type="number"
+          id="cutthroat"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Steelhead Trout:</legend>
+        <input
+          name="steelhead"
+          type="number"
+          id="steelhead"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Lamprey:</legend>
+        <input
+          name="lamprey"
+          type="number"
+          id="lamprey"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Number of Stickleback:</legend>
+        <input
+          name="stickleback"
+          type="number"
+          id="stickleback"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <textarea
+        name="comments"
+        id="comments"
+        class="feedback-input"
+        placeholder="Please enter any comments here. If there are no comments, please type a '-'."
+        required
+      ></textarea>
+      <input type="submit" value="SUBMIT" />
+    </form>
+
+    <footer>
+      <p>
+        &copy; 2025 Danielle Andrews | Trap Sample Data Input Form.
+      </p>
+    </footer>
+  </body>
+</html>
