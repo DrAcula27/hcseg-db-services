@@ -12,19 +12,16 @@
   </head>
   <body>
     <header>
-      <h1>Daily Trap Sample Form</h1>
-      <h2>
-        Chum Outmigration Data Input for the Union River Summer Chum
-        FIFO Project
-      </h2>
-      <h3>All form fields are required.</h3>
+      <h1>Union River Summer Chum Outmigration Program</h1>
+      <h2>*All form fields are required.*</h2>
     </header>
 
     <!-- Display API response message -->
     <div id="responseMessage"></div>
 
     <form id="trapSampleForm">
-      <fieldset class="feedback-input">
+      <!-- pre trap check information -->
+      <fieldset class="feedback-input col-span-2">
         <legend>Date:</legend>
         <input
           name="date"
@@ -34,7 +31,7 @@
           class="feedback-input"
         />
       </fieldset>
-      <fieldset class="feedback-input">
+      <fieldset class="feedback-input col-span-2">
         <legend>Time:</legend>
         <input
           name="time"
@@ -45,28 +42,30 @@
         />
       </fieldset>
       <fieldset class="feedback-input" id="trapOperating">
-        <legend>Trap Operating?</legend>
+        <legend>Trap Operating (Y/N):</legend>
         <div>
-          <input
-            type="radio"
-            id="yes"
-            name="trapOperating"
-            value="Y"
-          />
-          <label for="yes">Y</label>
-        </div>
-        <div>
-          <input
-            type="radio"
-            id="no"
-            name="trapOperating"
-            value="N"
-          />
-          <label for="no">N</label>
+          <span class="radio-btn">
+            <input
+              type="radio"
+              id="yes"
+              name="trapOperating"
+              value="Y"
+            />
+            <label for="yes">Y</label>
+          </span>
+          <span class="radio-btn">
+            <input
+              type="radio"
+              id="no"
+              name="trapOperating"
+              value="N"
+            />
+            <label for="no">N</label>
+          </span>
         </div>
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>RPM:</legend>
+        <legend>Trap RPM's:</legend>
         <input
           name="rpm"
           type="number"
@@ -78,42 +77,17 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Debris:</legend>
+        <legend>Debris Level:</legend>
         <select name="debris" id="debris-select">
-          <option value="">--Please choose an option--</option>
+          <option value="">--choose an option--</option>
           <option value="light">Light</option>
           <option value="moderate">Moderate</option>
           <option value="heavy">Heavy</option>
-          <option value="null">null</option>
+          <option value="null">no reading</option>
         </select>
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Visibility:</legend>
-        <select name="visibility" id="visibility-select">
-          <option value="">--Please choose an option--</option>
-          <option value="none">None</option>
-          <option value="poor">Poor</option>
-          <option value="good">Good</option>
-          <option value="very-good">Very Good</option>
-          <option value="excellent">Excellent</option>
-          <option value="null">null</option>
-        </select>
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Flow:</legend>
-        <select name="flow" id="flow-select">
-          <option value="">--Please choose an option--</option>
-          <option value="low">Low</option>
-          <option value="medium-low">Medium-Low</option>
-          <option value="medium">Medium</option>
-          <option value="medium-high">Medium-High</option>
-          <option value="high">High</option>
-          <option value="flooding">Flooding</option>
-          <option value="null">null</option>
-        </select>
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Water Temperature (°C):</legend>
+        <legend>Water Temp. (°C):</legend>
         <input
           name="waterTemp"
           type="number"
@@ -125,21 +99,48 @@
           title="if none, type 0"
         />
       </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Hobo Logger Temperature (°C):</legend>
+      <fieldset class="feedback-input hidden">
+        <legend>Hobo Logger Temp. (°C):</legend>
         <input
           name="hoboTemp"
           type="number"
           id="hoboTemp"
           class="feedback-input"
-          placeholder="If there is no reading, type 0"
           step="0.001"
           required
-          title="if none, type 0"
+          value="0"
         />
       </fieldset>
+      <fieldset class="feedback-input col-span-2">
+        <legend>Water Visibility:</legend>
+        <select name="visibility" id="visibility-select">
+          <option value="">--choose an option--</option>
+          <option value="none">None</option>
+          <option value="poor">Poor</option>
+          <option value="good">Good</option>
+          <option value="very-good">Very Good</option>
+          <option value="excellent">Excellent</option>
+          <option value="null">no reading</option>
+        </select>
+      </fieldset>
+      <fieldset class="feedback-input col-span-2">
+        <legend>Water Flow:</legend>
+        <select name="flow" id="flow-select">
+          <option value="">--choose an option--</option>
+          <option value="low">Low</option>
+          <option value="medium-low">Medium-Low</option>
+          <option value="medium">Medium</option>
+          <option value="medium-high">Medium-High</option>
+          <option value="high">High</option>
+          <option value="flooding">Flooding</option>
+          <option value="null">no reading</option>
+        </select>
+      </fieldset>
+
+      <div class="form-divider">Daily Catch Totals</div>
+      <!-- trap check information -->
       <fieldset class="feedback-input">
-        <legend>Number of Chum Fry:</legend>
+        <legend>Chum Caught:</legend>
         <input
           name="chumFry"
           type="number"
@@ -152,33 +153,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Chum Fry Morts:</legend>
-        <input
-          name="chumFryMort"
-          type="number"
-          id="chumFryMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Number of Chum Alevin:</legend>
-        <input
-          name="chumAlevin"
-          type="number"
-          id="chumAlevin"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Number of Chum DNA Samples Taken:</legend>
+        <legend>Chum DNA Taken:</legend>
         <input
           name="chumDNATaken"
           type="number"
@@ -191,19 +166,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Range of Chum DNA IDs:</legend>
-        <input
-          name="chumDNAIDs"
-          type="text"
-          id="chumDNAIDs"
-          class="feedback-input"
-          placeholder="If there are none, type -"
-          required
-          title="if none, type -"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Number of Chum Marked:</legend>
+        <legend>Chum Marked:</legend>
         <input
           name="chumMarked"
           type="number"
@@ -216,20 +179,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Marked Chum Released:</legend>
-        <input
-          name="markedChumReleased"
-          type="number"
-          id="markedChumReleased"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Number of Marked Chum Recaptured:</legend>
+        <legend>Marked Chum Recaptured:</legend>
         <input
           name="markedChumRecap"
           type="number"
@@ -242,7 +192,45 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Marked Chum Morts:</legend>
+        <legend>Chum Morts:</legend>
+        <input
+          name="chumFryMort"
+          type="number"
+          id="chumFryMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Chum DNA IDs:</legend>
+        <input
+          name="chumDNAIDs"
+          type="text"
+          id="chumDNAIDs"
+          class="feedback-input"
+          placeholder="If there are none, type -"
+          required
+          title="if none, type -"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Marked Chum Released:</legend>
+        <input
+          name="markedChumReleased"
+          type="number"
+          id="markedChumReleased"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Marked Chum Morts:</legend>
         <input
           name="markedChumMort"
           type="number"
@@ -254,8 +242,20 @@
           title="if none, type 0"
         />
       </fieldset>
+      <fieldset class="feedback-input hidden">
+        <legend>Chum Alevin:</legend>
+        <input
+          name="chumAlevin"
+          type="number"
+          id="chumAlevin"
+          class="feedback-input"
+          step="1"
+          value="0"
+        />
+      </fieldset>
+
       <fieldset class="feedback-input">
-        <legend>Number of Coho Fry:</legend>
+        <legend>Coho Fry:</legend>
         <input
           name="cohoFry"
           type="number"
@@ -268,7 +268,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Coho Parr:</legend>
+        <legend>Coho Parr:</legend>
         <input
           name="cohoParr"
           type="number"
@@ -281,7 +281,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Coho Marked:</legend>
+        <legend>Coho Marked:</legend>
         <input
           name="cohoMarked"
           type="number"
@@ -294,7 +294,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Marked Coho Recaptured:</legend>
+        <legend>Marked Coho Recaptured:</legend>
         <input
           name="markedCohoRecap"
           type="number"
@@ -307,7 +307,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Chinook Fry:</legend>
+        <legend>Chinook Fry:</legend>
         <input
           name="chinookFry"
           type="number"
@@ -320,7 +320,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Chinook Parr:</legend>
+        <legend>Chinook Parr:</legend>
         <input
           name="chinookParr"
           type="number"
@@ -333,7 +333,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Pink Fry:</legend>
+        <legend>Pink Fry:</legend>
         <input
           name="pinkFry"
           type="number"
@@ -346,7 +346,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Sculpin:</legend>
+        <legend>Sculpin:</legend>
         <input
           name="sculpin"
           type="number"
@@ -359,7 +359,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Cutthroat Trout:</legend>
+        <legend>Cutthroat Trout:</legend>
         <input
           name="cutthroat"
           type="number"
@@ -372,7 +372,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Steelhead Trout:</legend>
+        <legend>Steelhead Trout:</legend>
         <input
           name="steelhead"
           type="number"
@@ -385,7 +385,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Lamprey:</legend>
+        <legend>Lamprey:</legend>
         <input
           name="lamprey"
           type="number"
@@ -398,7 +398,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Number of Stickleback:</legend>
+        <legend>Stickleback:</legend>
         <input
           name="stickleback"
           type="number"
@@ -413,8 +413,8 @@
       <textarea
         name="comments"
         id="comments"
-        class="feedback-input"
-        placeholder="Please enter any comments here. If there are no comments, please type a '-'."
+        class="feedback-input col-span-4"
+        placeholder="Enter any comments here including: weather conditions, other species caught, and anything of note. If there are no comments, please type a '-'."
         required
       ></textarea>
       <input type="submit" value="SUBMIT" />
