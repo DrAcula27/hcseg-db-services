@@ -11,7 +11,7 @@
     <script src="form.js" defer></script>
   </head>
   <body>
-    <header>
+    <header id="header">
       <h1>Union River Summer Chum Outmigration Program</h1>
       <h2>*All form fields are required.*</h2>
     </header>
@@ -217,11 +217,11 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Marked Chum Released:</legend>
+        <legend>Marked Chum Morts:</legend>
         <input
-          name="markedChumReleased"
+          name="markedChumMort"
           type="number"
-          id="markedChumReleased"
+          id="markedChumMort"
           class="feedback-input"
           placeholder="If there are none, type 0"
           step="1"
@@ -229,12 +229,13 @@
           title="if none, type 0"
         />
       </fieldset>
+      <!-- TODO: change this to Recaptured Chum Morts, both here and in the db schema -->
       <fieldset class="feedback-input">
-        <legend>Marked Chum Morts:</legend>
+        <legend>Recaptured Chum Morts:</legend>
         <input
-          name="markedChumMort"
+          name="markedChumReleased"
           type="number"
-          id="markedChumMort"
+          id="markedChumReleased"
           class="feedback-input"
           placeholder="If there are none, type 0"
           step="1"
@@ -255,7 +256,7 @@
       </fieldset>
 
       <fieldset class="feedback-input">
-        <legend>Coho Fry:</legend>
+        <legend>Coho Fry Caught:</legend>
         <input
           name="cohoFry"
           type="number"
@@ -267,8 +268,9 @@
           title="if none, type 0"
         />
       </fieldset>
+      <!-- TODO: change this to Coho Smolt here and in db schema -->
       <fieldset class="feedback-input">
-        <legend>Coho Parr:</legend>
+        <legend>Coho Smolt Caught:</legend>
         <input
           name="cohoParr"
           type="number"
@@ -281,7 +283,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Coho Marked:</legend>
+        <legend>Coho Smolt Marked:</legend>
         <input
           name="cohoMarked"
           type="number"
@@ -306,12 +308,14 @@
           title="if none, type 0"
         />
       </fieldset>
+
+      <!-- TODO: add all fields below to db schema -->
       <fieldset class="feedback-input">
-        <legend>Chinook Fry:</legend>
+        <legend>Coho Fry Morts:</legend>
         <input
-          name="chinookFry"
+          name="cohoFryMort"
           type="number"
-          id="chinookFry"
+          id="cohoFryMort"
           class="feedback-input"
           placeholder="If there are none, type 0"
           step="1"
@@ -320,7 +324,170 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Chinook Parr:</legend>
+        <legend>Coho Smolt Morts:</legend>
+        <input
+          name="cohoSmoltMort"
+          type="number"
+          id="cohoSmoltMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Marked Coho Morts:</legend>
+        <input
+          name="markedCohoMort"
+          type="number"
+          id="markedCohoMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Recaptured Coho Morts:</legend>
+        <input
+          name="recapCohoMort"
+          type="number"
+          id="recapCohoMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Coho Parr Caught:</legend>
+        <input
+          name="cohoParr"
+          type="number"
+          id="cohoParr"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <!-- TODO: add all fields above to db schema -->
+
+      <fieldset class="feedback-input">
+        <legend>Steelhead Caught:</legend>
+        <input
+          name="steelhead"
+          type="number"
+          id="steelhead"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+
+      <!-- TODO: add all fields below to db schema -->
+      <fieldset class="feedback-input">
+        <legend>Steelhead Marked:</legend>
+        <input
+          name="steelheadMarked"
+          type="number"
+          id="steelheadMarked"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Marked SH Recaptured:</legend>
+        <input
+          name="markedSteelheadRecap"
+          type="number"
+          id="markedSteelheadRecap"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Coho Parr Morts:</legend>
+        <input
+          name="cohoParrMort"
+          type="number"
+          id="cohoParrMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Steelhead Morts:</legend>
+        <input
+          name="steelheadMort"
+          type="number"
+          id="steelheadMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Marked Steelhead Morts:</legend>
+        <input
+          name="markedSteelheadMort"
+          type="number"
+          id="markedSteelheadMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Recaptured SH Morts:</legend>
+        <input
+          name="recapSteelheadMort"
+          type="number"
+          id="recapSteelheadMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <!-- TODO: add all fields above to db schema -->
+
+      <fieldset class="feedback-input">
+        <legend>Cutthroat Caught:</legend>
+        <input
+          name="cutthroat"
+          type="number"
+          id="cutthroat"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <!-- TODO: combine chinook in db -->
+      <fieldset class="feedback-input">
+        <legend>Chinook Caught:</legend>
         <input
           name="chinookParr"
           type="number"
@@ -332,21 +499,20 @@
           title="if none, type 0"
         />
       </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Pink Fry:</legend>
+      <fieldset class="feedback-input hidden">
+        <legend>Chinook Fry:</legend>
         <input
-          name="pinkFry"
+          name="chinookFry"
           type="number"
-          id="pinkFry"
+          id="chinookFry"
           class="feedback-input"
-          placeholder="If there are none, type 0"
           step="1"
           required
-          title="if none, type 0"
+          value="0"
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Sculpin:</legend>
+        <legend>Sculpin Caught:</legend>
         <input
           name="sculpin"
           type="number"
@@ -359,33 +525,7 @@
         />
       </fieldset>
       <fieldset class="feedback-input">
-        <legend>Cutthroat Trout:</legend>
-        <input
-          name="cutthroat"
-          type="number"
-          id="cutthroat"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Trout:</legend>
-        <input
-          name="steelhead"
-          type="number"
-          id="steelhead"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Lamprey:</legend>
+        <legend>Lamprey Caught:</legend>
         <input
           name="lamprey"
           type="number"
@@ -397,12 +537,14 @@
           title="if none, type 0"
         />
       </fieldset>
+
+      <!-- TODO: add all fields below to db schema -->
       <fieldset class="feedback-input">
-        <legend>Stickleback:</legend>
+        <legend>Cutthroat Morts:</legend>
         <input
-          name="stickleback"
+          name="cutthroatMort"
           type="number"
-          id="stickleback"
+          id="cutthroatMort"
           class="feedback-input"
           placeholder="If there are none, type 0"
           step="1"
@@ -410,17 +552,104 @@
           title="if none, type 0"
         />
       </fieldset>
-      <textarea
-        name="comments"
-        id="comments"
-        class="feedback-input col-span-4"
-        placeholder="Enter any comments here including: weather conditions, other species caught, and anything of note. If there are no comments, please type a '-'."
-        required
-      ></textarea>
+      <fieldset class="feedback-input">
+        <legend>Chinook Morts:</legend>
+        <input
+          name="chinookMort"
+          type="number"
+          id="chinookMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Sculpin Morts:</legend>
+        <input
+          name="sculpinMort"
+          type="number"
+          id="sculpinMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input">
+        <legend>Lamprey Morts:</legend>
+        <input
+          name="laempreyMort"
+          type="number"
+          id="laempreyMort"
+          class="feedback-input"
+          placeholder="If there are none, type 0"
+          step="1"
+          required
+          title="if none, type 0"
+        />
+      </fieldset>
+      <!-- TODO: add all fields above to db schema -->
+
+      <!-- TODO: remove? from db -->
+      <fieldset class="feedback-input hidden">
+        <legend>Stickleback:</legend>
+        <input
+          name="stickleback"
+          type="number"
+          id="stickleback"
+          class="feedback-input"
+          step="1"
+          required
+          value="0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input hidden">
+        <legend>Pink Fry:</legend>
+        <input
+          name="pinkFry"
+          type="number"
+          id="pinkFry"
+          class="feedback-input"
+          step="1"
+          required
+          value="0"
+        />
+      </fieldset>
+      <fieldset class="feedback-input col-span-4">
+        <legend>Comments/Weather Conditions:</legend>
+        <textarea
+          name="comments"
+          id="comments"
+          class="feedback-input"
+          placeholder="Enter all comments here. If there are no comments, please type a '-'."
+          required
+        ></textarea>
+      </fieldset>
+      <fieldset class="col-span-4">
+        <legend>Comment Notes:</legend>
+        <ul class="comment-notes">
+          <li>Record weather conditions in comments.</li>
+          <li>
+            Record other species (e.g., pink fry or stickleback) or
+            unknown species caught in comments.
+          </li>
+          <li>
+            Record Chinook caught life stage: e.g., - 2 parr, 1 smolt,
+            in comments.
+          </li>
+          <li>
+            Please take photos of any unidentified species and note in
+            comments.
+          </li>
+        </ul>
+      </fieldset>
       <input type="submit" value="SUBMIT" />
     </form>
 
-    <footer>
+    <footer id="footer">
       <p>
         &copy; 2025 Danielle Andrews | Trap Sample Data Input Form.
       </p>
