@@ -8,6 +8,7 @@
   --background-color: #f9f9f9;
   --print-background-color: #fff;
   --text-color: #1d1d1d;
+  --print-text-color: #000;
 
   /* text */
   --font-family: 'Montserrat', Arial, Helvetica, sans-serif;
@@ -157,6 +158,12 @@ input[type='submit']:hover {
   color: #fff;
 }
 
+.comment-notes {
+  font-size: 0.9em;
+  font-style: italic;
+  margin-left: 16px;
+}
+
 #responseMessage {
   border-radius: 5px;
   color: #fff;
@@ -209,9 +216,11 @@ footer {
   html,
   body {
     background-color: var(--print-background-color);
+    color: var(--print-text-color);
   }
   input[type='submit'],
-  #responseMessage {
+  #responseMessage,
+  #footer {
     display: none;
   }
   form {
