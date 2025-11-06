@@ -5,7 +5,8 @@
   /* colors */
   --border-color: #1d1d1d;
   --print-border-color: #000;
-  --background-color: #f9f9f9;
+  --body-background-color: #e0e0ee;
+  --form-background-color: #f0f8ff;
   --print-background-color: #fff;
   --text-color: #1d1d1d;
   --print-text-color: #000;
@@ -36,7 +37,7 @@ body {
 
 html,
 body {
-  background-color: var(--background-color);
+  background-color: var(--body-background-color);
   color: var(--text-color);
   font-family: var(--font-family);
   line-height: var(--line-height);
@@ -68,6 +69,9 @@ form {
   gap: 6px;
   border: 2px solid var(--border-color);
   padding: 10px;
+  max-width: 900px;
+  margin: 0 auto 20px;
+  background-color: var(--form-background-color);
 }
 
 /* Fieldset boxes mimic datasheet cells */
@@ -79,7 +83,6 @@ fieldset {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--background-color);
 }
 
 legend {
@@ -213,15 +216,33 @@ footer {
 
 /* Print layout — preserve grid on print */
 @media print {
+  @page {
+    size: auto; /* auto is the initial value */
+    /* this affects the margin in the printer settings */
+    margin: 0.25in 0.2in;
+  }
   html,
   body {
     background-color: var(--print-background-color);
     color: var(--print-text-color);
   }
+  body {
+    margin: 0;
+  }
   input[type='submit'],
+  input[type='text'],
+  input[type='date'],
+  input[type='time'],
+  input[type='number'],
+  select,
+  textarea,
   #responseMessage,
+  #header,
   #footer {
     display: none;
+  }
+  .comments-section {
+    height: 8.5em;
   }
   form {
     grid-template-columns: repeat(4, 1fr);
