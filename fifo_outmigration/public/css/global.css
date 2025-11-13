@@ -1,0 +1,68 @@
+/* style variables */
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+:root {
+  /* colors */
+  --border-color: #1d1d1d;
+  --print-border-color: #000;
+  --body-background-color: linear-gradient(
+    135deg,
+    #01ad88aa 0%,
+    #02cfddaa 100%
+  );
+  --form-background-color: #f0f8ff;
+  --print-background-color: #fff;
+  --text-color: #1d1d1d;
+  --print-text-color: #000;
+
+  /* text */
+  --font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  --line-height: 1.3;
+
+  /* spacing */
+  --body-padding: 20px 40px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  min-height: 100vh;
+}
+
+body {
+  padding: var(--body-padding);
+  font-size: 1.4em;
+  background: var(--body-background-color);
+  min-height: 100vh;
+}
+
+html,
+body {
+  color: var(--text-color);
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+header h1 {
+  text-transform: uppercase;
+  font-size: 1.8em;
+  font-weight: bold;
+  margin: 0;
+}
+
+header h2 {
+  font-style: italic;
+  font-size: 1em;
+  margin: 3px 0 0;
+}

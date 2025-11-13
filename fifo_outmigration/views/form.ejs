@@ -6,14 +6,47 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>Chum Outmigration - Union River Summer Chum FIFO</title>
-    <link rel="stylesheet" href="form.css" />
-    <script src="form.js" defer></script>
+    <title>
+      HCSEG - Chum Outmigration - Union River Summer Chum FIFO
+    </title>
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/form.css" />
+    <script src="/js/form.js" defer></script>
   </head>
   <body>
     <header id="header">
-      <h1>Union River Summer Chum Outmigration Program</h1>
-      <h2>*All form fields are required.*</h2>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+        "
+      >
+        <div>
+          <h1>Union River Summer Chum Outmigration Program</h1>
+          <h2>*All form fields are required.*</h2>
+        </div>
+        <div style="text-align: right; padding: 1em">
+          <p>
+            <strong>Logged in as:</strong> <%= user.username %> <% if
+            (user.email) { %> (<%= user.email %>) <% } %>
+          </p>
+          <a
+            href="/auth/logout"
+            style="
+              display: inline-block;
+              padding: 0.5rem 1rem;
+              background-color: #dc3545;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+              font-size: 0.9rem;
+            "
+            >Logout</a
+          >
+        </div>
+      </div>
     </header>
 
     <!-- Display API response message -->
@@ -50,6 +83,7 @@
               id="yes"
               name="trapOperating"
               value="Y"
+              required
             />
             <label for="yes">Y</label>
           </span>
@@ -59,6 +93,7 @@
               id="no"
               name="trapOperating"
               value="N"
+              required
             />
             <label for="no">N</label>
           </span>
@@ -78,7 +113,7 @@
       </fieldset>
       <fieldset class="feedback-input">
         <legend>Debris Level:</legend>
-        <select name="debris" id="debris-select">
+        <select name="debris" id="debris-select" required>
           <option value="">--choose an option--</option>
           <option value="light">Light</option>
           <option value="moderate">Moderate</option>
@@ -113,7 +148,7 @@
       </fieldset>
       <fieldset class="feedback-input col-span-2">
         <legend>Water Visibility:</legend>
-        <select name="visibility" id="visibility-select">
+        <select name="visibility" id="visibility-select" required>
           <option value="">--choose an option--</option>
           <option value="none">None</option>
           <option value="poor">Poor</option>
@@ -125,7 +160,7 @@
       </fieldset>
       <fieldset class="feedback-input col-span-2">
         <legend>Water Flow:</legend>
-        <select name="flow" id="flow-select">
+        <select name="flow" id="flow-select" required>
           <option value="">--choose an option--</option>
           <option value="low">Low</option>
           <option value="medium-low">Medium-Low</option>
@@ -272,9 +307,9 @@
       <fieldset class="feedback-input">
         <legend>Coho Smolt Caught:</legend>
         <input
-          name="cohoParr"
+          name="cohoSmolt"
           type="number"
-          id="cohoParr"
+          id="cohoSmolt"
           class="feedback-input"
           placeholder="If there are none, type 0"
           step="1"
