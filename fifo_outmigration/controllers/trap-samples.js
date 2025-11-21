@@ -1,6 +1,6 @@
 const TrapSample = require('../models/trap-sample.js');
 
-exports.submitForm = async (req, res, next) => {
+exports.create = async (req, res, next) => {
   try {
     const {
       date,
@@ -120,5 +120,72 @@ exports.submitForm = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+// getAll trap samples
+exports.getAll = async (req, res, next) => {
+  try {
+    const trapSamples = await TrapSample.find().sort({ date: -1 });
+    res.status(200).json(trapSamples);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching trap samples.' });
+  }
+};
+
+// get a trap sample by ID
+exports.getById = async (req, res, next) => {
+  try {
+    const trapSample = await TrapSample.findById(req.params.id);
+    if (!trapSample) {
+      return res
+        .status(404)
+        .json({ message: 'Trap sample not found.' });
+    }
+    res.status(200).json(trapSample);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching trap sample.' });
+  }
+};
+
+// update a trap sample by ID
+exports.update = async (req, res) => {
+  try {
+    const updatedTrapSample = await TrapSample.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updatedTrapSample) {
+      return res
+        .status(404)
+        .json({ message: 'Trap sample not found.' });
+    }
+    res.status(200).json(updatedTrapSample);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating trap sample.' });
+  }
+};
+
+// delete a trap sample by ID
+exports.delete = async (req, res) => {
+  try {
+    const deletedTrapSample = await TrapSample.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deletedTrapSample) {
+      return res
+        .status(404)
+        .json({ message: 'Trap sample not found.' });
+    }
+    res
+      .status(200)
+      .json({ message: 'Trap sample deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting trap sample.' });
   }
 };
