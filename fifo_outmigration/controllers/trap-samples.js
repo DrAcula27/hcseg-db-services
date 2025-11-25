@@ -1,125 +1,75 @@
 const TrapSample = require('../models/trap-sample.js');
 
-exports.create = async (req, res, next) => {
+exports.create = async (req, res) => {
   try {
-    const {
-      date,
-      time,
-      trapOperating,
-      rpm,
-      debris,
-      visibility,
-      flow,
-      waterTemp,
-      hoboTemp,
-      chumFry,
-      chumFryMort,
-      chumAlevin,
-      chumDNATaken,
-      chumDNAIDs,
-      chumMarked,
-      markedChumReleased,
-      markedChumRecap,
-      markedChumMort,
-      cohoFry,
-      cohoParr,
-      cohoMarked,
-      markedCohoRecap,
-      chinookFry,
-      chinookParr,
-      pinkFry,
-      sculpin,
-      cutthroat,
-      steelhead,
-      lamprey,
-      stickleback,
-      comments,
-    } = req.body;
+    const formData = req.body;
 
     // Basic validations
     if (
-      !date ||
-      !time ||
-      !trapOperating ||
-      !rpm ||
-      !debris ||
-      !visibility ||
-      !flow ||
-      !waterTemp ||
-      !hoboTemp ||
-      !chumFry ||
-      !chumFryMort ||
-      !chumAlevin ||
-      !chumDNATaken ||
-      !chumDNAIDs ||
-      !chumMarked ||
-      !markedChumReleased ||
-      !markedChumRecap ||
-      !markedChumMort ||
-      !cohoFry ||
-      !cohoParr ||
-      !cohoMarked ||
-      !markedCohoRecap ||
-      !chinookFry ||
-      !chinookParr ||
-      !pinkFry ||
-      !sculpin ||
-      !cutthroat ||
-      !steelhead ||
-      !lamprey ||
-      !stickleback ||
-      !comments
+      !formData.date ||
+      !formData.time ||
+      !formData.trapOperating ||
+      !formData.rpm ||
+      !formData.debris ||
+      !formData.visibility ||
+      !formData.flow ||
+      !formData.waterTemp ||
+      !formData.hoboTemp ||
+      !formData.chumCaught ||
+      !formData.chumDnaTaken ||
+      !formData.chumMarked ||
+      !formData.chumMarkedRecap ||
+      !formData.chumMorts ||
+      !formData.chumDnaIds ||
+      !formData.chumMortsMarked ||
+      !formData.chumMortsRecap ||
+      !formData.cohoFryCaught ||
+      !formData.cohoFryMorts ||
+      !formData.cohoSmoltCaught ||
+      !formData.cohoSmoltMarked ||
+      !formData.cohoSmoltMarkedRecap ||
+      !formData.cohoSmoltMorts ||
+      !formData.cohoSmoltMortsMarked ||
+      !formData.cohoSmoltMortsRecap ||
+      !formData.cohoParrCaught ||
+      !formData.cohoParrMorts ||
+      !formData.steelheadCaught ||
+      !formData.steelheadMarked ||
+      !formData.steelheadMarkedRecap ||
+      !formData.steelheadMorts ||
+      !formData.steelheadMortsMarked ||
+      !formData.steelheadMortsRecap ||
+      !formData.cutthroatCaught ||
+      !formData.cutthroatMorts ||
+      !formData.chinookCaught ||
+      !formData.chinookMorts ||
+      !formData.sculpinCaught ||
+      !formData.sculpinMorts ||
+      !formData.lampreyCaught ||
+      !formData.lampreyMorts ||
+      !formData.comments
     ) {
       return res.status(400).json({
-        message:
-          'Date, Time, and Trap Operating are required fields.',
+        message: 'All form fields are required.',
       });
     }
 
     // Create a new trap sample instance
-    const newTrapSample = new TrapSample({
-      date: date,
-      time: time,
-      trapOperating: trapOperating,
-      rpm: rpm,
-      debris: debris,
-      visibility: visibility,
-      flow: flow,
-      waterTemp: waterTemp,
-      hoboTemp: hoboTemp,
-      chumFry: chumFry,
-      chumFryMort: chumFryMort,
-      chumAlevin: chumAlevin,
-      chumDNATaken: chumDNATaken,
-      chumDNAIDs: chumDNAIDs,
-      chumMarked: chumMarked,
-      markedChumReleased: markedChumReleased,
-      markedChumRecap: markedChumRecap,
-      markedChumMort: markedChumMort,
-      cohoFry: cohoFry,
-      cohoParr: cohoParr,
-      cohoMarked: cohoMarked,
-      markedCohoRecap: markedCohoRecap,
-      chinookFry: chinookFry,
-      chinookParr: chinookParr,
-      pinkFry: pinkFry,
-      sculpin: sculpin,
-      cutthroat: cutthroat,
-      steelhead: steelhead,
-      lamprey: lamprey,
-      stickleback: stickleback,
-      comments: comments,
-    });
+    const newTrapSample = new TrapSample(formData);
 
     // Save the trap sample to the database
     await newTrapSample.save();
 
-    res
-      .status(201)
-      .json({ message: 'Trap data submitted successfully!' });
+    res.status(201).json({
+      message: 'Trap data submitted successfully!',
+      data: newTrapSample,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    console.error('Error saving trap sample: ', error);
+    res.status(500).json({
+      message: 'Internal server error.',
+      error: error.message,
+    });
   }
 };
 

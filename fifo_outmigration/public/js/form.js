@@ -17,61 +17,65 @@ document.addEventListener('DOMContentLoaded', function () {
         : '',
       rpm: document.getElementById('rpm').value,
       debris: document.getElementById('debris-select').value,
-      visibility: document.getElementById('visibility-select').value,
-      flow: document.getElementById('flow-select').value,
       waterTemp: document.getElementById('waterTemp').value,
       hoboTemp: document.getElementById('hoboTemp').value,
-      chumFry: document.getElementById('chumFry').value,
-      chumFryMort: document.getElementById('chumFryMort').value,
-      chumAlevin: document.getElementById('chumAlevin').value,
-      chumDNATaken: document.getElementById('chumDNATaken').value,
-      chumDNAIDs: document.getElementById('chumDNAIDs').value,
+      visibility: document.getElementById('visibility-select').value,
+      flow: document.getElementById('flow-select').value,
+      chumCaught: document.getElementById('chumCaught').value,
+      chumDnaTaken: document.getElementById('chumDnaTaken').value,
       chumMarked: document.getElementById('chumMarked').value,
-      markedChumReleased: document.getElementById(
-        'markedChumReleased'
+      chumMarkedRecap:
+        document.getElementById('chumMarkedRecap').value,
+      chumMorts: document.getElementById('chumMorts').value,
+      chumDnaIds: document.getElementById('chumDnaIds').value,
+      chumMortsMarked:
+        document.getElementById('chumMortsMarked').value,
+      chumMortsRecap: document.getElementById('chumMortsRecap').value,
+      cohoFryCaught: document.getElementById('cohoFryCaught').value,
+      cohoSmoltCaught:
+        document.getElementById('cohoSmoltCaught').value,
+      cohoSmoltMarked:
+        document.getElementById('cohoSmoltMarked').value,
+      cohoSmoltMarkedRecap: document.getElementById(
+        'cohoSmoltMarkedRecap'
       ).value,
-      markedChumRecap:
-        document.getElementById('markedChumRecap').value,
-      markedChumMort: document.getElementById('markedChumMort').value,
-      cohoFry: document.getElementById('cohoFry').value,
-      cohoSmolt: document.getElementById('cohoSmolt').value, // FIXED: was cohoParr in form
-      cohoParr: document.getElementById('cohoParr').value,
-      cohoMarked: document.getElementById('cohoMarked').value,
-      markedCohoRecap:
-        document.getElementById('markedCohoRecap').value,
-      cohoFryMort: document.getElementById('cohoFryMort').value,
-      cohoSmoltMort: document.getElementById('cohoSmoltMort').value,
-      markedCohoMort: document.getElementById('markedCohoMort').value,
-      recapCohoMort: document.getElementById('recapCohoMort').value,
-      cohoParrMort: document.getElementById('cohoParrMort').value,
-      chinookFry: document.getElementById('chinookFry').value,
-      chinookParr: document.getElementById('chinookParr').value,
-      chinookMort: document.getElementById('chinookMort').value,
-      pinkFry: document.getElementById('pinkFry').value,
-      sculpin: document.getElementById('sculpin').value,
-      sculpinMort: document.getElementById('sculpinMort').value,
-      cutthroat: document.getElementById('cutthroat').value,
-      cutthroatMort: document.getElementById('cutthroatMort').value,
-      steelhead: document.getElementById('steelhead').value,
+      cohoFryMorts: document.getElementById('cohoFryMorts').value,
+      cohoSmoltMorts: document.getElementById('cohoSmoltMorts').value,
+      cohoSmoltMortsMarked: document.getElementById(
+        'cohoSmoltMortsMarked'
+      ).value,
+      cohoSmoltMortsRecap: document.getElementById(
+        'cohoSmoltMortsRecap'
+      ).value,
+      cohoParrCaught: document.getElementById('cohoParrCaught').value,
+      steelheadCaught:
+        document.getElementById('steelheadCaught').value,
       steelheadMarked:
         document.getElementById('steelheadMarked').value,
-      markedSteelheadRecap: document.getElementById(
-        'markedSteelheadRecap'
+      steelheadMarkedRecap: document.getElementById(
+        'steelheadMarkedRecap'
       ).value,
-      steelheadMort: document.getElementById('steelheadMort').value,
-      markedSteelheadMort: document.getElementById(
-        'markedSteelheadMort'
+      cohoParrMorts: document.getElementById('cohoParrMorts').value,
+      steelheadMorts: document.getElementById('steelheadMorts').value,
+      steelheadMortsMarked: document.getElementById(
+        'steelheadMortsMarked'
       ).value,
-      recapSteelheadMort: document.getElementById(
-        'recapSteelheadMort'
+      steelheadMortsRecap: document.getElementById(
+        'steelheadMortsRecap'
       ).value,
-      lamprey: document.getElementById('lamprey').value,
-      lampreyMort: document.getElementById('lampreyMort').value,
-      stickleback: document.getElementById('stickleback').value,
+      cutthroatCaught:
+        document.getElementById('cutthroatCaught').value,
+      chinookCaught: document.getElementById('chinookCaught').value,
+      sculpinCaught: document.getElementById('sculpinCaught').value,
+      lampreyCaught: document.getElementById('lampreyCaught').value,
+      cutthroatMorts: document.getElementById('cutthroatMorts').value,
+      chinookMorts: document.getElementById('chinookMorts').value,
+      sculpinMorts: document.getElementById('sculpinMorts').value,
+      lampreyMorts: document.getElementById('lampreyMorts').value,
       comments: document.getElementById('comments').value,
     };
 
-    const apiEndpoint = 'https://localhost:3000/api/trap-samples';
+    const apiEndpoint = '/api/trap-samples';
 
     // show loading state
     responseMessage.innerHTML = '<p>Submitting...</p>';
@@ -85,28 +89,36 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify(formData),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         responseMessage.innerHTML = `<p>${data.message}</p>`;
         responseMessage.classList.add('success', 'show');
-        responseMessage.classList.remove('error');
+        responseMessage.classList.remove('error', 'hidden');
 
-        // setTimeout(() => {
-        //   trapSampleForm.reset();
-        //   responseMessage.innerHTML = '';
-        //   responseMessage.classList.remove('success', 'show');
-        // }, 3000);
+        // reset form after successful submission
+        setTimeout(() => {
+          trapSampleForm.reset();
+          responseMessage.innerHTML = '';
+          responseMessage.classList.remove('success', 'show');
+          responseMessage.classList.add('hidden');
+        }, 1000);
       })
       .catch((error) => {
         console.error('Error:', error);
         responseMessage.innerHTML = `<p>Error submitting the form. Please try again later.</p>`;
         responseMessage.classList.add('error', 'show');
-        responseMessage.classList.remove('success');
+        responseMessage.classList.remove('success', 'hidden');
 
-        // setTimeout(() => {
-        //   responseMessage.innerHTML = '';
-        //   responseMessage.classList.remove('error', 'show');
-        // }, 5000);
+        setTimeout(() => {
+          responseMessage.innerHTML = '';
+          responseMessage.classList.remove('error', 'show');
+          responseMessage.classList.add('hidden');
+        }, 5000);
       });
   });
 });
