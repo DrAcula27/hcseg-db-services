@@ -5,17 +5,21 @@
   /* colors */
   --border-color: #1d1d1d;
   --border-color-active: #02cfdd;
-  --print-border-color: #000;
-  --body-background-color: linear-gradient(
+  --background-gradient: linear-gradient(
     135deg,
     #01ad88aa 0%,
     #02cfddaa 100%
   );
-  --form-background-color: #f0f8ff;
-  --print-background-color: #fff;
+  --background-color-white: #f0f8ff;
+  --background-color-gray: #e8e8e8ff;
   --text-color: #1d1d1d;
   --text-color-muted: #666666;
-  --print-text-color: #000;
+  --text-error-color: #c33;
+  --text-success-color: #3c4;
+
+  /* shadows */
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --btn-box-shadow: 0 5px 15px #0d5b6866;
 
   /* text */
   --font-family: 'Montserrat', Arial, Helvetica, sans-serif;
@@ -26,10 +30,14 @@
 
   /* borders */
   --border-radius: 10px;
-  --border-style: solid 2px var(--border-color);
+  --border-style: solid 1px var(--border-color);
 
-  /* shadows */
-  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  /* printing styles */
+  --print-border-color: #000;
+  --print-background-color: #fff;
+  --print-text-color: #000;
+  --print-page-margin-x: 0.2in;
+  --print-page-margin-y: 0.2in;
 }
 
 * {
@@ -46,7 +54,7 @@ html {
 body {
   padding: var(--body-padding);
   font-size: 1.4em;
-  background: var(--body-background-color);
+  background: var(--background-gradient);
   min-height: 100vh;
 }
 
@@ -74,4 +82,51 @@ header h2 {
   font-style: italic;
   font-size: 1em;
   margin: 3px 0 0;
+}
+
+.btn {
+  width: 100%;
+  background: var(--background-gradient);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 1em;
+  font-weight: 600;
+  font-size: 1.2em;
+  color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: var(--btn-box-shadow);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.msg {
+  background-color: var(--background-color-white);
+  padding: 1.2em 1.5em;
+  margin-bottom: 2em;
+  border-radius: var(--border-radius);
+  font-size: 1.4em;
+}
+
+.error-msg {
+  border-left: 0.4em solid var(--text-error-color);
+  color: var(--text-error-color);
+}
+
+.success-msg {
+  border-left: 4px solid var(--text-success-color);
+  color: var(--text-success-color);
+}
+
+footer {
+  text-align: center;
+  margin-top: 2em;
+  font-size: 0.9em;
+  color: var(--text-color-muted);
 }
