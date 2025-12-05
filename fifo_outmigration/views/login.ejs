@@ -19,7 +19,7 @@
   </head>
   <body>
     <div class="login-container">
-      <div class="login-header">
+      <header class="login-header">
         <h1>Welcome Back</h1>
         <img
           src="/img/hcseg-logo.png"
@@ -27,10 +27,10 @@
           alt="Hood Canal Salmon Enhancement Group"
         />
         <p>Union River Summer Chum Outmigration Program</p>
-      </div>
+      </header>
 
       <% if (typeof error !== 'undefined' && error) { %>
-      <div class="error-message"><%= error %></div>
+      <div class="msg error-msg"><%= error %></div>
       <% } %>
 
       <form action="/auth/login" method="POST">
@@ -57,12 +57,12 @@
           />
         </div>
 
-        <button type="submit" class="btn-login">Log In</button>
+        <button type="submit" class="btn btn-login">Log In</button>
       </form>
 
-      <div class="login-footer">
+      <footer>
         <p>&copy; 2025 Danielle Andrews | Secure Access</p>
-      </div>
+      </footer>
     </div>
   </body>
 </html>
