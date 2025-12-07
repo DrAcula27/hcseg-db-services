@@ -12,6 +12,8 @@
   );
   --background-color-white: #f0f8ff;
   --background-color-gray: #e8e8e8ff;
+  --background-color-error: #cc333333;
+  --background-color-success: #33cc4433;
   --text-color: #1d1d1d;
   --text-color-muted: #666666;
   --text-error-color: #c33;
@@ -117,11 +119,13 @@ header h2 {
 .error-msg {
   border-left: 0.4em solid var(--text-error-color);
   color: var(--text-error-color);
+  background-color: var(--background-color-error);
 }
 
 .success-msg {
   border-left: 4px solid var(--text-success-color);
   color: var(--text-success-color);
+  background-color: var(--background-color-success);
 }
 
 footer {
