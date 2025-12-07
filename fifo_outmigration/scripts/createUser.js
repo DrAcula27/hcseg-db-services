@@ -33,9 +33,30 @@ const question = (query) =>
 
 async function createUser() {
   try {
+    // Choose connection URI
+    const mongoUri = process.env.MONGODB_URI_DEV;
+    if (!mongoUri) {
+      console.error(
+        '\n❌ Error: No MongoDB connection URI found in environment variables.'
+      );
+      process.exit(1);
+    }
+
+    // Optionally allow specifying the database name separately.
+    // If the connection URI already contains a database, mongoose will use it.
+    // Otherwise set `MONGODB_DB` to the desired database name.
+    const mongoDbName = process.env.MONGODB_DB_DEV || undefined;
+    const connectOptions = mongoDbName
+      ? { dbName: mongoDbName }
+      : undefined;
+
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB\n');
+    await mongoose.connect(mongoUri, connectOptions);
+    console.log(
+      `✅ Connected to MongoDB${
+        mongoDbName ? ` (db: ${mongoDbName})` : ''
+      }\n`
+    );
 
     // Get user input
     console.log('=== Create New User ===\n');
