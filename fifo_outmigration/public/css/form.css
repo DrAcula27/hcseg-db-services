@@ -203,8 +203,10 @@ footer {
     margin-right: var(--print-page-margin-x);
   }
   html,
-  body {
-    background-color: var(--print-background-color);
+  body,
+  .trap-sample-form,
+  .form-divider {
+    background: var(--print-background-color);
     color: var(--print-text-color);
   }
   body {
@@ -216,6 +218,7 @@ footer {
   input[type='date'],
   input[type='time'],
   input[type='number'],
+  input[type='radio'],
   select,
   textarea,
   #responseMessage,
@@ -227,7 +230,7 @@ footer {
     grid-template-columns: repeat(4, 1fr);
     border: none;
     box-shadow: none;
-    height: calc(10.85in - 2 * var(--print-page-margin-y));
+    height: calc(10.7in - 2 * var(--print-page-margin-y));
     width: calc(8.5in - 2 * var(--print-page-margin-x));
   }
   .comments-section {
