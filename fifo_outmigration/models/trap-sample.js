@@ -18,7 +18,6 @@ const TrapSampleSchema = mongoose.Schema({
   chumDnaIds: { type: String },
   chumMortsMarked: { type: Number },
   chumMortsRecap: { type: Number },
-  chumAlevin: { type: Number }, //? remove this?
   cohoFryCaught: { type: Number },
   cohoSmoltCaught: { type: Number },
   cohoSmoltMarked: { type: Number },
