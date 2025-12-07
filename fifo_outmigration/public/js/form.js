@@ -101,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function () {
         responseMessage.classList.remove('error', 'hidden');
 
         // reset form after successful submission
-        setTimeout(() => {
-          trapSampleForm.reset();
-          responseMessage.innerHTML = '';
-          responseMessage.classList.remove('success', 'show');
-          responseMessage.classList.add('hidden');
-        }, 1000);
+        // setTimeout(() => {
+        //   trapSampleForm.reset();
+        //   responseMessage.innerHTML = '';
+        //   responseMessage.classList.remove('success', 'show');
+        //   responseMessage.classList.add('hidden');
+        // }, 5000);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -114,11 +114,11 @@ document.addEventListener('DOMContentLoaded', function () {
         responseMessage.classList.add('error', 'show');
         responseMessage.classList.remove('success', 'hidden');
 
-        setTimeout(() => {
-          responseMessage.innerHTML = '';
-          responseMessage.classList.remove('error', 'show');
-          responseMessage.classList.add('hidden');
-        }, 5000);
+        // setTimeout(() => {
+        //   responseMessage.innerHTML = '';
+        //   responseMessage.classList.remove('error', 'show');
+        //   responseMessage.classList.add('hidden');
+        // }, 5000);
       });
   });
 });
