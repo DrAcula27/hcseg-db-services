@@ -14,8 +14,12 @@ const app = express();
 
 // connect to the database
 mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connection successful'))
+  .connect(process.env.MONGODB_URI_DEV)
+  .then(() =>
+    console.log(
+      `MongoDB connection successful. Connected to: ${process.env.MONGODB_DB_DEV}`
+    )
+  )
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // set up view engine
@@ -35,7 +39,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
+      mongoUrl: process.env.MONGODB_URI_DEV,
       ttl: 24 * 60 * 60, // 1 day
     }),
     cookie: {
