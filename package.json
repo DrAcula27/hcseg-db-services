@@ -4,10 +4,11 @@
   "description": "microservices_for_hcseg_website",
   "main": "index.js",
   "scripts": {
-    "fifo-start": "node fifo_outmigration/index.js",
-    "fifo-dev": "nodemon fifo_outmigration/index.js",
+    "start": "node fifo_outmigration/index.js",
+    "dev": "nodemon fifo_outmigration/index.js",
     "create-user": "node fifo_outmigration/scripts/createUser.js",
-    "test": "test"
+    "test": "test",
+    "build": "npm install --production"
   },
   "author": "Danielle Andrews",
   "license": "ISC",

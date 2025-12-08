@@ -13,11 +13,23 @@ const cors = require('cors');
 const app = express();
 
 // connect to the database
+const mongoUri =
+  process.env.MONGODB_URI || process.env.MONGODB_URI_DEV;
+if (!mongoUri) {
+  console.error(
+    '❌ No MongoDB URI set in env (MONGODB_URI or MONGODB_URI_DEV).'
+  );
+  process.exit(1);
+}
+const mongoDbName =
+  process.env.MONGODB_DB || process.env.MONGODB_DB_DEV || 'test';
 mongoose
-  .connect(process.env.MONGODB_URI_DEV)
+  .connect(mongoUri)
   .then(() =>
     console.log(
-      `MongoDB connection successful. Connected to: ${process.env.MONGODB_DB_DEV}`
+      `MongoDB connection successful. ${
+        mongoDbName ? `(db: ${mongoDbName})` : ''
+      }`
     )
   )
   .catch((err) => console.error('MongoDB connection error:', err));
@@ -39,7 +51,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI_DEV,
+      mongoUrl: mongoUri,
+      ...(mongoDbName ? { dbName: mongoDbName } : {}),
       ttl: 24 * 60 * 60, // 1 day
     }),
     cookie: {
