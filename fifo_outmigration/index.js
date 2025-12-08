@@ -31,16 +31,18 @@ app.use((req, res, next) => {
     "default-src 'self'",
     "img-src 'self' data: https:",
     `script-src 'self' 'nonce-${nonce}' https:`,
-    `style-src 'self' 'nonce-${nonce}' https:`,
+    // Allow Google Fonts stylesheet and other https styles
+    `style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com https:`,
     "connect-src 'self' https:",
-    "font-src 'self' data:",
+    // Allow fetching font files from Google's CDN and data URIs
+    "font-src 'self' data: https://fonts.gstatic.com",
   ].join('; ');
 
   res.setHeader('Content-Security-Policy', csp);
   next();
 });
 
-// connect to the database
+// connect to the database with retry/backoff
 const mongoUri =
   process.env.MONGODB_URI || process.env.MONGODB_URI_DEV;
 if (!mongoUri) {
@@ -50,17 +52,56 @@ if (!mongoUri) {
   process.exit(1);
 }
 const mongoDbName =
-  process.env.MONGODB_DB || process.env.MONGODB_DB_DEV || 'test';
-mongoose
-  .connect(mongoUri)
-  .then(() =>
+  process.env.MONGODB_DB || process.env.MONGODB_DB_DEV || undefined;
+
+async function connectWithRetry(attempt = 1, maxAttempts = 5) {
+  try {
+    await mongoose.connect(mongoUri);
     console.log(
-      `MongoDB connection successful. ${
-        mongoDbName ? `(db: ${mongoDbName})` : ''
+      `MongoDB connection successful.${
+        mongoDbName ? ` (db: ${mongoDbName})` : ''
       }`
-    )
-  )
-  .catch((err) => console.error('MongoDB connection error:', err));
+    );
+  } catch (err) {
+    console.error(
+      `MongoDB connection attempt ${attempt} failed:`,
+      err.message
+    );
+    if (attempt < maxAttempts) {
+      const delay = Math.min(30000, 1000 * 2 ** attempt); // exponential backoff, cap 30s
+      console.log(`Retrying MongoDB connection in ${delay}ms...`);
+      setTimeout(
+        () => connectWithRetry(attempt + 1, maxAttempts),
+        delay
+      );
+    } else {
+      console.error(
+        'Exceeded max MongoDB connection attempts. Exiting process.'
+      );
+      process.exit(1);
+    }
+  }
+}
+
+connectWithRetry();
+
+// Mongoose connection events
+mongoose.connection.on('connected', () => {
+  console.log(
+    'Mongoose connected to',
+    mongoUri,
+    mongoDbName ? `(db: ${mongoDbName})` : ''
+  );
+});
+mongoose.connection.on('error', (err) => {
+  console.error('Mongoose connection error:', err);
+});
+mongoose.connection.on('disconnected', () => {
+  console.warn('Mongoose disconnected.');
+});
+mongoose.connection.on('reconnected', () => {
+  console.log('Mongoose reconnected.');
+});
 
 // set up view engine
 app.set('view engine', 'ejs');
@@ -101,6 +142,20 @@ app.use('/auth', require('./routes/auth'));
 app.use('/api/trap-samples', require('./routes/trap-samples'));
 app.use('/api/users', require('./routes/users'));
 
+// health endpoint
+app.get('/health', (req, res) => {
+  res.json({ ok: true, uptime: process.uptime() });
+});
+
+// express error handler (catch-all)
+app.use((err, req, res, next) => {
+  console.error('Unhandled Express error:', err);
+  if (res.headersSent) return next(err);
+  res
+    .status(500)
+    .json({ message: 'Internal server (Express) error' });
+});
+
 // root route - redirect to form if authenticated, else to login
 app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
@@ -119,6 +174,50 @@ app.get('/form', (req, res) => {
   }
 });
 
-// start the server
+// start the server with graceful shutdown handlers
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
+
+async function gracefulShutdown(signal) {
+  try {
+    console.log(`Received ${signal}. Shutting down gracefully...`);
+    server.close(async (err) => {
+      if (err) {
+        console.error('Error closing server:', err);
+        process.exit(1);
+      }
+      try {
+        await mongoose.connection.close(false);
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+      } catch (closeErr) {
+        console.error('Error closing MongoDB connection:', closeErr);
+        process.exit(1);
+      }
+    });
+  } catch (err) {
+    console.error('Error during graceful shutdown:', err);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(
+    'Unhandled Rejection at:',
+    promise,
+    'reason:',
+    reason
+  );
+  // optional: graceful shutdown or alerting here
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception thrown:', err);
+  // try to perform graceful shutdown, then exit
+  gracefulShutdown('uncaughtException');
+});
