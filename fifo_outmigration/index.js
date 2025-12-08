@@ -9,8 +9,36 @@ const MongoStore = require('connect-mongo');
 const path = require('path');
 const passport = require('passport');
 const cors = require('cors');
+const crypto = require('crypto');
 
 const app = express();
+
+// Content Security Policy with per-request nonces for inline scripts/styles.
+// This sets a `nonce` value on `res.locals.nonce` so EJS templates can add
+// `<script nonce="<%= nonce %>">` or `<style nonce="<%= nonce %>">` when
+// inline code is required. External resources from the same origin or https
+// are allowed.
+/**
+ * How to use nonces in your templates (if you need inline code)
+ * For an inline script:<script nonce="<%= nonce %>"> -> inline code <- </script>
+ * For an inline style block:<style nonce="<%= nonce %>"> -> inline css <- ></style>
+ */
+app.use((req, res, next) => {
+  const nonce = crypto.randomBytes(16).toString('base64');
+  res.locals.nonce = nonce;
+
+  const csp = [
+    "default-src 'self'",
+    "img-src 'self' data: https:",
+    `script-src 'self' 'nonce-${nonce}' https:`,
+    `style-src 'self' 'nonce-${nonce}' https:`,
+    "connect-src 'self' https:",
+    "font-src 'self' data:",
+  ].join('; ');
+
+  res.setHeader('Content-Security-Policy', csp);
+  next();
+});
 
 // connect to the database
 const mongoUri =
