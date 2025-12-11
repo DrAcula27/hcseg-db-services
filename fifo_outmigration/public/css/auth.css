@@ -45,6 +45,7 @@ body {
   width: 100%;
   padding: 12px 15px;
   border: var(--border-style);
+  border-width: 2px;
   border-radius: var(--border-radius);
   background-color: var(--background-color-white);
   font-size: 1.4em;
@@ -54,6 +55,19 @@ body {
 .form-group input:focus {
   outline: none;
   border-color: var(--border-color-active);
+}
+
+.btn-toggle-show-password {
+  padding: 2px;
+  text-decoration: underline;
+  background: none;
+  color: inherit;
+  transition: all 0.3s;
+}
+
+.btn-toggle-show-password:hover {
+  color: var(--border-color-active);
+  box-shadow: none;
 }
 
 @media (max-width: 480px) {
