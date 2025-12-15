@@ -45,6 +45,12 @@ const TrapSampleSchema = mongoose.Schema({
   comments: { type: String },
 });
 
-const TrapSample = mongoose.model('trap-samples', TrapSampleSchema);
+// Use an explicit model name and force the MongoDB collection name
+// to `Union_Outmigration` so documents are stored in that folder.
+const TrapSample = mongoose.model(
+  'TrapSample',
+  TrapSampleSchema,
+  'Union_Outmigration'
+);
 
 module.exports = TrapSample;

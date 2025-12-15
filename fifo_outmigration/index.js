@@ -139,7 +139,7 @@ app.use(passport.session());
 
 // routes
 app.use('/auth', require('./routes/auth'));
-app.use('/api/trap-samples', require('./routes/trap-samples'));
+app.use('/api/Union_Outmigration', require('./routes/trap-samples'));
 app.use('/api/users', require('./routes/users'));
 
 // health endpoint

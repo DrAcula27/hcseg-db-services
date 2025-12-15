@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
       comments: document.getElementById('comments').value,
     };
 
-    const apiEndpoint = '/api/trap-samples';
+    const apiEndpoint = '/api/Union_Outmigration';
 
     // show loading state
     responseMessage.innerHTML = '<p>Submitting...</p>';
