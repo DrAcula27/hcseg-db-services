@@ -41,8 +41,14 @@
       </div>
     </header>
 
-    <!-- Display API response message -->
-    <div id="responseMessage" class="hidden"></div>
+    <!-- Modal popup for form submission response -->
+    <div id="responseModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <button id="modalCloseBtn" class="modal-close-btn" aria-label="Close modal">✕</button>
+        <div id="responseMessage"></div>
+      </div>
+    </div>
 
     <form id="trapSampleForm" class="trap-sample-form">
       <!-- pre trap check information -->

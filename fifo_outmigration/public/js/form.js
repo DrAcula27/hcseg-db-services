@@ -1,6 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
   const trapSampleForm = document.getElementById('trapSampleForm');
   const responseMessage = document.getElementById('responseMessage');
+  const responseModal = document.getElementById('responseModal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalOverlay = responseModal.querySelector('.modal-overlay');
+
+  // Close modal when close button is clicked
+  modalCloseBtn.addEventListener('click', closeModal);
+
+  // Close modal when clicking outside the modal content
+  modalOverlay.addEventListener('click', closeModal);
+
+  function closeModal() {
+    responseModal.classList.add('hidden');
+    responseMessage.innerHTML = '';
+  }
+
+  function openModal(message, isSuccess) {
+    responseMessage.innerHTML = `<p>${message}</p>`;
+    responseMessage.className = isSuccess ? 'success' : 'error';
+    responseModal.classList.remove('hidden');
+  }
 
   trapSampleForm.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -78,9 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiEndpoint = '/api/Union_Outmigration';
 
     // show loading state
-    responseMessage.innerHTML = '<p>Submitting...</p>';
-    responseMessage.classList.add('show');
-    responseMessage.classList.remove('success', 'error');
+    openModal('Submitting...', null);
 
     fetch(apiEndpoint, {
       method: 'POST',
@@ -96,29 +114,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json();
       })
       .then((data) => {
-        responseMessage.innerHTML = `<p>${data.message}</p>`;
-        responseMessage.classList.add('success', 'show');
-        responseMessage.classList.remove('error', 'hidden');
-
-        // reset form after successful submission
-        // setTimeout(() => {
-        //   trapSampleForm.reset();
-        //   responseMessage.innerHTML = '';
-        //   responseMessage.classList.remove('success', 'show');
-        //   responseMessage.classList.add('hidden');
-        // }, 5000);
+        openModal(data.message, true);
+        // Reset form after successful submission
+        // trapSampleForm.reset();
       })
       .catch((error) => {
         console.error('Error:', error);
-        responseMessage.innerHTML = `<p>Error submitting the form. Please try again later.</p>`;
-        responseMessage.classList.add('error', 'show');
-        responseMessage.classList.remove('success', 'hidden');
-
-        // setTimeout(() => {
-        //   responseMessage.innerHTML = '';
-        //   responseMessage.classList.remove('error', 'show');
-        //   responseMessage.classList.add('hidden');
-        // }, 5000);
+        openModal(
+          'Error submitting the form. Please try again later.',
+          false
+        );
       });
   });
 });
