@@ -114,6 +114,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 
 // session management
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  console.error(
+    '❌ SESSION_SECRET environment variable is not set. Session authentication will fail.'
+  );
+  process.exit(1);
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
