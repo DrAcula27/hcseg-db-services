@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
   // Close modal when clicking outside the modal content
   modalOverlay.addEventListener('click', closeModal);
 
+  // close modal when escape key is pressed
+  document.addEventListener('keydown', function (event) {
+    if (
+      event.key === 'Escape' &&
+      !responseModal.classList.contains('hidden')
+    ) {
+      closeModal();
+    }
+  });
+
   function closeModal() {
     responseModal.classList.add('hidden');
     responseMessage.innerHTML = '';
