@@ -121,12 +121,18 @@ if (!sessionSecret) {
   );
   process.exit(1);
 }
+// When running behind Render (or other proxies) trust the first proxy so
+// Express knows the original protocol (HTTPS) and secure cookies work.
+app.set('trust proxy', 1);
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    // secret: process.env.SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
+    // tell express-session to trust the proxy when setting secure cookies
+    proxy: process.env.NODE_ENV === 'production',
     store: MongoStore.create({
       mongoUrl: mongoUri,
       ...(mongoDbName ? { dbName: mongoDbName } : {}),
@@ -136,6 +142,7 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // use secure cookies (HTTPS only) in production
+      sameSite: 'lax', // allow normal form POSTs while protecting from CSRF in cross-site contexts
     },
   })
 );
