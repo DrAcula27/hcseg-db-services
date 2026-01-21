@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>HCSEG - Research Projects</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/img/hcseg-logo-square.ico"
+    />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/project-select.css" />
+  </head>
+  <body>
+    <header id="header" class="header">
+      <img
+        src="/img/hcseg-logo.png"
+        alt="Hood Canal Salmon Enhancement Group"
+        height="100px"
+      />
+      <div class="header-content">
+        <h1>Hood Canal Salmon Enhancement Group</h1>
+        <h2>Select Your Research Project</h2>
+      </div>
+      <div class="header-auth">
+        <p><strong>Logged in as:</strong> <%= user.username %></p>
+        <p>(<%= user.email %>)</p>
+        <a
+          id="logout-button"
+          class="btn btn-logout"
+          href="/auth/logout"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <main class="project-select-container">
+      <section class="projects-grid">
+        <!-- Union River Juvenile Summer Chum Outmigration Project -->
+        <article class="project-card">
+          <div class="project-card-header">
+            <h3>Union River Summer Chum: Fish Out</h3>
+            <p class="project-subtitle">
+              Juvenile Outmigration Program
+            </p>
+          </div>
+          <div class="project-card-body">
+            <p class="project-description">
+              Track and monitor chum salmon outmigration (and other
+              bycatch) data from the Union River rotary screw trap.
+              Record daily catch totals, environmental conditions, and
+              marked fish recaptures.
+            </p>
+            <ul class="project-features">
+              <li>Daily trap sample data entry</li>
+              <li>
+                Fish count tracking (chum, coho, steelhead, and more)
+              </li>
+              <li>Environmental monitoring</li>
+              <li>Mark-recapture analysis</li>
+            </ul>
+          </div>
+          <div class="project-card-footer">
+            <a
+              href="/projects/union_outmigration"
+              class="btn btn-project"
+            >
+              Access Project →
+            </a>
+          </div>
+        </article>
+
+        <!-- Union River Summer Chum Adult Return Project -->
+        <article class="project-card">
+          <div class="project-card-header">
+            <h3>Union River Summer Chum: Fish In</h3>
+            <p class="project-subtitle">Adult Return Program</p>
+          </div>
+          <div class="project-card-body">
+            <p class="project-description">
+              Monitor adult chum salmon (and other bycatch) returns to
+              the Union River. Record species, gender, hatchery/wild;
+              carcass surveys, and redd locations to assess population
+              productivity.
+            </p>
+            <ul class="project-features">
+              <li>Adult spawning surveys</li>
+              <li>Carcass recovery data</li>
+              <li>Redd monitoring</li>
+              <li>Population productivity tracking</li>
+            </ul>
+          </div>
+          <div class="project-card-footer">
+            <a
+              href="/projects/union_adult_return"
+              class="btn btn-project"
+            >
+              Access Project →
+            </a>
+          </div>
+        </article>
+
+        <!-- Wild Steelhead/Coho VSP Project -->
+        <article class="project-card">
+          <div class="project-card-header">
+            <h3>Hood Canal Wild Steelhead & Coho</h3>
+            <p class="project-subtitle">
+              Viable Salmonid Population (VSP) Parameter Assessment
+              Program
+            </p>
+          </div>
+          <div class="project-card-body">
+            <p class="project-description">
+              Support Viable Salmonid Population (VSP) viability
+              analysis for wild steelhead and coho salmon. Collect and
+              analyze data critical for conservation and recovery
+              planning.
+            </p>
+            <ul class="project-features">
+              <li>Steelhead population monitoring</li>
+              <li>Coho salmon surveys</li>
+              <li>VSP metric data collection</li>
+              <li>Population assessment support</li>
+            </ul>
+          </div>
+          <div class="project-card-footer">
+            <a
+              href="/projects/steelhead_coho_vsp"
+              class="btn btn-project"
+            >
+              Access Project →
+            </a>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer id="footer">
+      <p>&copy; 2025 Danielle Andrews | Fish Research Data Portal</p>
+    </footer>
+  </body>
+</html>

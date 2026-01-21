@@ -4,6 +4,11 @@ body {
   justify-content: center;
 }
 
+header {
+  display: flex;
+  flex-direction: column;
+}
+
 .login-container {
   background-color: var(--background-color-white);
   border-radius: var(--border-radius);

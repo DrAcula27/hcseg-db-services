@@ -1,29 +1,12 @@
-.form-header {
-  display: flex;
-  justify-content: center;
-  gap: 2em;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* logout button */
-.btn-logout {
-  display: inline-block;
-  max-width: 100px;
-  background: var(--text-error-color);
-  text-decoration: none;
-  margin-top: 0.25em;
-}
-
 @media screen and (max-width: 1400px) {
-  .form-header {
+  .header {
     gap: 0.5em;
   }
-  .form-header .form-title {
+  .header .form-title {
     font-size: 0.8em;
     text-align: center;
   }
-  .form-header img {
+  .header img {
     height: 75px;
   }
 
@@ -34,7 +17,7 @@
 }
 
 @media screen and (max-width: 1100px) {
-  .form-header {
+  .header {
     flex-direction: column;
   }
 }
@@ -148,10 +131,6 @@ label {
   margin-top: 10px;
 }
 
-footer {
-  color: var(--text-color);
-}
-
 /* Modal styles */
 .modal {
   position: fixed;
@@ -215,11 +194,11 @@ footer {
 }
 
 #responseMessage.success {
-  color: var(--text-success-color);
+  color: var(--text-color-success);
 }
 
 #responseMessage.error {
-  color: var(--text-error-color);
+  color: var(--text-color-error);
 }
 
 /* utilities */

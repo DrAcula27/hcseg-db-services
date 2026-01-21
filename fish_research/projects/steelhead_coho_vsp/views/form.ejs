@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>HCSEG - Steelhead & Coho VSP</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/img/hcseg-logo-square.ico"
+    />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/form.css" />
+  </head>
+  <body>
+    <header id="header" class="form-header">
+      <img
+        src="/img/hcseg-logo.png"
+        alt="Hood Canal Salmon Enhancement Group"
+        height="100px"
+      />
+      <div class="form-title">
+        <h1>Steelhead & Coho - Viable Salmon Population Program</h1>
+        <h2>*Form Under Development*</h2>
+      </div>
+      <div class="form-auth">
+        <p><strong>Logged in as:</strong> <%= user.username %></p>
+        <p>(<%= user.email %>)</p>
+        <a
+          id="logout-button"
+          class="btn btn-logout"
+          href="/auth/logout"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <main class="form-container">
+      <div style="padding: 40px; text-align: center">
+        <h2>Steelhead & Coho VSP Form</h2>
+        <p>This form is under development. Please check back soon.</p>
+        <a
+          href="/projects"
+          class="btn btn-submit"
+          style="display: inline-block; margin-top: 20px"
+        >
+          Return to Project Selection
+        </a>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <p>
+        &copy; 2025 Hood Canal Salmon Enhancement Group | Fish
+        Research Data Portal.
+      </p>
+    </footer>
+  </body>
+</html>
