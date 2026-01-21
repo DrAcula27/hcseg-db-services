@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
 
     const trapOperatingRadio = document.querySelector(
-      'input[name="trapOperating"]:checked'
+      'input[name="trapOperating"]:checked',
     );
 
     const formData = {
@@ -67,15 +67,15 @@ document.addEventListener('DOMContentLoaded', function () {
       cohoSmoltMarked:
         document.getElementById('cohoSmoltMarked').value,
       cohoSmoltMarkedRecap: document.getElementById(
-        'cohoSmoltMarkedRecap'
+        'cohoSmoltMarkedRecap',
       ).value,
       cohoFryMorts: document.getElementById('cohoFryMorts').value,
       cohoSmoltMorts: document.getElementById('cohoSmoltMorts').value,
       cohoSmoltMortsMarked: document.getElementById(
-        'cohoSmoltMortsMarked'
+        'cohoSmoltMortsMarked',
       ).value,
       cohoSmoltMortsRecap: document.getElementById(
-        'cohoSmoltMortsRecap'
+        'cohoSmoltMortsRecap',
       ).value,
       cohoParrCaught: document.getElementById('cohoParrCaught').value,
       steelheadCaught:
@@ -83,15 +83,15 @@ document.addEventListener('DOMContentLoaded', function () {
       steelheadMarked:
         document.getElementById('steelheadMarked').value,
       steelheadMarkedRecap: document.getElementById(
-        'steelheadMarkedRecap'
+        'steelheadMarkedRecap',
       ).value,
       cohoParrMorts: document.getElementById('cohoParrMorts').value,
       steelheadMorts: document.getElementById('steelheadMorts').value,
       steelheadMortsMarked: document.getElementById(
-        'steelheadMortsMarked'
+        'steelheadMortsMarked',
       ).value,
       steelheadMortsRecap: document.getElementById(
-        'steelheadMortsRecap'
+        'steelheadMortsRecap',
       ).value,
       cutthroatCaught:
         document.getElementById('cutthroatCaught').value,
@@ -105,7 +105,16 @@ document.addEventListener('DOMContentLoaded', function () {
       comments: document.getElementById('comments').value,
     };
 
-    const apiEndpoint = '/api/Union_Outmigration';
+    // Determine the API endpoint based on the project context
+    const projectName = window.currentProject;
+    const apiEndpoint =
+      projectName === 'Union_Outmigration'
+        ? '/api/Union_Outmigration'
+        : `/api/${projectName}`;
+
+    console.log('Project:', projectName);
+    console.log('API Endpoint:', apiEndpoint);
+    console.log('Form Data:', formData);
 
     // show loading state
     openModal('Submitting...', null);
@@ -118,21 +127,28 @@ document.addEventListener('DOMContentLoaded', function () {
       body: JSON.stringify(formData),
     })
       .then((response) => {
+        console.log('Response status:', response.status);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return response.json().then((data) => {
+            console.error('Server error response:', data);
+            throw new Error(
+              `HTTP error! status: ${response.status} - ${data.message || data.error}`,
+            );
+          });
         }
         return response.json();
       })
       .then((data) => {
+        console.log('Success response:', data);
         openModal(data.message, true);
         // Reset form after successful submission
         // trapSampleForm.reset();
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Fetch error:', error);
         openModal(
           'Error submitting the form. Please try again later.',
-          false
+          false,
         );
       });
   });

@@ -5,7 +5,7 @@ const passport = require('passport');
 // Login page
 router.get('/login', (req, res) => {
   if (req.isAuthenticated()) {
-    return res.redirect('/form');
+    return res.redirect('/projects');
   }
   res.render('login', { error: null });
 });
@@ -26,7 +26,7 @@ router.post('/login', (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.redirect('/form');
+      return res.redirect('/projects');
     });
   })(req, res, next);
 });

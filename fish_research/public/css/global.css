@@ -15,9 +15,12 @@
   --background-color-error: #cc333333;
   --background-color-success: #33cc4433;
   --text-color: #1d1d1d;
-  --text-color-muted: #666666;
-  --text-error-color: #c33;
-  --text-success-color: #3c4;
+  --text-color-muted: #6d6d6d;
+  --text-color-light: #b4b4b4;
+  --text-color-active: #02cfdd;
+  --text-color-accent: #01ad88;
+  --text-color-error: #c33;
+  --text-color-success: #3c4;
 
   /* shadows */
   --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -71,19 +74,46 @@ body {
 header {
   text-align: center;
   margin-bottom: 1em;
+  padding-bottom: 1em;
+  gap: 2em;
+  border-bottom: var(--border-style);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
 }
 
 header h1 {
   text-transform: uppercase;
-  font-size: 1.8em;
+  font-size: 2em;
   font-weight: bold;
   margin: 0;
+  margin-bottom: 5px;
+  color: var(--text-color);
 }
 
 header h2 {
   font-style: italic;
-  font-size: 1em;
+  font-size: 1.4em;
   margin: 3px 0 0;
+  color: var(--text-color);
+  font-weight: 400;
+}
+
+header img {
+  width: auto;
+}
+
+.header-auth {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.header-auth p {
+  font-size: 1em;
+  color: var(--text-color);
+  margin: 0;
 }
 
 .btn {
@@ -95,7 +125,9 @@ header h2 {
   font-weight: 600;
   font-size: 1.2em;
   color: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .btn:hover {
@@ -108,6 +140,26 @@ header h2 {
   transform: translateY(0);
 }
 
+/* logout button */
+.btn-logout {
+  display: inline-block;
+  max-width: 100px;
+  background: var(--text-color-error);
+  text-decoration: none;
+  margin-top: 0.25em;
+}
+
+/* return to project selection button */
+.btn-return-projects {
+  display: inline-block;
+  width: auto;
+  padding: 8px 12px;
+  background: var(--background-color-white);
+  color: var(--text-color);
+  text-decoration: none;
+  margin-top: 0.25em;
+}
+
 .msg {
   background-color: var(--background-color-white);
   padding: 1.2em 1.5em;
@@ -117,14 +169,14 @@ header h2 {
 }
 
 .error-msg {
-  border-left: 0.4em solid var(--text-error-color);
-  color: var(--text-error-color);
+  border-left: 0.4em solid var(--text-color-error);
+  color: var(--text-color-error);
   background-color: var(--background-color-error);
 }
 
 .success-msg {
-  border-left: 4px solid var(--text-success-color);
-  color: var(--text-success-color);
+  border-left: 4px solid var(--text-color-success);
+  color: var(--text-color-success);
   background-color: var(--background-color-success);
 }
 
@@ -132,5 +184,12 @@ footer {
   text-align: center;
   margin-top: 2em;
   font-size: 0.9em;
-  color: var(--text-color-muted);
+  color: var(--text-color);
+  padding: 20px;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.95em;
 }

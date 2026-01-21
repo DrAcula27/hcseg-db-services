@@ -47,7 +47,7 @@ const mongoUri =
   process.env.MONGODB_URI || process.env.MONGODB_URI_DEV;
 if (!mongoUri) {
   console.error(
-    '❌ No MongoDB URI set in env (MONGODB_URI or MONGODB_URI_DEV).'
+    '❌ No MongoDB URI set in env (MONGODB_URI or MONGODB_URI_DEV).',
   );
   process.exit(1);
 }
@@ -60,23 +60,23 @@ async function connectWithRetry(attempt = 1, maxAttempts = 5) {
     console.log(
       `MongoDB connection successful.${
         mongoDbName ? ` (db: ${mongoDbName})` : ''
-      }`
+      }`,
     );
   } catch (err) {
     console.error(
       `MongoDB connection attempt ${attempt} failed:`,
-      err.message
+      err.message,
     );
     if (attempt < maxAttempts) {
       const delay = Math.min(30000, 1000 * 2 ** attempt); // exponential backoff, cap 30s
       console.log(`Retrying MongoDB connection in ${delay}ms...`);
       setTimeout(
         () => connectWithRetry(attempt + 1, maxAttempts),
-        delay
+        delay,
       );
     } else {
       console.error(
-        'Exceeded max MongoDB connection attempts. Exiting process.'
+        'Exceeded max MongoDB connection attempts. Exiting process.',
       );
       process.exit(1);
     }
@@ -90,7 +90,7 @@ mongoose.connection.on('connected', () => {
   console.log(
     'Mongoose connected to',
     mongoUri,
-    mongoDbName ? `(db: ${mongoDbName})` : ''
+    mongoDbName ? `(db: ${mongoDbName})` : '',
   );
 });
 mongoose.connection.on('error', (err) => {
@@ -105,7 +105,10 @@ mongoose.connection.on('reconnected', () => {
 
 // set up view engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', [
+  path.join(__dirname, 'views'),
+  path.join(__dirname, 'projects'),
+]);
 
 // middleware
 app.use(express.json());
@@ -117,7 +120,7 @@ app.use(cors({ origin: '*' }));
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   console.error(
-    '❌ SESSION_SECRET environment variable is not set. Session authentication will fail.'
+    '❌ SESSION_SECRET environment variable is not set. Session authentication will fail.',
   );
   process.exit(1);
 }
@@ -144,7 +147,7 @@ app.use(
       secure: process.env.NODE_ENV === 'production', // use secure cookies (HTTPS only) in production
       sameSite: 'lax', // allow normal form POSTs while protecting from CSRF in cross-site contexts
     },
-  })
+  }),
 );
 
 // passport initialization
@@ -154,7 +157,10 @@ app.use(passport.session());
 
 // routes
 app.use('/auth', require('./routes/auth'));
-app.use('/api/Union_Outmigration', require('./routes/trap-samples'));
+app.use(
+  '/api/Union_Outmigration',
+  require('./projects/union_outmigration/routes/union-outmigration'),
+);
 app.use('/api/users', require('./routes/users'));
 
 // health endpoint
@@ -171,19 +177,39 @@ app.use((err, req, res, next) => {
     .json({ message: 'Internal server (Express) error' });
 });
 
-// root route - redirect to form if authenticated, else to login
+// root route - redirect to project select if authenticated, else to login
 app.get('/', (req, res) => {
   if (req.isAuthenticated()) {
-    res.redirect('/form');
+    res.redirect('/projects');
   } else {
     res.redirect('/auth/login');
   }
 });
 
-// Form route at root level (easier access)
-app.get('/form', (req, res) => {
+// Project selection route - user chooses which research project to work with
+app.get('/projects', (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('form', { user: req.user });
+    res.render('project-select', { user: req.user });
+  } else {
+    res.redirect('/auth/login');
+  }
+});
+
+// Project-specific form routes
+app.get('/projects/:projectName', (req, res) => {
+  if (req.isAuthenticated()) {
+    const { projectName } = req.params;
+    const validProjects = [
+      'union_outmigration',
+      'union_adult_return',
+      'steelhead_coho_vsp',
+    ];
+
+    if (!validProjects.includes(projectName)) {
+      return res.status(404).json({ message: 'Project not found.' });
+    }
+
+    res.render(`${projectName}/views/form`, { user: req.user });
   } else {
     res.redirect('/auth/login');
   }
@@ -192,7 +218,7 @@ app.get('/form', (req, res) => {
 // start the server with graceful shutdown handlers
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`),
 );
 
 async function gracefulShutdown(signal) {
@@ -226,7 +252,7 @@ process.on('unhandledRejection', (reason, promise) => {
     'Unhandled Rejection at:',
     promise,
     'reason:',
-    reason
+    reason,
   );
   // optional: graceful shutdown or alerting here
 });
