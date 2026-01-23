@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const UnionOutmigrationSchema = mongoose.Schema({
+  userId: { type: String, required: true },
+  submittedBy: { type: String, required: true },
   date: { type: Date },
   time: { type: String },
   trapOperating: { type: String },
@@ -43,6 +45,7 @@ const UnionOutmigrationSchema = mongoose.Schema({
   sculpinMorts: { type: Number },
   lampreyMorts: { type: Number },
   comments: { type: String },
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model(
