@@ -4,6 +4,17 @@ exports.create = async (req, res) => {
   try {
     const formData = req.body;
 
+    // Check if user is authenticated
+    if (!req.user) {
+      return res.status(401).json({
+        message: 'User must be authenticated to submit data.',
+      });
+    }
+
+    // Add user information to form data
+    formData.userId = req.user._id || req.user.id;
+    formData.submittedBy = req.user.username || req.user.email;
+
     // Basic validations
     if (
       !formData.date ||
