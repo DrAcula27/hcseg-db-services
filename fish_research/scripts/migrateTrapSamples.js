@@ -1,22 +1,42 @@
 /**
- * Migration script: Transform historical trap-samples data to new Union_Outmigration schema.
+ * Migration script: Transform new schema (camelCase) data to merged schema (Title Case with spaces).
  *
- * Old schema (historical data):
- *   Date, Time, Trap Operating, RPM, Debris, Visibility, Flow, Water (°C), Hobo Temp (°C),
- *   Chum Fry, Chum Fry Mort, Chum Alevin, Chum DNA Taken, Chum DNA IDs, Chum Marked,
- *   Marked Chum Released, Marked Chum Recap, Marked Chum Mort, Coho Fry, Coho Parr,
- *   Coho Marked, Marked Coho Recap, Chinook Fry, Chinook Parr, Pink Fry, Sculpin,
- *   Cutthroat, Steelhead, Lamprey, Stickleback, Comments
+ * Note: Historical data is already stored in Union_Outmigration collection using Title Case fields.
+ * This script only transforms new entries that were created with camelCase field names.
  *
- * New schema (app schema in camelCase):
- *   date, time, trapOperating, rpm, debris, waterTemp, hoboTemp, visibility, flow,
- *   chumCaught, chumDnaTaken, chumMarked, chumMarkedRecap, chumMorts, chumDnaIds,
- *   chumMortsMarked, chumMortsRecap, cohoFryCaught, cohoSmoltCaught, cohoSmoltMarked,
- *   cohoSmoltMarkedRecap, cohoFryMorts, cohoSmoltMorts, cohoSmoltMortsMarked,
- *   cohoSmoltMortsRecap, cohoParrCaught, steelheadCaught, steelheadMarked,
- *   steelheadMarkedRecap, cohoParrMorts, steelheadMorts, steelheadMortsMarked,
- *   steelheadMortsRecap, cutthroatCaught, chinookCaught, sculpinCaught, lampreyCaught,
- *   cutthroatMorts, chinookMorts, sculpinMorts, lampreyMorts, comments
+ * Old/Historical schema (Title Case with spaces):
+ *   Date, Time, Trap Operating, RPM, Debris, Water (°C), Hobo Temp (°C), Visibility, Flow,
+ *   Chum Fry, Chum Alevin, Chum DNA Taken, Chum Marked, Marked Chum Recap, Chum Fry Mort,
+ *   Chum DNA IDs, Marked Chum Mort, Marked Chum Released, Coho Fry, Coho Parr, Coho Marked,
+ *   Marked Coho Recap, Steelhead, Cutthroat, Chinook Fry, Chinook Parr, Sculpin, Lamprey,
+ *   Stickleback, Pink Fry, Comments
+ *
+ * New entries schema (camelCase - needs transformation):
+ *   userId, submittedBy, date, time, trapOperating, rpm, debris, waterTemp, hoboTemp,
+ *   visibility, flow, chumCaught, chumDnaTaken, chumMarked, chumMarkedRecap, chumMorts,
+ *   chumDnaIds, chumMortsMarked, chumMortsRecap, cohoFryCaught, cohoSmoltCaught,
+ *   cohoSmoltMarked, cohoSmoltMarkedRecap, cohoFryMorts, cohoSmoltMorts,
+ *   cohoSmoltMortsMarked, cohoSmoltMortsRecap, cohoParrCaught, steelheadCaught,
+ *   steelheadMarked, steelheadMarkedRecap, cohoParrMorts, steelheadMorts,
+ *   steelheadMortsMarked, steelheadMortsRecap, cutthroatCaught, chinookCaught,
+ *   sculpinCaught, lampreyCaught, cutthroatMorts, chinookMorts, sculpinMorts,
+ *   lampreyMorts, comments, createdAt
+ *
+ * Target merged schema (Title Case with spaces):
+ *   User ID, Submitted By, Date, Time, Trap Operating, RPM, Debris, Water Temp, Hobo Temp,
+ *   Visibility, Flow, Chum Fry, Chum DNA Taken, Chum Marked, Chum Recap, Chum Fry Mort,
+ *   Chum DNA IDs, Chum Mort Marked, Chum Mort Recap, Coho Fry, Coho Smolt, Coho Smolt Marked,
+ *   Coho Smolt Recap, Coho Fry Mort, Coho Smolt Mort, Coho Smolt Mort Marked,
+ *   Coho Smolt Mort Recap, Coho Parr, Steelhead, Steelhead Marked, Steelhead Recap,
+ *   Coho Parr Mort, Steelhead Mort, Steelhead Mort Marked, Steelhead Mort Recap, Cutthroat,
+ *   Chinook, Sculpin, Lamprey, Cutthroat Mort, Chinook Mort, Sculpin Mort, Lamprey Mort,
+ *   Comments, Created At
+ *
+ * Transformation details:
+ *   - Converts camelCase field names to Title Case with spaces
+ *   - Adds Created At timestamp if missing (uses current time)
+ *   - Handles fields that don't exist yet (User ID, Submitted By may be missing)
+ *   - Only transforms documents with camelCase fields (leaves historical data untouched)
  *
  * Usage:
  *   node migrateTrapSamples.js --dry-run    # Preview changes
@@ -36,7 +56,7 @@ const mongoDbName =
 
 if (!mongoUri) {
   console.error(
-    '❌ No MongoDB URI found in env (MONGODB_URI or MONGODB_URI_DEV).'
+    '❌ No MongoDB URI found in env (MONGODB_URI or MONGODB_URI_DEV).',
   );
   process.exit(1);
 }
@@ -48,100 +68,130 @@ const isCommit = process.argv.includes('--commit');
 if (!isDryRun && !isCommit) {
   console.log('Usage:');
   console.log(
-    '  node migrateTrapSamples.js --dry-run    # Preview what will change'
+    '  node migrateTrapSamples.js --dry-run    # Preview what will change',
   );
   console.log(
-    '  node migrateTrapSamples.js --commit     # Execute migration'
+    '  node migrateTrapSamples.js --commit     # Execute migration',
   );
   process.exit(0);
 }
 
 /**
- * Transform a document from old schema to new schema.
+ * Determine if a document is from the new schema (camelCase) that needs transformation.
  *
- * NOTES on ambiguous mappings:
- * - "Chum Fry" → "chumCaught" (assuming Fry + Alevin = total caught)
- * - "Chum Fry Mort" + "Marked Chum Mort" → "chumMorts" (summed or use Marked Chum Mort as primary)
- * - "Marked Chum Released" → dropped (no equivalent in new schema; review if needed)
- * - "Coho Fry" → "cohoFryCaught"
- * - "Coho Parr" → "cohoParrCaught"
- * - "Coho Marked" → "cohoSmoltMarked" (assuming Coho Marked refers to smolt; adjust if needed)
- * - "Marked Coho Recap" → "cohoSmoltMarkedRecap"
- * - "Chinook Fry" → "chinookCaught"
- * - "Chinook Parr" → dropped (no mapping in new schema)
- * - "Pink Fry" → dropped (no mapping)
- * - "Stickleback" → dropped (no mapping)
- * - "Water (°C)" → "waterTemp"
- *
- * @param {Object} oldDoc - Document from old collection
- * @returns {Object} - Document formatted for new collection
+ * @param {Object} doc - Document to check
+ * @returns {boolean} - true if document is new schema (camelCase), false if already merged
  */
-function transformDocument(oldDoc) {
-  const newDoc = {};
+function isNewSchemaDocument(doc) {
+  // Check for camelCase field indicators (new schema)
+  const newSchemaIndicators = [
+    'date',
+    'time',
+    'trapOperating',
+    'chumCaught',
+    'cohoSmoltCaught',
+  ];
+  return newSchemaIndicators.some((key) => doc.hasOwnProperty(key));
+}
 
-  // Direct mappings (field name changes only)
-  const directMappings = {
-    Date: 'date',
-    Time: 'time',
-    'Trap Operating': 'trapOperating',
-    RPM: 'rpm',
-    Debris: 'debris',
-    Visibility: 'visibility',
-    Flow: 'flow',
-    'Chum DNA Taken': 'chumDnaTaken',
-    'Chum DNA IDs': 'chumDnaIds',
-    'Chum Marked': 'chumMarked',
-    'Marked Chum Recap': 'chumMarkedRecap',
-    'Marked Chum Mort': 'chumMorts', // Primary source for chum mortalities
-    'Marked Chum Released': null, // No equivalent in new schema
-    'Coho Fry': 'cohoFryCaught',
-    'Coho Parr': 'cohoParrCaught',
-    'Coho Marked': 'cohoSmoltMarked', // Assume Coho Marked = Coho Smolt Marked
-    'Marked Coho Recap': 'cohoSmoltMarkedRecap',
-    'Chinook Fry': 'chinookCaught',
-    'Chinook Parr': null, // No equivalent in new schema
-    'Pink Fry': null, // No equivalent in new schema
-    Sculpin: 'sculpinCaught',
-    Cutthroat: 'cutthroatCaught',
-    Steelhead: 'steelheadCaught',
-    Lamprey: 'lampreyCaught',
-    Stickleback: null, // No equivalent in new schema
-    Comments: 'comments',
+/**
+ * Check if a document is already in merged schema (Title Case with spaces).
+ *
+ * @param {Object} doc - Document to check
+ * @returns {boolean} - true if document uses merged schema
+ */
+function isMergedSchemaDocument(doc) {
+  const mergedSchemaIndicators = [
+    'Date',
+    'Time',
+    'Trap Operating',
+    'Chum Fry',
+    'Coho Smolt',
+  ];
+  return mergedSchemaIndicators.some((key) =>
+    doc.hasOwnProperty(key),
+  );
+}
+
+/**
+ * Transform a document from new schema (camelCase) to merged schema (Title Case with spaces).
+ * This is the only transformation needed since historical data is already in Title Case.
+ *
+ * @param {Object} newDoc - Document from new entries (camelCase schema)
+ * @returns {Object} - Document formatted for merged schema
+ */
+function transformNewToMerged(newDoc) {
+  const mergedDoc = {};
+
+  // Mapping from camelCase (new schema) to Title Case with spaces (merged schema)
+  const camelToTitleMappings = {
+    userId: 'User ID',
+    submittedBy: 'Submitted By',
+    date: 'Date',
+    time: 'Time',
+    trapOperating: 'Trap Operating',
+    rpm: 'RPM',
+    debris: 'Debris',
+    waterTemp: 'Water Temp',
+    hoboTemp: 'Hobo Temp',
+    visibility: 'Visibility',
+    flow: 'Flow',
+    chumCaught: 'Chum Fry',
+    chumDnaTaken: 'Chum DNA Taken',
+    chumMarked: 'Chum Marked',
+    chumMarkedRecap: 'Chum Recap',
+    chumMorts: 'Chum Fry Mort',
+    chumDnaIds: 'Chum DNA IDs',
+    chumMortsMarked: 'Chum Mort Marked',
+    chumMortsRecap: 'Chum Mort Recap',
+    cohoFryCaught: 'Coho Fry',
+    cohoSmoltCaught: 'Coho Smolt',
+    cohoSmoltMarked: 'Coho Smolt Marked',
+    cohoSmoltMarkedRecap: 'Coho Smolt Recap',
+    cohoFryMorts: 'Coho Fry Mort',
+    cohoSmoltMorts: 'Coho Smolt Mort',
+    cohoSmoltMortsMarked: 'Coho Smolt Mort Marked',
+    cohoSmoltMortsRecap: 'Coho Smolt Mort Recap',
+    cohoParrCaught: 'Coho Parr',
+    steelheadCaught: 'Steelhead',
+    steelheadMarked: 'Steelhead Marked',
+    steelheadMarkedRecap: 'Steelhead Recap',
+    cohoParrMorts: 'Coho Parr Mort',
+    steelheadMorts: 'Steelhead Mort',
+    steelheadMortsMarked: 'Steelhead Mort Marked',
+    steelheadMortsRecap: 'Steelhead Mort Recap',
+    cutthroatCaught: 'Cutthroat',
+    chinookCaught: 'Chinook',
+    sculpinCaught: 'Sculpin',
+    lampreyCaught: 'Lamprey',
+    cutthroatMorts: 'Cutthroat Mort',
+    chinookMorts: 'Chinook Mort',
+    sculpinMorts: 'Sculpin Mort',
+    lampreyMorts: 'Lamprey Mort',
+    comments: 'Comments',
+    createdAt: 'Created At',
   };
 
-  // Apply direct mappings
-  Object.entries(directMappings).forEach(([oldKey, newKey]) => {
-    if (newKey && oldDoc.hasOwnProperty(oldKey)) {
-      newDoc[newKey] = oldDoc[oldKey];
+  // Apply mappings while preserving original field order
+  // Iterate through the original document's keys to maintain order
+  Object.keys(newDoc).forEach((camelKey) => {
+    if (camelToTitleMappings.hasOwnProperty(camelKey)) {
+      const titleKey = camelToTitleMappings[camelKey];
+      mergedDoc[titleKey] = newDoc[camelKey];
     }
   });
 
-  // Special handling for "Water (°C)" → "waterTemp"
-  if (oldDoc.hasOwnProperty('Water (°C)')) {
-    newDoc.waterTemp = oldDoc['Water (°C)'];
+  // Add Created At if missing (using current timestamp)
+  if (!mergedDoc['Created At']) {
+    mergedDoc['Created At'] = new Date();
   }
 
-  // Special handling for "Hobo Temp (°C)" → "hoboTemp"
-  if (oldDoc.hasOwnProperty('Hobo Temp (°C)')) {
-    newDoc.hoboTemp = oldDoc['Hobo Temp (°C)'];
+  // Preserve _id if it exists
+  if (newDoc._id) {
+    mergedDoc._id = newDoc._id;
   }
 
-  // "Chum Fry" → "chumCaught" (using Chum Fry as the primary value)
-  // NOTE: If you want to add Chum Alevin to this, adjust the logic below
-  if (oldDoc.hasOwnProperty('Chum Fry')) {
-    newDoc.chumCaught = oldDoc['Chum Fry'];
-  }
-
-  // "Chum Fry Mort" → No direct mapping (Marked Chum Mort is used as chumMorts above)
-  // If you want to include both mortalities, you may need to sum them or choose primary source
-
-  // "Chum Alevin" → No direct mapping (no equivalent in new schema)
-  // If this should be combined with chumCaught, adjust above
-
-  // Fields in new schema with no old equivalents get default undefined
-  // Mongoose will handle sparse documents; these won't be stored if undefined
-
-  return newDoc;
+  return mergedDoc;
 }
 
 /**
@@ -151,61 +201,77 @@ async function migrate() {
   try {
     // Connect to MongoDB
     await mongoose.connect(mongoUri);
-    console.log('✓ Connected to MongoDB');
+    console.log(`✓ Connected to MongoDB Database: ${mongoDbName}`);
 
     const db = mongoose.connection.db;
 
-    // Get source and target collections
-    const sourceCollectionName = 'trap-samples'; // Old collection (if it exists)
-    const targetCollectionName = 'Union_Outmigration'; // New collection
+    // Define collection
+    const unionOutmigrationCollectionName = 'Union_Outmigration';
 
-    // Check if source collection exists
+    // Check if collection exists
     const collections = await db.listCollections().toArray();
-    const sourceExists = collections.some(
-      (c) => c.name === sourceCollectionName
+    const collectionExists = collections.some(
+      (c) => c.name === unionOutmigrationCollectionName,
     );
-    const targetExists = collections.some(
-      (c) => c.name === targetCollectionName
+
+    if (!collectionExists) {
+      console.log(
+        `❌ Collection '${unionOutmigrationCollectionName}' does not exist. Exiting.`,
+      );
+      process.exit(1);
+    }
+
+    console.log(
+      `✓ Collection '${unionOutmigrationCollectionName}' found`,
+    );
+
+    // Fetch all documents from collection
+    const collection = db.collection(unionOutmigrationCollectionName);
+    const allDocuments = await collection.find({}).toArray();
+
+    console.log(
+      `\n📦 Found ${allDocuments.length} total documents in '${unionOutmigrationCollectionName}'`,
+    );
+
+    // Separate documents by schema type
+    const newSchemaDocs = allDocuments.filter((doc) =>
+      isNewSchemaDocument(doc),
+    );
+    const mergedSchemaDocs = allDocuments.filter((doc) =>
+      isMergedSchemaDocument(doc),
+    );
+    const unknownDocs = allDocuments.filter(
+      (doc) =>
+        !isNewSchemaDocument(doc) && !isMergedSchemaDocument(doc),
     );
 
     console.log(
-      `Source collection '${sourceCollectionName}': ${
-        sourceExists ? '✓ exists' : '✗ does not exist'
-      }`
+      `  - ${newSchemaDocs.length} documents in new schema (camelCase) - need transformation`,
     );
     console.log(
-      `Target collection '${targetCollectionName}': ${
-        targetExists ? '✓ exists' : '✗ does not exist'
-      }`
+      `  - ${mergedSchemaDocs.length} documents in merged schema (Title Case) - no action needed`,
     );
+    if (unknownDocs.length > 0) {
+      console.log(
+        `  - ${unknownDocs.length} documents with unknown schema`,
+      );
+      console.log(`\n📋 Unknown schema document IDs:`);
+      unknownDocs.forEach((doc) => {
+        console.log(`    ${doc._id}`);
+      });
+    }
 
-    if (!sourceExists) {
-      console.log('⚠️  No source collection found. Exiting.');
+    if (newSchemaDocs.length === 0) {
+      console.log(
+        '\n✓ No documents requiring transformation. All data is already in merged schema.',
+      );
       process.exit(0);
     }
 
-    // Fetch all documents from source collection
-    const sourceCollection = db.collection(sourceCollectionName);
-    const oldDocuments = await sourceCollection.find({}).toArray();
-
-    console.log(
-      `\n📦 Found ${oldDocuments.length} documents in '${sourceCollectionName}'`
+    // Transform only the new schema documents
+    const transformedDocs = newSchemaDocs.map((doc) =>
+      transformNewToMerged(doc),
     );
-
-    if (oldDocuments.length === 0) {
-      console.log('No documents to migrate.');
-      process.exit(0);
-    }
-
-    // Transform documents
-    const transformedDocs = oldDocuments.map((doc, index) => {
-      const transformed = transformDocument(doc);
-      // Preserve MongoDB _id if it exists
-      if (doc._id) {
-        transformed._id = doc._id;
-      }
-      return transformed;
-    });
 
     // Display preview
     console.log(`\n📋 Preview of first transformed document:`);
@@ -213,60 +279,54 @@ async function migrate() {
 
     if (isDryRun) {
       console.log(
-        `\n✓ DRY-RUN complete. ${transformedDocs.length} documents would be migrated.`
+        `\n✓ DRY-RUN complete. ${transformedDocs.length} documents would be transformed to merged schema.`,
       );
       console.log(
-        'To execute, run: node migrateTrapSamples.js --commit'
+        'To execute, run: node migrateTrapSamples.js --commit',
       );
       process.exit(0);
     }
 
     // Commit migration
     if (isCommit) {
-      const targetCollection = db.collection(targetCollectionName);
-
-      // Option 1: Overwrite target collection (DELETE old data in target)
+      // Warn user before modifying
       console.log(
-        `\n⚠️  WARNING: About to overwrite '${targetCollectionName}' collection.`
+        `\n⚠️  WARNING: About to update ${transformedDocs.length} documents in '${unionOutmigrationCollectionName}'.`,
       );
       console.log('Press Ctrl+C to cancel in the next 5 seconds...');
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      // Delete existing docs in target (optional: you can skip this and use upsert instead)
-      await targetCollection.deleteMany({});
-      console.log(`Cleared '${targetCollectionName}'`);
+      // Update each transformed document by ID
+      let updateCount = 0;
 
-      // Insert transformed documents
-      const result = await targetCollection.insertMany(
-        transformedDocs
-      );
+      for (const doc of transformedDocs) {
+        if (doc._id) {
+          // Use replaceOne to replace entire document and preserve field order
+          // (replaceOne maintains _id automatically)
+          await collection.replaceOne({ _id: doc._id }, doc);
+          updateCount++;
+        }
+      }
+
       console.log(
-        `✓ Migration complete! Inserted ${result.insertedCount} documents into '${targetCollectionName}'`
+        `✓ Migration complete! Updated ${updateCount} documents in '${unionOutmigrationCollectionName}'`,
       );
 
       // Summary
       console.log('\n📊 Migration Summary:');
       console.log(
-        `  Source: '${sourceCollectionName}' (${oldDocuments.length} docs)`
+        `  Collection: '${unionOutmigrationCollectionName}'`,
       );
+      console.log(`  Documents transformed: ${updateCount}`);
       console.log(
-        `  Target: '${targetCollectionName}' (${result.insertedCount} docs)`
+        `  Documents already merged: ${mergedSchemaDocs.length}`,
       );
+      console.log('\n✓ Schema transformation successful!');
       console.log(
-        '\n⚠️  IMPORTANT: Review the mapping logic in this script.'
+        '  - New schema (camelCase) documents converted to Title Case',
       );
-      console.log('   Some fields may require manual adjustment:');
-      console.log('   - Chum Fry (mapped to chumCaught)');
-      console.log(
-        '   - Chum Fry Mort (not included; using Marked Chum Mort → chumMorts)'
-      );
-      console.log('   - Chum Alevin (dropped; no equivalent)');
-      console.log(
-        '   - Coho Marked (mapped to cohoSmoltMarked; verify correctness)'
-      );
-      console.log(
-        '   - Chinook Parr, Pink Fry, Stickleback (dropped; no equivalents)'
-      );
+      console.log('  - Created At field added where missing');
+      console.log('  - Historical data (Title Case) left untouched');
     }
 
     process.exit(0);
