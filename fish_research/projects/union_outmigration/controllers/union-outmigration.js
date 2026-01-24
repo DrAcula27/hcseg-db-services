@@ -11,57 +11,65 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Add user information to form data
-    formData.userId = req.user._id || req.user.id;
-    formData.submittedBy = req.user.username || req.user.email;
+    // Add user information to form data using merged schema field names
+    formData['User ID'] = req.user._id || req.user.id;
+    formData['Submitted By'] = req.user.username || req.user.email;
 
     // Basic validations
-    if (
-      !formData.date ||
-      !formData.time ||
-      !formData.trapOperating ||
-      !formData.rpm ||
-      !formData.debris ||
-      !formData.visibility ||
-      !formData.flow ||
-      !formData.waterTemp ||
-      !formData.hoboTemp ||
-      !formData.chumCaught ||
-      !formData.chumDnaTaken ||
-      !formData.chumMarked ||
-      !formData.chumMarkedRecap ||
-      !formData.chumMorts ||
-      !formData.chumDnaIds ||
-      !formData.chumMortsMarked ||
-      !formData.chumMortsRecap ||
-      !formData.cohoFryCaught ||
-      !formData.cohoFryMorts ||
-      !formData.cohoSmoltCaught ||
-      !formData.cohoSmoltMarked ||
-      !formData.cohoSmoltMarkedRecap ||
-      !formData.cohoSmoltMorts ||
-      !formData.cohoSmoltMortsMarked ||
-      !formData.cohoSmoltMortsRecap ||
-      !formData.cohoParrCaught ||
-      !formData.cohoParrMorts ||
-      !formData.steelheadCaught ||
-      !formData.steelheadMarked ||
-      !formData.steelheadMarkedRecap ||
-      !formData.steelheadMorts ||
-      !formData.steelheadMortsMarked ||
-      !formData.steelheadMortsRecap ||
-      !formData.cutthroatCaught ||
-      !formData.cutthroatMorts ||
-      !formData.chinookCaught ||
-      !formData.chinookMorts ||
-      !formData.sculpinCaught ||
-      !formData.sculpinMorts ||
-      !formData.lampreyCaught ||
-      !formData.lampreyMorts ||
-      !formData.comments
-    ) {
+    const requiredFields = [
+      'Date',
+      'Time',
+      'Trap Operating',
+      'RPM',
+      'Debris',
+      'Water Temp',
+      'Hobo Temp',
+      'Visibility',
+      'Flow',
+      'Chum Fry',
+      'Chum DNA Taken',
+      'Chum Marked',
+      'Chum Recap',
+      'Chum Fry Mort',
+      'Chum DNA IDs',
+      'Chum Mort Marked',
+      'Chum Mort Recap',
+      'Coho Fry',
+      'Coho Smolt',
+      'Coho Smolt Marked',
+      'Coho Smolt Recap',
+      'Coho Fry Mort',
+      'Coho Smolt Mort',
+      'Coho Smolt Mort Marked',
+      'Coho Smolt Mort Recap',
+      'Coho Parr',
+      'Steelhead',
+      'Steelhead Marked',
+      'Steelhead Recap',
+      'Coho Parr Mort',
+      'Steelhead Mort',
+      'Steelhead Mort Marked',
+      'Steelhead Mort Recap',
+      'Cutthroat',
+      'Chinook',
+      'Sculpin',
+      'Lamprey',
+      'Cutthroat Mort',
+      'Chinook Mort',
+      'Sculpin Mort',
+      'Lamprey Mort',
+      'Comments',
+    ];
+
+    // Check for missing required fields
+    const missingFields = requiredFields.filter(
+      (field) => !formData.hasOwnProperty(field) || formData[field] === ''
+    );
+
+    if (missingFields.length > 0) {
       return res.status(400).json({
         message: 'All form fields are required.',
+        missingFields: missingFields,
       });
     }
 
@@ -88,7 +96,7 @@ exports.create = async (req, res) => {
 exports.getAll = async (req, res, next) => {
   try {
     const unionOutmigrations = await UnionOutmigration.find().sort({
-      date: -1,
+      Date: -1,
     });
     res.status(200).json(unionOutmigrations);
   } catch (error) {

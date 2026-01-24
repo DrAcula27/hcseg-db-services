@@ -36,73 +36,73 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault();
 
     const trapOperatingRadio = document.querySelector(
-      'input[name="trapOperating"]:checked',
+      'input[name="Trap Operating"]:checked',
     );
 
     const formData = {
-      date: document.getElementById('date').value,
-      time: document.getElementById('time').value,
-      trapOperating: trapOperatingRadio
+      Date: document.getElementById('date').value,
+      Time: document.getElementById('time').value,
+      'Trap Operating': trapOperatingRadio
         ? trapOperatingRadio.value
         : '',
-      rpm: document.getElementById('rpm').value,
-      debris: document.getElementById('debris-select').value,
-      waterTemp: document.getElementById('waterTemp').value,
-      hoboTemp: document.getElementById('hoboTemp').value,
-      visibility: document.getElementById('visibility-select').value,
-      flow: document.getElementById('flow-select').value,
-      chumCaught: document.getElementById('chumCaught').value,
-      chumDnaTaken: document.getElementById('chumDnaTaken').value,
-      chumMarked: document.getElementById('chumMarked').value,
-      chumMarkedRecap:
+      RPM: document.getElementById('rpm').value,
+      Debris: document.getElementById('debris-select').value,
+      'Water Temp': document.getElementById('waterTemp').value,
+      'Hobo Temp': document.getElementById('hoboTemp').value,
+      Visibility: document.getElementById('visibility-select').value,
+      Flow: document.getElementById('flow-select').value,
+      'Chum Fry': document.getElementById('chumCaught').value,
+      'Chum DNA Taken': document.getElementById('chumDnaTaken').value,
+      'Chum Marked': document.getElementById('chumMarked').value,
+      'Chum Recap':
         document.getElementById('chumMarkedRecap').value,
-      chumMorts: document.getElementById('chumMorts').value,
-      chumDnaIds: document.getElementById('chumDnaIds').value,
-      chumMortsMarked:
+      'Chum Fry Mort': document.getElementById('chumMorts').value,
+      'Chum DNA IDs': document.getElementById('chumDnaIds').value,
+      'Chum Mort Marked':
         document.getElementById('chumMortsMarked').value,
-      chumMortsRecap: document.getElementById('chumMortsRecap').value,
-      cohoFryCaught: document.getElementById('cohoFryCaught').value,
-      cohoSmoltCaught:
+      'Chum Mort Recap': document.getElementById('chumMortsRecap').value,
+      'Coho Fry': document.getElementById('cohoFryCaught').value,
+      'Coho Smolt':
         document.getElementById('cohoSmoltCaught').value,
-      cohoSmoltMarked:
+      'Coho Smolt Marked':
         document.getElementById('cohoSmoltMarked').value,
-      cohoSmoltMarkedRecap: document.getElementById(
+      'Coho Smolt Recap': document.getElementById(
         'cohoSmoltMarkedRecap',
       ).value,
-      cohoFryMorts: document.getElementById('cohoFryMorts').value,
-      cohoSmoltMorts: document.getElementById('cohoSmoltMorts').value,
-      cohoSmoltMortsMarked: document.getElementById(
+      'Coho Fry Mort': document.getElementById('cohoFryMorts').value,
+      'Coho Smolt Mort': document.getElementById('cohoSmoltMorts').value,
+      'Coho Smolt Mort Marked': document.getElementById(
         'cohoSmoltMortsMarked',
       ).value,
-      cohoSmoltMortsRecap: document.getElementById(
+      'Coho Smolt Mort Recap': document.getElementById(
         'cohoSmoltMortsRecap',
       ).value,
-      cohoParrCaught: document.getElementById('cohoParrCaught').value,
-      steelheadCaught:
+      'Coho Parr': document.getElementById('cohoParrCaught').value,
+      Steelhead:
         document.getElementById('steelheadCaught').value,
-      steelheadMarked:
+      'Steelhead Marked':
         document.getElementById('steelheadMarked').value,
-      steelheadMarkedRecap: document.getElementById(
+      'Steelhead Recap': document.getElementById(
         'steelheadMarkedRecap',
       ).value,
-      cohoParrMorts: document.getElementById('cohoParrMorts').value,
-      steelheadMorts: document.getElementById('steelheadMorts').value,
-      steelheadMortsMarked: document.getElementById(
+      'Coho Parr Mort': document.getElementById('cohoParrMorts').value,
+      'Steelhead Mort': document.getElementById('steelheadMorts').value,
+      'Steelhead Mort Marked': document.getElementById(
         'steelheadMortsMarked',
       ).value,
-      steelheadMortsRecap: document.getElementById(
+      'Steelhead Mort Recap': document.getElementById(
         'steelheadMortsRecap',
       ).value,
-      cutthroatCaught:
+      Cutthroat:
         document.getElementById('cutthroatCaught').value,
-      chinookCaught: document.getElementById('chinookCaught').value,
-      sculpinCaught: document.getElementById('sculpinCaught').value,
-      lampreyCaught: document.getElementById('lampreyCaught').value,
-      cutthroatMorts: document.getElementById('cutthroatMorts').value,
-      chinookMorts: document.getElementById('chinookMorts').value,
-      sculpinMorts: document.getElementById('sculpinMorts').value,
-      lampreyMorts: document.getElementById('lampreyMorts').value,
-      comments: document.getElementById('comments').value,
+      Chinook: document.getElementById('chinookCaught').value,
+      Sculpin: document.getElementById('sculpinCaught').value,
+      Lamprey: document.getElementById('lampreyCaught').value,
+      'Cutthroat Mort': document.getElementById('cutthroatMorts').value,
+      'Chinook Mort': document.getElementById('chinookMorts').value,
+      'Sculpin Mort': document.getElementById('sculpinMorts').value,
+      'Lamprey Mort': document.getElementById('lampreyMorts').value,
+      Comments: document.getElementById('comments').value,
     };
 
     // Determine the API endpoint based on the project context
@@ -141,8 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
       .then((data) => {
         console.log('Success response:', data);
         openModal(data.message, true);
-        // Reset form after successful submission
-        // trapSampleForm.reset();
       })
       .catch((error) => {
         console.error('Fetch error:', error);
