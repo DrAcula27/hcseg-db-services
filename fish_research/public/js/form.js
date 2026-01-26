@@ -21,6 +21,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // close modal when enter key is pressed
+  document.addEventListener('keydown', function (event) {
+    if (
+      event.key === 'Enter' &&
+      !responseModal.classList.contains('hidden')
+    ) {
+      event.preventDefault();
+      closeModal();
+    }
+  });
+
   function closeModal() {
     responseModal.classList.add('hidden');
     responseMessage.innerHTML = '';
