@@ -63,7 +63,8 @@ exports.create = async (req, res) => {
 
     // Check for missing required fields
     const missingFields = requiredFields.filter(
-      (field) => !formData.hasOwnProperty(field) || formData[field] === ''
+      (field) =>
+        !formData.hasOwnProperty(field) || formData[field] === '',
     );
 
     if (missingFields.length > 0) {
@@ -75,6 +76,19 @@ exports.create = async (req, res) => {
 
     // Create a new union outmigration instance
     const newUnionOutmigration = new UnionOutmigration(formData);
+
+    // Check for duplicate entry before saving
+    const isDuplicate = await UnionOutmigration.findOne({
+      Date: formData.Date,
+      Time: formData.Time,
+      Comments: formData.Comments,
+    });
+    if (isDuplicate) {
+      return res.status(409).json({
+        message:
+          'Duplicate entry. This data has already been submitted.',
+      });
+    }
 
     // Save the union outmigration to the database
     await newUnionOutmigration.save();
