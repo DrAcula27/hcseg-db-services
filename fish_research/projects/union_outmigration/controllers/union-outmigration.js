@@ -78,7 +78,11 @@ exports.create = async (req, res) => {
     const newUnionOutmigration = new UnionOutmigration(formData);
 
     // Check for duplicate entry before saving
-    const isDuplicate = await UnionOutmigration.findOne(formData);
+    const isDuplicate = await UnionOutmigration.findOne({
+      Date: formData.Date,
+      Time: formData.Time,
+      Comments: formData.Comments,
+    });
     if (isDuplicate) {
       return res.status(409).json({
         message:
