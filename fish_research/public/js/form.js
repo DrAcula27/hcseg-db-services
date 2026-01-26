@@ -54,23 +54,23 @@ document.addEventListener('DOMContentLoaded', function () {
       'Chum Fry': document.getElementById('chumCaught').value,
       'Chum DNA Taken': document.getElementById('chumDnaTaken').value,
       'Chum Marked': document.getElementById('chumMarked').value,
-      'Chum Recap':
-        document.getElementById('chumMarkedRecap').value,
+      'Chum Recap': document.getElementById('chumMarkedRecap').value,
       'Chum Fry Mort': document.getElementById('chumMorts').value,
       'Chum DNA IDs': document.getElementById('chumDnaIds').value,
       'Chum Mort Marked':
         document.getElementById('chumMortsMarked').value,
-      'Chum Mort Recap': document.getElementById('chumMortsRecap').value,
+      'Chum Mort Recap':
+        document.getElementById('chumMortsRecap').value,
       'Coho Fry': document.getElementById('cohoFryCaught').value,
-      'Coho Smolt':
-        document.getElementById('cohoSmoltCaught').value,
+      'Coho Smolt': document.getElementById('cohoSmoltCaught').value,
       'Coho Smolt Marked':
         document.getElementById('cohoSmoltMarked').value,
       'Coho Smolt Recap': document.getElementById(
         'cohoSmoltMarkedRecap',
       ).value,
       'Coho Fry Mort': document.getElementById('cohoFryMorts').value,
-      'Coho Smolt Mort': document.getElementById('cohoSmoltMorts').value,
+      'Coho Smolt Mort':
+        document.getElementById('cohoSmoltMorts').value,
       'Coho Smolt Mort Marked': document.getElementById(
         'cohoSmoltMortsMarked',
       ).value,
@@ -78,27 +78,28 @@ document.addEventListener('DOMContentLoaded', function () {
         'cohoSmoltMortsRecap',
       ).value,
       'Coho Parr': document.getElementById('cohoParrCaught').value,
-      Steelhead:
-        document.getElementById('steelheadCaught').value,
+      Steelhead: document.getElementById('steelheadCaught').value,
       'Steelhead Marked':
         document.getElementById('steelheadMarked').value,
       'Steelhead Recap': document.getElementById(
         'steelheadMarkedRecap',
       ).value,
-      'Coho Parr Mort': document.getElementById('cohoParrMorts').value,
-      'Steelhead Mort': document.getElementById('steelheadMorts').value,
+      'Coho Parr Mort':
+        document.getElementById('cohoParrMorts').value,
+      'Steelhead Mort':
+        document.getElementById('steelheadMorts').value,
       'Steelhead Mort Marked': document.getElementById(
         'steelheadMortsMarked',
       ).value,
       'Steelhead Mort Recap': document.getElementById(
         'steelheadMortsRecap',
       ).value,
-      Cutthroat:
-        document.getElementById('cutthroatCaught').value,
+      Cutthroat: document.getElementById('cutthroatCaught').value,
       Chinook: document.getElementById('chinookCaught').value,
       Sculpin: document.getElementById('sculpinCaught').value,
       Lamprey: document.getElementById('lampreyCaught').value,
-      'Cutthroat Mort': document.getElementById('cutthroatMorts').value,
+      'Cutthroat Mort':
+        document.getElementById('cutthroatMorts').value,
       'Chinook Mort': document.getElementById('chinookMorts').value,
       'Sculpin Mort': document.getElementById('sculpinMorts').value,
       'Lamprey Mort': document.getElementById('lampreyMorts').value,
@@ -132,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return response.json().then((data) => {
             console.error('Server error response:', data);
             throw new Error(
-              `HTTP error! status: ${response.status} - ${data.message || data.error}`,
+              `HTTP error! <br> status: ${response.status} - ${data.message || data.error}`,
             );
           });
         }
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch((error) => {
         console.error('Fetch error:', error);
         openModal(
-          'Error submitting the form. Please try again later.',
+          `Error submitting the form: <br> ${error.message}`,
           false,
         );
       });
