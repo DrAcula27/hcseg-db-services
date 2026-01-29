@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const trapSampleForm = document.getElementById('trapSampleForm');
+  const unionOutmigrationForm = document.getElementById(
+    'unionOutmigrationForm',
+  );
   const responseMessage = document.getElementById('responseMessage');
   const responseModal = document.getElementById('responseModal');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     responseModal.classList.remove('hidden');
   }
 
-  trapSampleForm.addEventListener('submit', function (event) {
+  unionOutmigrationForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
     const trapOperatingRadio = document.querySelector(
@@ -58,62 +60,59 @@ document.addEventListener('DOMContentLoaded', function () {
         : '',
       RPM: document.getElementById('rpm').value,
       Debris: document.getElementById('debris-select').value,
-      'Water Temp': document.getElementById('waterTemp').value,
-      'Hobo Temp': document.getElementById('hoboTemp').value,
       Visibility: document.getElementById('visibility-select').value,
       Flow: document.getElementById('flow-select').value,
-      'Chum Fry': document.getElementById('chumCaught').value,
+      'Water Temp': document.getElementById('waterTemp').value,
+      'Hobo Temp': document.getElementById('hoboTemp').value,
+      'Chum Fry': document.getElementById('chumFry').value,
+      'Chum Fry Mort': document.getElementById('chumFryMort').value,
       'Chum DNA Taken': document.getElementById('chumDnaTaken').value,
-      'Chum Marked': document.getElementById('chumMarked').value,
-      'Chum Recap': document.getElementById('chumMarkedRecap').value,
-      'Chum Fry Mort': document.getElementById('chumMorts').value,
       'Chum DNA IDs': document.getElementById('chumDnaIds').value,
-      'Chum Mort Marked':
-        document.getElementById('chumMortsMarked').value,
-      'Chum Mort Recap':
-        document.getElementById('chumMortsRecap').value,
-      'Coho Fry': document.getElementById('cohoFryCaught').value,
-      'Coho Smolt': document.getElementById('cohoSmoltCaught').value,
+      'Chum Marked': document.getElementById('chumMarked').value,
+      'Chum Marked Mort':
+        document.getElementById('chumMarkedMort').value,
+      'Chum Recap': document.getElementById('chumRecap').value,
+      'Chum Recap Mort':
+        document.getElementById('chumRecapMort').value,
+      'Coho Fry': document.getElementById('cohoFry').value,
+      'Coho Fry Mort': document.getElementById('cohoFryMort').value,
+      'Coho Parr': document.getElementById('cohoParr').value,
+      'Coho Parr Mort': document.getElementById('cohoParrMort').value,
+      'Coho Smolt': document.getElementById('cohoSmolt').value,
+      'Coho Smolt Mort':
+        document.getElementById('cohoSmoltMort').value,
       'Coho Smolt Marked':
         document.getElementById('cohoSmoltMarked').value,
-      'Coho Smolt Recap': document.getElementById(
-        'cohoSmoltMarkedRecap',
+      'Coho Smolt Marked Mort': document.getElementById(
+        'cohoSmoltMarkedMort',
       ).value,
-      'Coho Fry Mort': document.getElementById('cohoFryMorts').value,
-      'Coho Smolt Mort':
-        document.getElementById('cohoSmoltMorts').value,
-      'Coho Smolt Mort Marked': document.getElementById(
-        'cohoSmoltMortsMarked',
+      'Coho Smolt Recap':
+        document.getElementById('cohoSmoltRecap').value,
+      'Coho Smolt Recap Mort': document.getElementById(
+        'cohoSmoltRecapMort',
       ).value,
-      'Coho Smolt Mort Recap': document.getElementById(
-        'cohoSmoltMortsRecap',
-      ).value,
-      'Coho Parr': document.getElementById('cohoParrCaught').value,
-      Steelhead: document.getElementById('steelheadCaught').value,
+      Steelhead: document.getElementById('steelhead').value,
+      'Steelhead Mort':
+        document.getElementById('steelheadMort').value,
       'Steelhead Marked':
         document.getElementById('steelheadMarked').value,
-      'Steelhead Recap': document.getElementById(
-        'steelheadMarkedRecap',
+      'Steelhead Marked Mort': document.getElementById(
+        'steelheadMarkedMort',
       ).value,
-      'Coho Parr Mort':
-        document.getElementById('cohoParrMorts').value,
-      'Steelhead Mort':
-        document.getElementById('steelheadMorts').value,
-      'Steelhead Mort Marked': document.getElementById(
-        'steelheadMortsMarked',
+      'Steelhead Recap':
+        document.getElementById('steelheadRecap').value,
+      'Steelhead Recap Mort': document.getElementById(
+        'steelheadRecapMort',
       ).value,
-      'Steelhead Mort Recap': document.getElementById(
-        'steelheadMortsRecap',
-      ).value,
-      Cutthroat: document.getElementById('cutthroatCaught').value,
-      Chinook: document.getElementById('chinookCaught').value,
-      Sculpin: document.getElementById('sculpinCaught').value,
-      Lamprey: document.getElementById('lampreyCaught').value,
+      Cutthroat: document.getElementById('cutthroat').value,
       'Cutthroat Mort':
-        document.getElementById('cutthroatMorts').value,
-      'Chinook Mort': document.getElementById('chinookMorts').value,
-      'Sculpin Mort': document.getElementById('sculpinMorts').value,
-      'Lamprey Mort': document.getElementById('lampreyMorts').value,
+        document.getElementById('cutthroatMort').value,
+      Chinook: document.getElementById('chinook').value,
+      'Chinook Mort': document.getElementById('chinookMort').value,
+      Sculpin: document.getElementById('sculpin').value,
+      'Sculpin Mort': document.getElementById('sculpinMort').value,
+      Lamprey: document.getElementById('lamprey').value,
+      'Lamprey Mort': document.getElementById('lampreyMort').value,
       Comments: document.getElementById('comments').value,
     };
 
