@@ -23,7 +23,7 @@
 }
 
 /* 4-Column Grid Form */
-.trap-sample-form {
+.union-outmigration-form {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
@@ -231,7 +231,7 @@ label {
   }
   html,
   body,
-  .trap-sample-form,
+  .union-outmigration-form,
   .form-divider {
     background: var(--print-background-color);
     color: var(--print-text-color);
@@ -253,7 +253,7 @@ label {
   #footer {
     display: none;
   }
-  .trap-sample-form {
+  .union-outmigration-form {
     grid-template-columns: repeat(4, 1fr);
     border: none;
     box-shadow: none;
