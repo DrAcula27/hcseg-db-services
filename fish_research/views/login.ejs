@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>
-      Login - HCSEG - Chum Outmigration - Union River Summer Chum FIFO
+      Login - HCSEG - Fish Research
     </title>
     <link
       rel="icon"
@@ -55,12 +55,22 @@
             required
             placeholder="Enter your password"
           />
-          <div class="btn btn-toggle-show-password">
-            <span id="toggle-show-password">show</span> password
+          <div class="btn-container">
+            <div class="btn btn-toggle-show-password">
+              <span id="toggle-show-password">show</span> password
+            </div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-login">Log In</button>
+        <div class="btn-container">
+          <a href="/auth/forgot-password" class="btn btn-link">
+            Forgot Password?
+          </a>
+        </div>
+
+        <div class="container">
+          <button type="submit" class="btn btn-login">Log In</button>
+        </div>
       </form>
 
       <footer>

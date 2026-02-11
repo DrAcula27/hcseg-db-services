@@ -62,19 +62,6 @@ header {
   border-color: var(--border-color-active);
 }
 
-.btn-toggle-show-password {
-  padding: 2px;
-  text-decoration: underline;
-  background: none;
-  color: inherit;
-  transition: all 0.3s;
-}
-
-.btn-toggle-show-password:hover {
-  color: var(--border-color-active);
-  box-shadow: none;
-}
-
 @media (max-width: 480px) {
   .login-container {
     padding: 30px 20px;

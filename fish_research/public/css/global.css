@@ -116,6 +116,19 @@ header img {
   margin: 0;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1em 0;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
 .btn {
   width: max-content;
   background: var(--background-gradient);
@@ -156,6 +169,35 @@ header img {
 .btn-return-projects {
   margin-top: 0.25em;
   border: 2px solid var(--background-color-white);
+}
+
+/* show/hide password button */
+.btn-toggle-show-password {
+  padding: 2px;
+  background: none;
+  color: inherit;
+  transition: all 0.3s;
+}
+
+.btn-toggle-show-password:hover {
+  color: var(--border-color-active);
+  text-decoration: underline;
+  box-shadow: none;
+  background: none;
+}
+
+.btn-link {
+  color: var(--text-color);
+  background: none;
+  padding: 2px;
+}
+
+.btn-link:hover {
+  color: var(--text-color-active);
+  color: var(--border-color-active);
+  text-decoration: underline;
+  box-shadow: none;
+  background: none;
 }
 
 .msg {
