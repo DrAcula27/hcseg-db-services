@@ -117,7 +117,7 @@ header img {
 }
 
 .btn {
-  width: 100%;
+  width: max-content;
   background: var(--background-gradient);
   border: none;
   border-radius: var(--border-radius);
@@ -125,15 +125,17 @@ header img {
   font-weight: 600;
   font-size: 1.2em;
   color: white;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
 }
 
 .btn:hover {
   cursor: pointer;
   transform: translateY(-2px);
   box-shadow: var(--btn-box-shadow);
+  background: linear-gradient(135deg, #02cfddaa 0%, #01ad88aa 100%);
 }
 
 .btn:active {
@@ -142,22 +144,18 @@ header img {
 
 /* logout button */
 .btn-logout {
-  display: inline-block;
-  max-width: 100px;
   background: var(--text-color-error);
-  text-decoration: none;
   margin-top: 0.25em;
+}
+
+.btn-logout:hover {
+  background: var(--text-color-error);
 }
 
 /* return to project selection button */
 .btn-return-projects {
-  display: inline-block;
-  width: auto;
-  padding: 8px 12px;
-  background: var(--background-color-white);
-  color: var(--text-color);
-  text-decoration: none;
   margin-top: 0.25em;
+  border: 2px solid var(--background-color-white);
 }
 
 .msg {
