@@ -22,6 +22,22 @@
   }
 }
 
+.form-container {
+  margin: 20px auto;
+  padding: 10px;
+  max-width: 900px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--background-color-white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
 /* 4-Column Grid Form */
 .union-outmigration-form {
   display: grid;
