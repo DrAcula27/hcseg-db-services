@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const modalCloseBtn = document.getElementById('modalCloseBtn');
   const modalOverlay = responseModal.querySelector('.modal-overlay');
 
-  // Close modal when close button is clicked
+  // close modal when close button is clicked
   modalCloseBtn.addEventListener('click', closeModal);
 
-  // Close modal when clicking outside the modal content
+  // close modal when clicking outside the modal content
   modalOverlay.addEventListener('click', closeModal);
 
   // close modal when escape key is pressed
@@ -116,21 +116,10 @@ document.addEventListener('DOMContentLoaded', function () {
       Comments: document.getElementById('comments').value,
     };
 
-    // Determine the API endpoint based on the project context
-    const projectName = window.currentProject;
-    const apiEndpoint =
-      projectName === 'Union_Outmigration'
-        ? '/api/Union_Outmigration'
-        : `/api/${projectName}`;
-
-    console.log('Project:', projectName);
-    console.log('API Endpoint:', apiEndpoint);
-    console.log('Form Data:', formData);
-
     // show loading state
     openModal('Submitting...', null);
 
-    fetch(apiEndpoint, {
+    fetch('/api/Union_Outmigration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -152,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then((data) => {
         console.log('Success response:', data);
         openModal(data.message, true);
+        unionOutmigrationForm.reset();
       })
       .catch((error) => {
         console.error('Fetch error:', error);
