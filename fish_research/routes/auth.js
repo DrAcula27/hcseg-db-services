@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const authController = require('../controllers/auth');
 
 // Login page
 router.get('/login', (req, res) => {
@@ -38,5 +39,16 @@ router.get('/logout', (req, res, next) => {
     res.redirect('/auth/login');
   });
 });
+
+// Reset password page
+router.get('/reset-password', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/projects');
+  }
+  res.render('reset-password', { error: null });
+});
+
+// Reset password POST
+router.post('/reset-password', authController.postResetPassword);
 
 module.exports = router;

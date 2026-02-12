@@ -218,11 +218,6 @@ label {
   color: var(--text-color-error);
 }
 
-/* utilities */
-.hidden {
-  display: none;
-}
-
 .col-span-2 {
   grid-column: span 2;
 }

@@ -16,7 +16,7 @@
   --background-color-success: #33cc4433;
   --text-color: #1d1d1d;
   --text-color-muted: #6d6d6d;
-  --text-color-light: #b4b4b4;
+  --text-color-light: #f9f9f9;
   --text-color-active: #02cfdd;
   --text-color-accent: #01ad88;
   --text-color-error: #c33;
@@ -116,6 +116,19 @@ header img {
   margin: 0;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1em 0;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
 .btn {
   width: max-content;
   background: var(--background-gradient);
@@ -158,6 +171,35 @@ header img {
   border: 2px solid var(--background-color-white);
 }
 
+/* show/hide password button */
+.btn-toggle-show-password {
+  padding: 2px;
+  background: none;
+  color: inherit;
+  transition: all 0.3s;
+}
+
+.btn-toggle-show-password:hover {
+  color: var(--border-color-active);
+  text-decoration: underline;
+  box-shadow: none;
+  background: none;
+}
+
+.btn-link {
+  color: var(--text-color);
+  background: none;
+  padding: 2px;
+}
+
+.btn-link:hover {
+  color: var(--text-color-active);
+  color: var(--border-color-active);
+  text-decoration: underline;
+  box-shadow: none;
+  background: none;
+}
+
 .msg {
   background-color: var(--background-color-white);
   padding: 1.2em 1.5em;
@@ -190,4 +232,9 @@ footer {
 footer p {
   margin: 0;
   font-size: 0.95em;
+}
+
+/* utilities */
+.hidden {
+  display: none;
 }
