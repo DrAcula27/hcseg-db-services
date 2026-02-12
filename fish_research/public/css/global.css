@@ -127,6 +127,8 @@ header img {
   display: flex;
   justify-content: center;
   gap: 1em;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
 }
 
 .btn {
@@ -166,7 +168,7 @@ header img {
 }
 
 /* return to project selection button */
-.btn-return-projects {
+.btn-nav {
   margin-top: 0.25em;
   border: 2px solid var(--background-color-white);
 }

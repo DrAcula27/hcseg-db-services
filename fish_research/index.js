@@ -155,6 +155,11 @@ require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
+const {
+  ensureAuthenticated,
+  ensureRole,
+} = require('./middleware/auth');
+
 // routes
 app.use('/auth', require('./routes/auth'));
 app.use(
@@ -214,6 +219,27 @@ app.get('/projects/:projectName', (req, res) => {
     res.redirect('/auth/login');
   }
 });
+
+// Admin-only common queries for union_outmigration
+app.get(
+  '/projects/:projectName/common-queries',
+  ensureAuthenticated,
+  ensureRole('admin'),
+  async (req, res) => {
+    try {
+      const { projectName } = req.params;
+      if (projectName !== 'union_outmigration') {
+        return res.status(404).send('Not found');
+      }
+
+      const commonQueriesController = require('./projects/union_outmigration/controllers/common-queries');
+      return commonQueriesController.renderCommonQueries(req, res);
+    } catch (err) {
+      console.error('Error rendering common queries:', err);
+      res.status(500).send('Internal server error');
+    }
+  },
+);
 
 // start the server with graceful shutdown handlers
 const PORT = process.env.PORT || 3000;
