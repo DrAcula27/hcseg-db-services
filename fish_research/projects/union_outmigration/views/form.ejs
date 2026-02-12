@@ -33,12 +33,10 @@
       <div class="header-auth">
         <p><strong>Logged in as:</strong> <%= user.username %></p>
         <p>(<%= user.email %>)</p>
-        <a
-          id="logout-button"
-          class="btn btn-logout"
-          href="/auth/logout"
-          >Logout</a
-        >
+        <% if (user && user.role === 'admin') { %>
+          <a href="/projects/union_outmigration/common-queries" class="btn btn-admin">Common Queries</a>
+        <% } %>
+        <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
       </div>
     </header>
 
