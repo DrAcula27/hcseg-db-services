@@ -26,18 +26,18 @@
       <div class="form-title">
         <h1>Union River Summer Chum Outmigration Program</h1>
         <h2>*All form fields are required.*</h2>
-        <a href="/projects" class="btn btn-return-projects">
+        <a href="/projects" class="btn btn-nav">
           Return to Project Selection
         </a>
       </div>
       <div class="header-auth">
         <p><strong>Logged in as:</strong> <%= user.username %></p>
         <p>(<%= user.email %>)</p>
-        <% if (user && user.role === 'admin') { %>
-          <a href="/projects/union_outmigration/common-queries" class="btn btn-admin">Common Queries</a>
-        <% } %>
         <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
       </div>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
+      <% } %>
     </header>
 
     <!-- Modal popup for form submission response -->
