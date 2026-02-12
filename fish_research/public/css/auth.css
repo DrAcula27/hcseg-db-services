@@ -71,3 +71,59 @@ header {
     font-size: 24px;
   }
 }
+
+/* Password rules styles for reset-password view */
+#password-match-message {
+  font-weight: bold;
+  border-radius: var(--border-radius);
+  padding: 10px;
+}
+
+.password-rules-container {
+  display: flex;
+  flex-direction: column;
+}
+.password-rules-container p {
+  margin: 0 0 8px 0;
+  color: var(--text-color-muted);
+  font-size: 0.95em;
+}
+#password-rules {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.95em;
+  color: var(--text-color-muted);
+}
+.rule::before {
+  content: '';
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--background-color-gray);
+  color: var(--text-color-light);
+  font-size: 12px;
+}
+.rule.valid::before {
+  content: '\2713'; /* check */
+  background-color: var(--text-color-success);
+}
+.rule.invalid::before {
+  content: '\2715'; /* cross */
+  background-color: var(--text-color-error);
+}
+.success-msg {
+  color: var(--text-color-success);
+}
+.error-msg {
+  color: var(--text-color-error);
+}

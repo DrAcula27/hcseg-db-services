@@ -16,7 +16,7 @@
   --background-color-success: #33cc4433;
   --text-color: #1d1d1d;
   --text-color-muted: #6d6d6d;
-  --text-color-light: #b4b4b4;
+  --text-color-light: #f9f9f9;
   --text-color-active: #02cfdd;
   --text-color-accent: #01ad88;
   --text-color-error: #c33;
@@ -232,4 +232,9 @@ footer {
 footer p {
   margin: 0;
   font-size: 0.95em;
+}
+
+/* utilities */
+.hidden {
+  display: none;
 }

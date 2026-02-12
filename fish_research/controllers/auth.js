@@ -21,6 +21,17 @@ async function postResetPassword(req, res, next) {
       });
     }
 
+    // Validate password rules: min length 8, at least 1 letter, at least 1 number
+    const failed = [];
+    if (password.length < 8) failed.push('minimum length of 8 characters');
+    if (!/[A-Za-z]/.test(password)) failed.push('at least 1 letter');
+    if (!/\d/.test(password)) failed.push('at least 1 number');
+    if (failed.length > 0) {
+      return res.render('reset-password', {
+        error: 'Password must contain: ' + failed.join(', '),
+      });
+    }
+
     const user = await User.findOne({ username });
     if (!user) {
       return res.render('reset-password', {
