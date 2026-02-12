@@ -19,14 +19,14 @@
 			<div class="header-auth">
 				<p><strong>Logged in as:</strong> <%= user.username %></p>
         <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
-        <div class="btn-container">
-          <a href="/projects/union_outmigration" class="btn btn-nav">Return to Union Outmigration Form</a>
-          <a href="/projects" class="btn btn-nav">Return to Projects</a>
-        </div>
 			</div>
 		</header>
 
 		<main class="container">
+      <div class="btn-container">
+        <a href="/projects/union_outmigration" class="btn btn-nav">Return to Union Outmigration Form</a>
+        <a href="/projects" class="btn btn-nav">Return to Projects</a>
+      </div>
 			<section class="query-controls">
 				<form method="get" action="">
           <div>
@@ -86,7 +86,7 @@
 					<li><strong>Lamprey:</strong> <%= totals.totalLamprey || 0 %></li>
 				</ul>
 
-        <h4>Steelhead and Coho Mark and Recapture:</h4>
+        <h3>Steelhead and Coho Mark and Recapture:</h3>
 				<ul>
 					<li><strong>Marked steelhead:</strong> <%= totals.totalSteelheadMarked || 0 %></li>
 					<li><strong>Recaptured steelhead:</strong> <%= totals.totalSteelheadRecap || 0 %></li>

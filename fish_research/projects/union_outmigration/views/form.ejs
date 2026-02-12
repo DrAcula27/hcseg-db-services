@@ -35,9 +35,6 @@
         <p>(<%= user.email %>)</p>
         <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
       </div>
-      <% if (user && user.role === 'admin') { %>
-        <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
-      <% } %>
     </header>
 
     <!-- Modal popup for form submission response -->
@@ -53,6 +50,12 @@
         </button>
         <div id="responseMessage"></div>
       </div>
+    </div>
+
+    <div class="container">
+      <% if (user && user.role === 'admin') { %>
+        <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
+      <% } %>
     </div>
 
     <form id="unionOutmigrationForm" class="union-outmigration-form">
