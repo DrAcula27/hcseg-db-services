@@ -49,9 +49,7 @@ router.get('/forgot-password', (req, res) => {
 
 // Forgot password POST
 router.post('/forgot-password', async (req, res) => {
-  // This is a placeholder. Implement password reset logic here.
-  // For example, you could generate a reset token, save it to the user record,
-  // and send an email with a reset link containing the token.
+  // Implement password reset logic here.
   res.render('forgot-password', {
     error: 'Password reset functionality is not implemented yet.',
   });
