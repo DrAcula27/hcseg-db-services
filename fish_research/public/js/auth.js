@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('password');
-  const togglePwShowBtn = document.querySelector(
-    '.btn-toggle-show-password',
-  );
   const confirmPasswordInput = document.getElementById(
     'confirm-password',
   );
-  const toggleConfirmPwShowBtn = document.querySelector(
-    '.btn-toggle-show-confirm-password',
+  const togglePwShowBtns = document.querySelectorAll(
+    '.btn-toggle-show-password',
   );
+  const togglePwShowBtn = togglePwShowBtns[0];
+  const toggleConfirmPwShowBtn = togglePwShowBtns[1];
 
   if (togglePwShowBtn && passwordInput) {
     togglePwShowBtn.addEventListener('click', () => {
