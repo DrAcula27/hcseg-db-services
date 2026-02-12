@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const authController = require('../controllers/auth');
 
 // Login page
 router.get('/login', (req, res) => {
@@ -39,20 +40,15 @@ router.get('/logout', (req, res, next) => {
   });
 });
 
-// Forgot password page
-router.get('/forgot-password', (req, res) => {
+// Reset password page
+router.get('/reset-password', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/projects');
   }
-  res.render('forgot-password', { error: null });
+  res.render('reset-password', { error: null });
 });
 
-// Forgot password POST
-router.post('/forgot-password', async (req, res) => {
-  // Implement password reset logic here.
-  res.render('forgot-password', {
-    error: 'Password reset functionality is not implemented yet.',
-  });
-});
+// Reset password POST
+router.post('/reset-password', authController.postResetPassword);
 
 module.exports = router;
