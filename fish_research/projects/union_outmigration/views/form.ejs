@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%- include("../../../views/partials/head.ejs", { title: "HCSEG - Union River Summer Chum FIFO" }) %>
+    <%- include("./partials/head", { title: "HCSEG - Union River Summer Chum FIFO" }) %>
     <link rel="stylesheet" href="/css/form.css" />
     <script src="/js/unionOutmigrationForm.js" defer></script>
   </head>
@@ -602,8 +602,6 @@
       </div>
     </div>
 
-    <footer id="footer">
-      <p>&copy; 2025 Danielle Andrews | Data Input Form.</p>
-    </footer>
+    <%- include("./partials/footer", { pageType: "Data Input Form" }) %>
   </body>
 </html>

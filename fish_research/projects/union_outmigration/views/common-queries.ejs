@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<%- include("../../../views/partials/head.ejs", { title: "HCSEG - Union Outmigration - Common Queries" }) %>
+		<%- include("./partials/head", { title: "HCSEG - Union Outmigration - Common Queries" }) %>
 		<link rel="stylesheet" href="/css/form.css" />
     <link rel="stylesheet" href="/css/common-queries.css" />
 	</head>
@@ -96,8 +96,6 @@
 			</section>
 		</main>
 
-		<footer id="footer">
-			<p>&copy; HCSEG Data</p>
-		</footer>
+		<%- include("./partials/footer", { pageType: "Data Portal" }) %>
 	</body>
 </html>

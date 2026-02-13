@@ -193,6 +193,7 @@ header img {
   color: var(--text-color);
   background: none;
   padding: 2px;
+  transition: all 0.3s;
 }
 
 .btn-link:hover {
@@ -200,7 +201,8 @@ header img {
   color: var(--border-color-active);
   text-decoration: underline;
   box-shadow: none;
-  background: none;
+  background: var(--background-color-white);
+  border-radius: var(--border-radius);
 }
 
 .msg {

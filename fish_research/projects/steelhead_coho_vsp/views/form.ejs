@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%- include("../../../views/partials/head.ejs", { title: "HCSEG - Steelhead & Coho VSP" }) %>
+    <%- include("./partials/head", { title: "HCSEG - Steelhead & Coho VSP" }) %>
     <link rel="stylesheet" href="/css/form.css" />
   </head>
   <body>
@@ -19,8 +19,6 @@
       </div>
     </main>
 
-    <footer id="footer">
-      <p>&copy; 2025 Danielle Andrews | Data Input Form.</p>
-    </footer>
+    <%- include("./partials/footer", { pageType: "Data Input Form" }) %>
   </body>
 </html>
