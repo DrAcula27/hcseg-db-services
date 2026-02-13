@@ -6,18 +6,7 @@
     <link rel="stylesheet" href="/css/common-queries.css" />
 	</head>
 	<body>
-		<header id="header" class="header">
-      <img
-        src="/img/hcseg-logo.png"
-        alt="Hood Canal Salmon Enhancement Group"
-        height="100px"
-      />
-			<h1>Common Queries - Union River Outmigration</h1>
-			<div class="header-auth">
-				<p><strong>Logged in as:</strong> <%= user.username %></p>
-        <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
-			</div>
-		</header>
+		<%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Outmigration Program - Common Queries" }) %>
 
 		<main class="container">
       <div class="btn-container">
@@ -26,20 +15,23 @@
       </div>
 			<section class="query-controls">
 				<form method="get" action="">
+          <h2>Enter a Date Range:</h2>
           <div>
-            <label for="startDate">Start date:</label>
-            <input type="date" id="startDate" name="startDate" value="<%= query.startDate || '' %>" />
+            <div>
+              <label for="startDate">Start date:</label>
+              <input type="date" id="startDate" name="startDate" value="<%= query.startDate || '' %>" />
+            </div>
+            <div>
+              <label for="endDate">End date:</label>
+              <input type="date" id="endDate" name="endDate" value="<%= query.endDate || '' %>" />
+            </div>
+            <button type="submit" class="btn">Run</button>
           </div>
-          <div>
-            <label for="endDate">End date:</label>
-            <input type="date" id="endDate" name="endDate" value="<%= query.endDate || '' %>" />
-          </div>
-					<button type="submit" class="btn">Run</button>
 				</form>
 			</section>
 
 			<section class="results">
-				<h2>Query Results for <%= query.startDate %> to <%= query.endDate %></h2>
+				<h2>Query Results for: <em><%= query.startDate %> to <%= query.endDate %></em></h2>
 
         <h3>Chum Numbers:</h3>
 				<ul>

@@ -6,25 +6,586 @@
     <script src="/js/unionOutmigrationForm.js" defer></script>
   </head>
   <body>
-    <header id="header" class="header">
-      <img
-        src="/img/hcseg-logo.png"
-        alt="Hood Canal Salmon Enhancement Group"
-        height="100px"
-      />
-      <div class="form-title">
-        <h1>Union River Summer Chum Outmigration Program</h1>
-        <h2>*All form fields are required.*</h2>
-        <a href="/projects" class="btn btn-nav">
-          Return to Project Selection
-        </a>
+    <%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Outmigration Program" }) %>
+
+    <main class="container">
+      <div class="btn-container">
+        <% if (user && user.role === 'admin') { %>
+          <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
+        <% } %>
+        <a href="/projects" class="btn btn-nav">Return to Projects</a>
       </div>
-      <div class="header-auth">
-        <p><strong>Logged in as:</strong> <%= user.username %></p>
-        <p>(<%= user.email %>)</p>
-        <a id="logout-button" class="btn btn-logout" href="/auth/logout">Logout</a>
-      </div>
-    </header>
+
+      <h3>*All Form Fields are Required*</h3>
+      <form id="unionOutmigrationForm" class="union-outmigration-form">
+        <!-- pre trap check information -->
+        <fieldset class="feedback-input col-span-2">
+          <legend>*Date:</legend>
+          <input
+            name="Date"
+            type="date"
+            id="date"
+            required
+            class="feedback-input"
+          />
+        </fieldset>
+        <fieldset class="feedback-input col-span-2">
+          <legend>*Time:</legend>
+          <input
+            name="Time"
+            type="time"
+            id="time"
+            class="feedback-input"
+            required
+          />
+        </fieldset>
+        <fieldset class="feedback-input" id="trapOperating">
+          <legend>*Trap Operating (Y/N):</legend>
+          <div>
+            <span class="radio-btn">
+              <input
+                type="radio"
+                id="yes"
+                name="Trap Operating"
+                value="Y"
+                required
+              />
+              <label for="yes">Y</label>
+            </span>
+            <span class="radio-btn">
+              <input
+                type="radio"
+                id="no"
+                name="Trap Operating"
+                value="N"
+                required
+              />
+              <label for="no">N</label>
+            </span>
+          </div>
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Trap RPM's:</legend>
+          <input
+            name="RPM"
+            type="number"
+            id="rpm"
+            class="feedback-input"
+            step="0.1"
+            placeholder="If not rotating, type 0"
+            required
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Debris Level:</legend>
+          <select name="Debris" id="debris-select" required>
+            <option value="">--choose an option--</option>
+            <option value="light">Light</option>
+            <option value="moderate">Moderate</option>
+            <option value="heavy">Heavy</option>
+            <option value="null">no reading</option>
+          </select>
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Water Temp. (°C):</legend>
+          <input
+            name="Water Temp"
+            type="number"
+            id="waterTemp"
+            class="feedback-input"
+            placeholder="If there is no reading, type 0"
+            step="0.1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input hidden">
+          <legend>*Hobo Logger Temp. (°C):</legend>
+          <input
+            name="Hobo Temp"
+            type="number"
+            id="hoboTemp"
+            class="feedback-input"
+            step="0.001"
+            required
+            value="0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input col-span-2">
+          <legend>*Water Visibility:</legend>
+          <select name="Visibility" id="visibility-select" required>
+            <option value="">--choose an option--</option>
+            <option value="none">None</option>
+            <option value="poor">Poor</option>
+            <option value="fair">Fair</option>
+            <option value="good">Good</option>
+            <option value="very-good">Very Good</option>
+            <option value="excellent">Excellent</option>
+            <option value="null">no reading</option>
+          </select>
+        </fieldset>
+        <fieldset class="feedback-input col-span-2">
+          <legend>*Water Flow:</legend>
+          <select name="Flow" id="flow-select" required>
+            <option value="">--choose an option--</option>
+            <option value="low">Low</option>
+            <option value="medium-low">Medium-Low</option>
+            <option value="medium">Medium</option>
+            <option value="medium-high">Medium-High</option>
+            <option value="high">High</option>
+            <option value="flooding">Flooding</option>
+            <option value="null">no reading</option>
+          </select>
+        </fieldset>
+
+        <div class="form-divider">Daily Catch Totals</div>
+        <!-- trap check information -->
+        <fieldset class="feedback-input">
+          <legend>*Chum Caught:</legend>
+          <input
+            name="Chum Fry"
+            type="number"
+            id="chumFry"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum DNA Taken:</legend>
+          <input
+            name="Chum DNA Taken"
+            type="number"
+            id="chumDnaTaken"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Marked:</legend>
+          <input
+            name="Chum Marked"
+            type="number"
+            id="chumMarked"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Recap:</legend>
+          <input
+            name="Chum Recap"
+            type="number"
+            id="chumRecap"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Morts:</legend>
+          <input
+            name="Chum Fry Mort"
+            type="number"
+            id="chumFryMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum DNA IDs:</legend>
+          <input
+            name="Chum DNA IDs"
+            type="text"
+            id="chumDnaIds"
+            class="feedback-input"
+            placeholder="If there are none, type -"
+            required
+            title="if none, type -"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Marked Morts:</legend>
+          <input
+            name="Chum Marked Mort"
+            type="number"
+            id="chumMarkedMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Recap Morts:</legend>
+          <input
+            name="Chum Recap Mort"
+            type="number"
+            id="chumRecapMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Fry Caught:</legend>
+          <input
+            name="Coho Fry"
+            type="number"
+            id="cohoFry"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Caught:</legend>
+          <input
+            name="Coho Smolt"
+            type="number"
+            id="cohoSmolt"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Marked:</legend>
+          <input
+            name="Coho Smolt Marked"
+            type="number"
+            id="cohoSmoltMarked"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Recap:</legend>
+          <input
+            name="Coho Smolt Recap"
+            type="number"
+            id="cohoSmoltRecap"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Fry Morts:</legend>
+          <input
+            name="Coho Fry Mort"
+            type="number"
+            id="cohoFryMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Morts:</legend>
+          <input
+            name="Coho Smolt Mort"
+            type="number"
+            id="cohoSmoltMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Marked Morts:</legend>
+          <input
+            name="Coho Smolt Marked Marked"
+            type="number"
+            id="cohoSmoltMarkedMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Smolt Recap Morts:</legend>
+          <input
+            name="Coho Smolt Recap Mort"
+            type="number"
+            id="cohoSmoltRecapMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Parr Caught:</legend>
+          <input
+            name="Coho Parr"
+            type="number"
+            id="cohoParr"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Caught:</legend>
+          <input
+            name="Steelhead"
+            type="number"
+            id="steelhead"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Marked:</legend>
+          <input
+            name="Steelhead Marked"
+            type="number"
+            id="steelheadMarked"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Recap:</legend>
+          <input
+            name="Steelhead Recap"
+            type="number"
+            id="steelheadRecap"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Parr Morts:</legend>
+          <input
+            name="Coho Parr Mort"
+            type="number"
+            id="cohoParrMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Morts:</legend>
+          <input
+            name="Steelhead Mort"
+            type="number"
+            id="steelheadMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Marked Morts:</legend>
+          <input
+            name="Steelhead Marked Mort"
+            type="number"
+            id="steelheadMarkedMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Steelhead Recap Morts:</legend>
+          <input
+            name="Steelhead Recap Mort"
+            type="number"
+            id="steelheadRecapMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Cutthroat Caught:</legend>
+          <input
+            name="Cutthroat"
+            type="number"
+            id="cutthroat"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Caught:</legend>
+          <input
+            name="Chinook"
+            type="number"
+            id="chinook"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Sculpin Caught:</legend>
+          <input
+            name="Sculpin"
+            type="number"
+            id="sculpin"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Lamprey Caught:</legend>
+          <input
+            name="Lamprey"
+            type="number"
+            id="lamprey"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Cutthroat Morts:</legend>
+          <input
+            name="Cutthroat Mort"
+            type="number"
+            id="cutthroatMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Morts:</legend>
+          <input
+            name="Chinook Mort"
+            type="number"
+            id="chinookMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Sculpin Morts:</legend>
+          <input
+            name="Sculpin Mort"
+            type="number"
+            id="sculpinMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Lamprey Morts:</legend>
+          <input
+            name="Lamprey Mort"
+            type="number"
+            id="lampreyMort"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input col-span-4 comments-section">
+          <legend>*Comments/Weather Conditions:</legend>
+          <textarea
+            name="Comments"
+            id="comments"
+            class="feedback-input"
+            placeholder="Enter all comments here. If there are no comments, please type a '-'."
+            required
+          ></textarea>
+        </fieldset>
+        <fieldset class="comment-notes-container col-span-4">
+          <legend>*Comment Notes:</legend>
+          <ul class="comment-notes">
+            <li>Record weather conditions in comments.</li>
+            <li>
+              Record other species (e.g., pink fry or stickleback) or
+              unknown species caught in comments.
+            </li>
+            <li>
+              Record Chinook caught life stage: e.g., - 2 parr, 1 smolt,
+              in comments.
+            </li>
+            <li>
+              Please take photos of any unidentified species and note in
+              comments.
+            </li>
+          </ul>
+        </fieldset>
+        <input type="submit" value="SUBMIT" class="btn btn-submit" />
+      </form>
+    </main>
 
     <!-- Modal popup for form submission response -->
     <div id="responseModal" class="modal hidden">
@@ -40,581 +601,6 @@
         <div id="responseMessage"></div>
       </div>
     </div>
-
-    <div class="container">
-      <% if (user && user.role === 'admin') { %>
-        <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
-      <% } %>
-    </div>
-
-    <form id="unionOutmigrationForm" class="union-outmigration-form">
-      <!-- pre trap check information -->
-      <fieldset class="feedback-input col-span-2">
-        <legend>Date:</legend>
-        <input
-          name="Date"
-          type="date"
-          id="date"
-          required
-          class="feedback-input"
-        />
-      </fieldset>
-      <fieldset class="feedback-input col-span-2">
-        <legend>Time:</legend>
-        <input
-          name="Time"
-          type="time"
-          id="time"
-          class="feedback-input"
-          required
-        />
-      </fieldset>
-      <fieldset class="feedback-input" id="trapOperating">
-        <legend>Trap Operating (Y/N):</legend>
-        <div>
-          <span class="radio-btn">
-            <input
-              type="radio"
-              id="yes"
-              name="Trap Operating"
-              value="Y"
-              required
-            />
-            <label for="yes">Y</label>
-          </span>
-          <span class="radio-btn">
-            <input
-              type="radio"
-              id="no"
-              name="Trap Operating"
-              value="N"
-              required
-            />
-            <label for="no">N</label>
-          </span>
-        </div>
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Trap RPM's:</legend>
-        <input
-          name="RPM"
-          type="number"
-          id="rpm"
-          class="feedback-input"
-          step="0.1"
-          placeholder="If not rotating, type 0"
-          required
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Debris Level:</legend>
-        <select name="Debris" id="debris-select" required>
-          <option value="">--choose an option--</option>
-          <option value="light">Light</option>
-          <option value="moderate">Moderate</option>
-          <option value="heavy">Heavy</option>
-          <option value="null">no reading</option>
-        </select>
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Water Temp. (°C):</legend>
-        <input
-          name="Water Temp"
-          type="number"
-          id="waterTemp"
-          class="feedback-input"
-          placeholder="If there is no reading, type 0"
-          step="0.1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input hidden">
-        <legend>Hobo Logger Temp. (°C):</legend>
-        <input
-          name="Hobo Temp"
-          type="number"
-          id="hoboTemp"
-          class="feedback-input"
-          step="0.001"
-          required
-          value="0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input col-span-2">
-        <legend>Water Visibility:</legend>
-        <select name="Visibility" id="visibility-select" required>
-          <option value="">--choose an option--</option>
-          <option value="none">None</option>
-          <option value="poor">Poor</option>
-          <option value="fair">Fair</option>
-          <option value="good">Good</option>
-          <option value="very-good">Very Good</option>
-          <option value="excellent">Excellent</option>
-          <option value="null">no reading</option>
-        </select>
-      </fieldset>
-      <fieldset class="feedback-input col-span-2">
-        <legend>Water Flow:</legend>
-        <select name="Flow" id="flow-select" required>
-          <option value="">--choose an option--</option>
-          <option value="low">Low</option>
-          <option value="medium-low">Medium-Low</option>
-          <option value="medium">Medium</option>
-          <option value="medium-high">Medium-High</option>
-          <option value="high">High</option>
-          <option value="flooding">Flooding</option>
-          <option value="null">no reading</option>
-        </select>
-      </fieldset>
-
-      <div class="form-divider">Daily Catch Totals</div>
-      <!-- trap check information -->
-      <fieldset class="feedback-input">
-        <legend>Chum Caught:</legend>
-        <input
-          name="Chum Fry"
-          type="number"
-          id="chumFry"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum DNA Taken:</legend>
-        <input
-          name="Chum DNA Taken"
-          type="number"
-          id="chumDnaTaken"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum Marked:</legend>
-        <input
-          name="Chum Marked"
-          type="number"
-          id="chumMarked"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum Recap:</legend>
-        <input
-          name="Chum Recap"
-          type="number"
-          id="chumRecap"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum Morts:</legend>
-        <input
-          name="Chum Fry Mort"
-          type="number"
-          id="chumFryMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum DNA IDs:</legend>
-        <input
-          name="Chum DNA IDs"
-          type="text"
-          id="chumDnaIds"
-          class="feedback-input"
-          placeholder="If there are none, type -"
-          required
-          title="if none, type -"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum Marked Morts:</legend>
-        <input
-          name="Chum Marked Mort"
-          type="number"
-          id="chumMarkedMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chum Recap Morts:</legend>
-        <input
-          name="Chum Recap Mort"
-          type="number"
-          id="chumRecapMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Fry Caught:</legend>
-        <input
-          name="Coho Fry"
-          type="number"
-          id="cohoFry"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Caught:</legend>
-        <input
-          name="Coho Smolt"
-          type="number"
-          id="cohoSmolt"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Marked:</legend>
-        <input
-          name="Coho Smolt Marked"
-          type="number"
-          id="cohoSmoltMarked"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Recap:</legend>
-        <input
-          name="Coho Smolt Recap"
-          type="number"
-          id="cohoSmoltRecap"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Fry Morts:</legend>
-        <input
-          name="Coho Fry Mort"
-          type="number"
-          id="cohoFryMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Morts:</legend>
-        <input
-          name="Coho Smolt Mort"
-          type="number"
-          id="cohoSmoltMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Marked Morts:</legend>
-        <input
-          name="Coho Smolt Marked Marked"
-          type="number"
-          id="cohoSmoltMarkedMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Smolt Recap Morts:</legend>
-        <input
-          name="Coho Smolt Recap Mort"
-          type="number"
-          id="cohoSmoltRecapMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Parr Caught:</legend>
-        <input
-          name="Coho Parr"
-          type="number"
-          id="cohoParr"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Caught:</legend>
-        <input
-          name="Steelhead"
-          type="number"
-          id="steelhead"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Marked:</legend>
-        <input
-          name="Steelhead Marked"
-          type="number"
-          id="steelheadMarked"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Recap:</legend>
-        <input
-          name="Steelhead Recap"
-          type="number"
-          id="steelheadRecap"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Coho Parr Morts:</legend>
-        <input
-          name="Coho Parr Mort"
-          type="number"
-          id="cohoParrMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Morts:</legend>
-        <input
-          name="Steelhead Mort"
-          type="number"
-          id="steelheadMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Marked Morts:</legend>
-        <input
-          name="Steelhead Marked Mort"
-          type="number"
-          id="steelheadMarkedMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Steelhead Recap Morts:</legend>
-        <input
-          name="Steelhead Recap Mort"
-          type="number"
-          id="steelheadRecapMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Cutthroat Caught:</legend>
-        <input
-          name="Cutthroat"
-          type="number"
-          id="cutthroat"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chinook Caught:</legend>
-        <input
-          name="Chinook"
-          type="number"
-          id="chinook"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Sculpin Caught:</legend>
-        <input
-          name="Sculpin"
-          type="number"
-          id="sculpin"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Lamprey Caught:</legend>
-        <input
-          name="Lamprey"
-          type="number"
-          id="lamprey"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Cutthroat Morts:</legend>
-        <input
-          name="Cutthroat Mort"
-          type="number"
-          id="cutthroatMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Chinook Morts:</legend>
-        <input
-          name="Chinook Mort"
-          type="number"
-          id="chinookMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Sculpin Morts:</legend>
-        <input
-          name="Sculpin Mort"
-          type="number"
-          id="sculpinMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input">
-        <legend>Lamprey Morts:</legend>
-        <input
-          name="Lamprey Mort"
-          type="number"
-          id="lampreyMort"
-          class="feedback-input"
-          placeholder="If there are none, type 0"
-          step="1"
-          required
-          title="if none, type 0"
-        />
-      </fieldset>
-      <fieldset class="feedback-input col-span-4 comments-section">
-        <legend>Comments/Weather Conditions:</legend>
-        <textarea
-          name="Comments"
-          id="comments"
-          class="feedback-input"
-          placeholder="Enter all comments here. If there are no comments, please type a '-'."
-          required
-        ></textarea>
-      </fieldset>
-      <fieldset class="comment-notes-container col-span-4">
-        <legend>Comment Notes:</legend>
-        <ul class="comment-notes">
-          <li>Record weather conditions in comments.</li>
-          <li>
-            Record other species (e.g., pink fry or stickleback) or
-            unknown species caught in comments.
-          </li>
-          <li>
-            Record Chinook caught life stage: e.g., - 2 parr, 1 smolt,
-            in comments.
-          </li>
-          <li>
-            Please take photos of any unidentified species and note in
-            comments.
-          </li>
-        </ul>
-      </fieldset>
-      <input type="submit" value="SUBMIT" class="btn btn-submit" />
-    </form>
 
     <footer id="footer">
       <p>&copy; 2025 Danielle Andrews | Data Input Form.</p>

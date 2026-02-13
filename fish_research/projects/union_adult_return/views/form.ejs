@@ -5,32 +5,14 @@
     <link rel="stylesheet" href="/css/form.css" />
   </head>
   <body>
-    <header id="header" class="form-header">
-      <img
-        src="/img/hcseg-logo.png"
-        alt="Hood Canal Salmon Enhancement Group"
-        height="100px"
-      />
-      <div class="form-title">
-        <h1>Union River Summer Chum - Adult Return Program</h1>
-        <h2>*Form Under Development*</h2>
+    <%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Adult Return Program" }) %>
+
+    <main class="container">
+      <div class="container">
         <a href="/projects" class="btn btn-nav">
           Return to Project Selection
         </a>
       </div>
-      <div class="form-auth">
-        <p><strong>Logged in as:</strong> <%= user.username %></p>
-        <p>(<%= user.email %>)</p>
-        <a
-          id="logout-button"
-          class="btn btn-logout"
-          href="/auth/logout"
-          >Logout</a
-        >
-      </div>
-    </header>
-
-    <main class="form-container">
       <form>
         <h2>Union Adult Return Form</h2>
         <p>This form is under development. Please check back soon.</p>
