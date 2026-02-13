@@ -92,20 +92,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .header {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .header img {
-    margin: 0 auto;
-  }
-
-  .header .header-auth {
-    text-align: center;
-    align-items: center;
-  }
-
   .projects-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -125,18 +111,6 @@
 }
 
 @media (max-width: 480px) {
-  .header {
-    padding: 15px 20px;
-  }
-
-  .header h1 {
-    font-size: 1.6em;
-  }
-
-  .header h2 {
-    font-size: 1.1em;
-  }
-
   .project-select-container {
     padding: 15px;
   }
@@ -151,25 +125,5 @@
 
   .project-description {
     font-size: 1em;
-  }
-}
-
-/* Print Styles */
-@media print {
-  #header,
-  .project-card-footer,
-  #footer,
-  .btn-project {
-    display: none;
-  }
-
-  body {
-    background-color: var(--print-background-color);
-  }
-
-  .project-card {
-    box-shadow: none;
-    border: var(--print-border-color) solid 1px;
-    page-break-inside: avoid;
   }
 }

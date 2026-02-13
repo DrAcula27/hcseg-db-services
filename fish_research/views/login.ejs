@@ -1,33 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>
-      Login - HCSEG - Fish Research
-    </title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/img/hcseg-logo-square.ico"
-    />
-    <link rel="stylesheet" href="/css/global.css" />
+    <%- include("./partials/head", { title: "Login - HCSEG - Fish Research" }) %>
     <link rel="stylesheet" href="/css/auth.css" />
     <script src="/js/auth.js" defer></script>
   </head>
   <body>
     <div class="login-container">
-      <header class="login-header">
-        <h1>Welcome Back</h1>
-        <img
-          src="/img/hcseg-logo.png"
-          height="100px"
-          alt="Hood Canal Salmon Enhancement Group"
-        />
-      </header>
+      <%- include("./partials/header-auth", { authTitle: "Welcome Back" }) %>
 
       <% if (typeof error !== 'undefined' && error) { %>
       <div class="msg error-msg"><%= error %></div>
@@ -73,9 +53,7 @@
         </div>
       </form>
 
-      <footer>
-        <p>&copy; 2025 Danielle Andrews | Secure Access</p>
-      </footer>
+      <%- include("./partials/footer", { pageType: "Secure Access" }) %>
     </div>
   </body>
 </html>

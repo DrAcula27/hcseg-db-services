@@ -1,55 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>HCSEG - Steelhead & Coho VSP</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/img/hcseg-logo-square.ico"
-    />
-    <link rel="stylesheet" href="/css/global.css" />
+    <%- include("./partials/head", { title: "HCSEG - Steelhead & Coho VSP" }) %>
     <link rel="stylesheet" href="/css/form.css" />
   </head>
   <body>
-    <header id="header" class="form-header">
-      <img
-        src="/img/hcseg-logo.png"
-        alt="Hood Canal Salmon Enhancement Group"
-        height="100px"
-      />
-      <div class="form-title">
-        <h1>Steelhead & Coho - Viable Salmon Population Program</h1>
-        <h2>*Form Under Development*</h2>
-        <a href="/projects" class="btn btn-nav">
-          Return to Project Selection
-        </a>
-      </div>
-      <div class="form-auth">
-        <p><strong>Logged in as:</strong> <%= user.username %></p>
-        <p>(<%= user.email %>)</p>
-        <a
-          id="logout-button"
-          class="btn btn-logout"
-          href="/auth/logout"
-          >Logout</a
-        >
-      </div>
-    </header>
+    <%- include("./partials/header", { user: user, pageTitle: "Steelhead & Coho - Viable Salmon Population Program" }) %>
 
-    <main class="form-container">
-      <form>
-        <h2>Steelhead & Coho VSP Form</h2>
-        <p>This form is under development. Please check back soon.</p>
-      </form>
+    <main class="container">
+      <a href="/projects" class="btn btn-nav">
+        Return to Project Selection
+      </a>
+      <div class="form-container">
+        <form>
+          <h2>Steelhead & Coho VSP Form</h2>
+          <p>This form is under development. Please check back soon.</p>
+        </form>
+      </div>
     </main>
 
-    <footer id="footer">
-      <p>&copy; 2025 Danielle Andrews | Data Input Form.</p>
-    </footer>
+    <%- include("./partials/footer", { pageType: "Data Input Form" }) %>
   </body>
 </html>
