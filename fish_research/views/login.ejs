@@ -7,14 +7,7 @@
   </head>
   <body>
     <div class="login-container">
-      <header class="login-header">
-        <h1>Welcome Back</h1>
-        <img
-          src="/img/hcseg-logo.png"
-          height="100px"
-          alt="Hood Canal Salmon Enhancement Group"
-        />
-      </header>
+      <%- include("./partials/header-auth", { authTitle: "Welcome Back" }) %>
 
       <% if (typeof error !== 'undefined' && error) { %>
       <div class="msg error-msg"><%= error %></div>
