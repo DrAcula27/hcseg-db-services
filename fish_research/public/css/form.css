@@ -1,10 +1,3 @@
-@media screen and (max-width: 1400px) {
-  .header .form-title {
-    font-size: 0.8em;
-    text-align: center;
-  }
-}
-
 .form-container {
   margin: 20px auto;
   padding: 10px;
@@ -212,6 +205,32 @@ label {
 .row-span-2 {
   grid-row: span 2;
 }
+
+/* Responsiveness */
+@media screen and (max-width: 1400px) {
+  .header .form-title {
+    font-size: 0.8em;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .union-outmigration-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .col-span-4 {
+    grid-column: span 2;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .union-outmigration-form {
+    grid-template-columns: 1fr;
+  }
+  .col-span-2,
+  .col-span-4 {
+    grid-column: span 1;
+  }
 
 /* Print layout — preserve grid on print */
 @media print {
