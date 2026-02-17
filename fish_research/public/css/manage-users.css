@@ -1,0 +1,126 @@
+.manage-users-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 2rem auto;
+  background: var(--background-color-white);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.manage-users-header {
+  margin-bottom: 0.75rem;
+}
+
+.manage-users-header h2 {
+  margin: 0;
+  color: var(--text-color-accent);
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.6rem;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.results-table thead th {
+  background: var(--background-color-gray);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.results-table tbody tr:nth-child(even) {
+  background: #fbfbfb;
+}
+
+.results-table tbody tr:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 207, 221, 0.06),
+    rgba(1, 173, 136, 0.04)
+  );
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 0.45rem 0.7rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  border: none;
+  color: var(--text-color-light);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.btn-edit {
+  background: var(--text-color-accent);
+}
+
+.btn-edit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-box-shadow);
+}
+
+.btn-delete {
+  background: var(--text-color-error);
+}
+
+.btn-delete:hover {
+  background: var(--text-color-error);
+  transform: translateY(-2px);
+  box-shadow: var(--btn-box-shadow);
+}
+
+/* Responsive: stack rows on small screens */
+@media (max-width: 700px) {
+  .results-table,
+  .results-table thead,
+  .results-table tbody,
+  .results-table th,
+  .results-table td,
+  .results-table tr {
+    display: block;
+  }
+
+  .results-table thead {
+    float: left;
+  }
+
+  .results-table tbody {
+    width: 100%;
+  }
+
+  .results-table tr {
+    margin-bottom: 1rem;
+    background: var(--background-color-white);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+  }
+
+  .results-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .results-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--text-color-muted);
+    margin-right: 0.5rem;
+  }
+}

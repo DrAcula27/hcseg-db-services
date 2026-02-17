@@ -10,6 +10,7 @@ const path = require('path');
 const passport = require('passport');
 const cors = require('cors');
 const crypto = require('crypto');
+const User = require('./models/users');
 
 const app = express();
 
@@ -87,11 +88,7 @@ connectWithRetry();
 
 // Mongoose connection events
 mongoose.connection.on('connected', () => {
-  console.log(
-    'Mongoose connected to',
-    mongoUri,
-    mongoDbName ? `(db: ${mongoDbName})` : '',
-  );
+  console.log(`Mongoose connected to db: ${mongoDbName})`);
 });
 mongoose.connection.on('error', (err) => {
   console.error('Mongoose connection error:', err);
@@ -236,6 +233,22 @@ app.get(
       return commonQueriesController.renderCommonQueries(req, res);
     } catch (err) {
       console.error('Error rendering common queries:', err);
+      res.status(500).send('Internal server error');
+    }
+  },
+);
+
+// Admin-only user management page
+app.get(
+  '/manage-users',
+  ensureAuthenticated,
+  ensureRole('admin'),
+  async (req, res) => {
+    try {
+      const users = await User.find().select('username email role');
+      res.render('manage-users', { user: req.user, users });
+    } catch (err) {
+      console.error('Error rendering user management page:', err);
       res.status(500).send('Internal server error');
     }
   },
