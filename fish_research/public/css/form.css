@@ -7,7 +7,7 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   background-color: var(--background-color-white);
   padding: 20px;
   border-radius: var(--border-radius);
@@ -25,6 +25,21 @@ form {
   background-color: var(--background-color-white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+}
+
+.create-user-form {
+  align-items: center;
+}
+
+.create-user-form .input-group {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.create-user-form .form-group {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Fieldset boxes mimic datasheet cells */
@@ -222,6 +237,10 @@ label {
   }
   .col-span-4 {
     grid-column: span 2;
+  }
+  .create-user-form .input-group {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
