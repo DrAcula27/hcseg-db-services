@@ -34,7 +34,7 @@ exports.create = async (req, res, next) => {
     await newUser.save();
     res.status(201).json({
       message: 'User created successfully',
-      user: { username, email, role },
+      user: { id: newUser._id, username, email, role },
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -44,7 +44,10 @@ exports.create = async (req, res, next) => {
 // Delete user
 exports.delete = async (req, res, next) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });

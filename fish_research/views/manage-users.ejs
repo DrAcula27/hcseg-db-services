@@ -63,6 +63,41 @@
         </form>
       </div>
     </main>
+
+    <!-- Modal popup for form submission response -->
+    <div id="responseModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <button
+          id="responseModalCloseBtn"
+          class="modal-close-btn"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+        <div id="responseMessage"></div>
+      </div>
+    </div>
+
+    <!-- Modal popup for confirmation to delete user -->
+    <div id="confirmDeleteModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <button
+          id="confirmDeleteCloseBtn"
+          class="modal-close-btn"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+        <div id="confirmDeleteMessage">Are you sure you want to delete this user?</div>
+        <div class="confirm-delete-actions">
+          <button id="confirmDeleteBtn" class="btn btn-confirm-delete">Yes, Delete</button>
+          <button id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <%- include("./partials/footer", { pageType: "User Management" }) %>
   </body>
 </html>
