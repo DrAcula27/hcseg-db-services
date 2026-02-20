@@ -53,8 +53,17 @@
   );
 }
 
+.confirm-delete-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+
 .btn-edit,
-.btn-delete {
+.btn-save,
+.btn-delete,
+.btn-confirm-delete,
+.btn-cancel-delete {
   padding: 0.45rem 0.7rem;
   font-size: 1.1rem;
   border-radius: 6px;
@@ -66,20 +75,26 @@
     box-shadow 0.3s ease;
 }
 
-.btn-edit {
+.btn-edit,
+.btn-save,
+.btn-cancel-delete {
   background: var(--text-color-accent);
 }
 
-.btn-edit:hover {
+.btn-edit:hover,
+.btn-save:hover,
+.btn-cancel-delete:hover {
   transform: translateY(-2px);
   box-shadow: var(--btn-box-shadow);
 }
 
-.btn-delete {
+.btn-delete,
+.btn-confirm-delete {
   background: var(--text-color-error);
 }
 
-.btn-delete:hover {
+.btn-delete:hover,
+.btn-confirm-delete:hover {
   background: var(--text-color-error);
   transform: translateY(-2px);
   box-shadow: var(--btn-box-shadow);
