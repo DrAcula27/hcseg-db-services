@@ -15,7 +15,8 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-// Get all users (admin only)
+// --- Admin-only user management endpoints ---
+// Get all users
 exports.getAll = async (req, res, next) => {
   try {
     const users = await User.find().select('username email role');
@@ -25,7 +26,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-// Create new user (admin only)
+// Create new user
 exports.create = async (req, res, next) => {
   try {
     const { username, email, password, role } = req.body;
@@ -40,7 +41,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-// Delete user (admin only)
+// Delete user
 exports.delete = async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -50,7 +51,7 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-// Update user (admin only)
+// Update user
 exports.update = async (req, res, next) => {
   try {
     const { username, email, role } = req.body;

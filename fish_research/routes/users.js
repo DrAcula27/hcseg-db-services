@@ -7,10 +7,10 @@ const { ensureAuthenticated } = require('../middleware/auth');
 router.use(ensureAuthenticated);
 
 // api endpoints
-router.post('/', userController.create);
-router.get('/', userController.getAll);
 router.get('/:id', userController.getById);
-router.put('/:id', userController.update);
+router.get('/', userController.getAll);
+router.post('/', userController.create);
 router.delete('/:id', userController.delete);
+router.put('/:id', userController.update);
 
 module.exports = router;

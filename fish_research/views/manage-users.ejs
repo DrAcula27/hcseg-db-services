@@ -4,6 +4,7 @@
     <%- include("./partials/head", { title: "Admin - HCSEG - Fish Research" }) %>
     <link rel="stylesheet" href="/css/manage-users.css">
     <link rel="stylesheet" href="/css/form.css">
+    <script src="/js/users.js" nonce="<%= nonce %>" defer></script>
   </head>
   <body>
     <%- include("./partials/header", { user: user, pageTitle: "Manage Users" }) %>
@@ -12,7 +13,7 @@
       <div class="manage-users-wrapper">
         <h2 class="manage-users-header">Current Users</h2>
         <div class="results">
-          <table class="results-table">
+          <table id="usersTable" class="results-table">
             <thead>
               <tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr>
             </thead>
@@ -58,7 +59,7 @@
               </select>
             </div>
           </div>
-          <button type="submit" class="btn btn-submit">Create User</button>
+          <input type="submit" value="Create User" id="createUserBtn" class="btn btn-submit" />
         </form>
       </div>
     </main>
