@@ -90,6 +90,25 @@
   justify-content: center;
 }
 
+.add-user-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: max-content;
+  margin: 0 auto;
+  padding: 2em;
+  background-color: var(--background-color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.add-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-top: 1em;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .projects-grid {

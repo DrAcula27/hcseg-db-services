@@ -7,6 +7,12 @@
   <body>
     <%- include("./partials/header", { user: user, pageTitle: "Select Your Research Project" }) %>
 
+    <!-- if logged in user is an admin, allow to manage users -->
+    <% if (user && user.role === 'admin') { %>
+      <div class="btn-container">
+        <a href="/manage-users" class="btn btn-nav">Manage Users</a>
+      </div>
+    <% } %>
     <main class="project-select-container">
       <section class="projects-grid">
         <!-- Union River Juvenile Summer Chum Outmigration Project -->
