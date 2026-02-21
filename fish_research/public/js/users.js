@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
       !confirmDeleteModal.classList.contains('hidden')
     ) {
       closeModal();
+
       // cancel the delete action
       if (resolveDeleteModal) {
         resolveDeleteModal(false);
@@ -71,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ) {
       event.preventDefault();
       closeModal();
+
       // confirm the delete action
       if (resolveDeleteModal) {
         resolveDeleteModal(true);
@@ -108,107 +110,160 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // when user clicks an edit button, make the table fields editable and change the button to a save button
-  editButtons.forEach((btn) => {
-    btn.addEventListener('click', function () {
-      const userId = btn.getAttribute('data-user-id');
-      const row = btn.closest('tr');
-      const usernameCell = row.querySelector(
-        'td[data-label="Username"]',
-      );
-      const emailCell = row.querySelector('td[data-label="Email"]');
-      const roleCell = row.querySelector('td[data-label="Role"]');
-      const actionsCell = row.querySelector(
-        'td[data-label="Actions"]',
-      );
+  // when user clicks an edit button,
+  //   make the table fields editable,
+  //   change the edit button to a save button, and
+  //   add a cancel button below the save button
+  function handleEditClick(btn) {
+    const userId = btn.getAttribute('data-user-id');
+    const row = btn.closest('tr');
+    const usernameCell = row.querySelector(
+      'td[data-label="Username"]',
+    );
+    const emailCell = row.querySelector('td[data-label="Email"]');
+    const roleCell = row.querySelector('td[data-label="Role"]');
+    const actionsCell = row.querySelector('td[data-label="Actions"]');
 
-      if (btn.textContent === 'Edit') {
-        // change to save button
-        btn.textContent = 'Save';
-        btn.classList.remove('btn-edit');
-        btn.classList.add('btn-save');
-        // make username, email, and role cells editable
-        usernameCell.setAttribute('contenteditable', 'true');
-        emailCell.setAttribute('contenteditable', 'true');
-        roleCell.setAttribute('contenteditable', 'true');
-      } else {
-        // save changes
-        const updatedUsername = usernameCell.textContent.trim();
-        const updatedEmail = emailCell.textContent.trim();
-        const updatedRole = roleCell.textContent.trim();
-        fetch(`/api/users/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: updatedUsername,
-            email: updatedEmail,
-            role: updatedRole,
-          }),
+    if (btn.textContent === 'Edit') {
+      // store original values in case user cancels edit
+      const originalUsername = usernameCell.textContent.trim();
+      const originalEmail = emailCell.textContent.trim();
+      const originalRole = roleCell.textContent.trim();
+
+      // change Edit button to Save button
+      btn.textContent = 'Save';
+      btn.classList.remove('btn-edit');
+      btn.classList.add('btn-save');
+
+      // make username, email, and role cells editable
+      usernameCell.setAttribute('contenteditable', 'true');
+      emailCell.setAttribute('contenteditable', 'true');
+      const roleSelect = document.createElement('select');
+      roleSelect.classList.add('role-select');
+      ['admin', 'user'].forEach((role) => {
+        const option = document.createElement('option');
+        option.value = role;
+        option.textContent = role.toLowerCase();
+        if (role === originalRole) {
+          option.selected = true;
+        }
+        roleSelect.appendChild(option);
+      });
+      roleCell.textContent = '';
+      roleCell.appendChild(roleSelect);
+
+      // add a cancel button below the save button
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.classList.add('btn', 'btn-cancel-edit');
+      actionsCell.appendChild(cancelBtn);
+      cancelBtn.addEventListener('click', function () {
+        // revert to original values
+        usernameCell.textContent = originalUsername;
+        emailCell.textContent = originalEmail;
+        roleCell.textContent = originalRole;
+
+        // revert save button back to edit button
+        btn.textContent = 'Edit';
+        btn.classList.remove('btn-save');
+        btn.classList.add('btn-edit');
+
+        // remove cancel button and make cells non-editable
+        cancelBtn.remove();
+        usernameCell.removeAttribute('contenteditable');
+        emailCell.removeAttribute('contenteditable');
+        roleCell.removeAttribute('contenteditable');
+      });
+    } else {
+      // read role from select element instead of text content
+      const roleSelect = roleCell.querySelector('.role-select');
+      const updatedRole = roleSelect
+        ? roleSelect.value
+        : roleCell.textContent.trim();
+
+      // save changes
+      fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameCell.textContent.trim(),
+          email: emailCell.textContent.trim(),
+          role: updatedRole,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error || 'Failed to update user');
+            });
+          }
+          return response.json();
         })
-          .then((response) => {
-            if (!response.ok) {
-              return response.json().then((data) => {
-                throw new Error(
-                  data.error || 'Failed to update user',
-                );
-              });
-            }
-            return response.json();
-          })
-          .then((data) => {
-            openResponseModal(data.message, true);
-            // change back to edit button
-            btn.textContent = 'Edit';
-            btn.classList.remove('btn-save');
-            btn.classList.add('btn-edit');
-            // make cells non-editable
-            usernameCell.removeAttribute('contenteditable');
-            emailCell.removeAttribute('contenteditable');
-            roleCell.removeAttribute('contenteditable');
-          })
-          .catch((error) => {
-            openResponseModal(`Error: ${error.message}`, false);
-          });
-      }
-    });
+        .then((data) => {
+          openResponseModal(data.message, true);
+
+          // change save button back to edit button
+          btn.textContent = 'Edit';
+          btn.classList.remove('btn-save');
+          btn.classList.add('btn-edit');
+
+          // make cells non-editable
+          usernameCell.removeAttribute('contenteditable');
+          emailCell.removeAttribute('contenteditable');
+          roleCell.textContent = updatedRole;
+
+          // remove cancel button
+          const cancelBtn = actionsCell.querySelector(
+            '.btn-cancel-edit',
+          );
+          if (cancelBtn) cancelBtn.remove();
+        })
+        .catch((error) => {
+          openResponseModal(`Error: ${error.message}`, false);
+        });
+    }
+  }
+
+  // when user clicks a delete button,
+  //   show a confirmation dialog and delete the user if confirmed
+  async function handleDeleteClick(btn) {
+    const userId = btn.getAttribute('data-user-id');
+    const confirmed = await openConfirmDeleteModal(
+      'Are you sure you want to delete this user?',
+    );
+    if (confirmed) {
+      fetch(`/api/users/${userId}`, { method: 'DELETE' })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error || 'Failed to delete user');
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          openResponseModal(data.message, true);
+          const row = btn.closest('tr');
+          row.parentNode.removeChild(row);
+        })
+        .catch((error) => {
+          openResponseModal(`Error: ${error.message}`, false);
+        });
+    }
+  }
+
+  // attach handlers to existing table buttons
+  editButtons.forEach((btn) => {
+    btn.addEventListener('click', () => handleEditClick(btn));
   });
 
-  // when user clicks a delete button, show a confirmation dialog and delete the user if confirmed
   deleteButtons.forEach((btn) => {
-    btn.addEventListener('click', async function () {
-      const userId = btn.getAttribute('data-user-id');
-      const confirmed = await openConfirmDeleteModal(
-        'Are you sure you want to delete this user?',
-        null,
-      );
-
-      if (confirmed) {
-        fetch(`/api/users/${userId}`, { method: 'DELETE' })
-          .then((response) => {
-            if (!response.ok) {
-              return response.json().then((data) => {
-                throw new Error(
-                  data.error || 'Failed to delete user',
-                );
-              });
-            }
-            return response.json();
-          })
-          .then((data) => {
-            openResponseModal(data.message, true);
-            const row = btn.closest('tr');
-            row.parentNode.removeChild(row);
-          })
-          .catch((error) => {
-            openResponseModal(`Error: ${error.message}`, false);
-          });
-      }
-    });
+    btn.addEventListener('click', () => handleDeleteClick(btn));
   });
 
-  // when user clicks the create user button, create the user using the values in the input fields and add the new user to the table
+  // when user clicks the create user button,
+  //   create the user using the values in the input fields
+  //   and add the new user to the table
   createUserForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -246,6 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then((data) => {
         openResponseModal(data.message, true);
+
         // add the new user to the table
         const usersTable = document
           .getElementById('usersTable')
@@ -262,100 +318,19 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
           </td>
         `;
-        // add event listeners to the new buttons
+
+        // attach event listeners to the new edit and delete buttons
         const newEditBtn = newRow.querySelector('.btn-edit');
         const newDeleteBtn = newRow.querySelector('.btn-delete');
-        newEditBtn.addEventListener('click', function () {
-          const userId = newEditBtn.getAttribute('data-user-id');
-          const row = newEditBtn.closest('tr');
-          const emailCell = row.querySelector(
-            'td[data-label="Email"]',
-          );
-          const roleCell = row.querySelector('td[data-label="Role"]');
-          const actionsCell = row.querySelector(
-            'td[data-label="Actions"]',
-          );
-          if (newEditBtn.textContent === 'Edit') {
-            newEditBtn.textContent = 'Save';
-            newEditBtn.classList.remove('btn-edit');
-            newEditBtn.classList.add('btn-save');
-            emailCell.setAttribute('contenteditable', 'true');
-            roleCell.setAttribute('contenteditable', 'true');
-          } else {
-            const updatedEmail = emailCell.textContent.trim();
-            const updatedRole = roleCell.textContent.trim();
-            fetch(`/api/users/${userId}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: updatedEmail,
-                role: updatedRole,
-              }),
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  return response.json().then((data) => {
-                    throw new Error(
-                      data.error || 'Failed to update user',
-                    );
-                  });
-                }
-                return response.json();
-              })
-              .then((data) => {
-                openResponseModal(data.message, true);
-                newEditBtn.textContent = 'Edit';
-                newEditBtn.classList.remove('btn-save');
-                newEditBtn.classList.add('btn-edit');
-                emailCell.removeAttribute('contenteditable');
-                roleCell.removeAttribute('contenteditable');
-              })
-              .catch((error) => {
-                openResponseModal(`Error: ${error.message}`, false);
-              });
-          }
-        });
-        newDeleteBtn.addEventListener('click', async function () {
-          const userId = newDeleteBtn.getAttribute('data-user-id');
-          const confirmed = await openConfirmDeleteModal(
-            'Are you sure you want to delete this user?',
-            null,
-          );
-
-          if (confirmed) {
-            fetch(`/api/users/${userId}`, {
-              method: 'DELETE',
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  return response.json().then((data) => {
-                    throw new Error(
-                      data.error || 'Failed to delete user',
-                    );
-                  });
-                }
-                return response.json();
-              })
-              .then((data) => {
-                openResponseModal(data.message, true);
-                const row = newDeleteBtn.closest('tr');
-                row.parentNode.removeChild(row);
-              })
-              .catch((error) => {
-                openResponseModal(`Error: ${error.message}`, false);
-              });
-          }
-        });
+        newEditBtn.addEventListener('click', () =>
+          handleEditClick(newEditBtn),
+        );
+        newDeleteBtn.addEventListener('click', () =>
+          handleDeleteClick(newDeleteBtn),
+        );
 
         // reset the form after adding the user to the table
         createUserForm.reset();
-
-        // after the user closes the modal, reload the page to sync with the server
-        if (!openResponseModal && !confirmDeleteModal) {
-          window.location.reload();
-        }
       })
       .catch((error) => {
         console.error('Fetch error:', error);
