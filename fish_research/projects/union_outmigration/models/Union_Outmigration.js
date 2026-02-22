@@ -15,7 +15,10 @@ const UnionOutmigrationSchema = mongoose.Schema({
   'Chum Fry': { type: Number },
   'Chum Fry Mort': { type: Number },
   'Chum DNA Taken': { type: Number },
-  'Chum DNA IDs': { type: String },
+  'Chum DNA IDs': {
+    type: String,
+    pattern: /^([A-Z]{2}\d{2})-(\d{1,3}) to \1-(\d{1,3})$|^-$/,
+  },
   'Chum Marked': { type: Number },
   'Chum Marked Mort': { type: Number },
   'Chum Recap': { type: Number },
