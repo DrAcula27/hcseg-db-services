@@ -58,6 +58,14 @@ fieldset:focus-within {
   border-color: var(--border-color-active);
 }
 
+/* make legend and input text red if input is invalid */
+fieldset:has(input:invalid),
+fieldset:has(select:invalid),
+fieldset:has(textarea:invalid) {
+  color: var(--text-color-error);
+  border-color: var(--text-color-error);
+}
+
 legend {
   font-weight: bold;
   text-transform: uppercase;

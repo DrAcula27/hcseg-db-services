@@ -45,6 +45,45 @@ document.addEventListener('DOMContentLoaded', function () {
     responseModal.classList.remove('hidden');
   }
 
+  // set max date for "Date" field to today, adjusting for timezone to ensure it works correctly regardless of user's local time
+  const dateInput = document.getElementById('date');
+  const today = new Date();
+  const timezoneOffset = today.getTimezoneOffset() * 60000;
+  const localToday = new Date(today.getTime() - timezoneOffset);
+  dateInput.max = localToday.toISOString().split('T')[0];
+
+  // regex pattern for "Chum DNA IDs" field: must be in the format "AA26-123 to AA26-456" or "-" if no IDs were taken
+  const chumDnaIdsPattern =
+    /^([A-Z]{2}\d{2})-(\d{1,3}) to \1-(\d{1,3})$|^-$/;
+
+  // automatically convert the letters after the leading ## to uppercase, and show them in the form that way,
+  //  but keep the " to " lowercase
+  const chumDnaIdsInput = document.getElementById('chumDnaIds');
+  chumDnaIdsInput.addEventListener('input', function () {
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+
+    const updatedValue = this.value
+      .toUpperCase()
+      .replace(/\bTO\b/g, 'to');
+
+    if (updatedValue !== this.value) {
+      this.value = updatedValue;
+      this.setSelectionRange(start, end);
+    }
+  });
+
+  // ensure the "Chum DNA IDs" field matches the required pattern before allowing form submission
+  chumDnaIdsInput.addEventListener('input', function () {
+    if (!chumDnaIdsPattern.test(this.value)) {
+      this.setCustomValidity(
+        'Please enter a valid Chum DNA ID range (e.g., AA26-123 to AA26-456) or "-" if no IDs were taken.',
+      );
+    } else {
+      this.setCustomValidity('');
+    }
+  });
+
   unionOutmigrationForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
