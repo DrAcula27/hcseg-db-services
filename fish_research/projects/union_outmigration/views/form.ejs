@@ -4,6 +4,7 @@
     <%- include("./partials/head", { title: "HCSEG - Union River Summer Chum FIFO" }) %>
     <link rel="stylesheet" href="/css/form.css" />
     <script src="/js/unionOutmigrationForm.js" defer></script>
+    <script src="/js/unionTrapStatus.js" defer></script>
   </head>
   <body>
     <%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Outmigration Program" }) %>
@@ -14,6 +15,7 @@
           <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
         <% } %>
         <a href="/projects" class="btn btn-nav">Return to Projects</a>
+        <button type="button" id="trapStatusBtn" class="btn btn-nav btn-trap-status">Trap Status</button>
       </div>
 
       <h3>*All Form Fields are Required*</h3>
@@ -325,7 +327,7 @@
         <fieldset class="feedback-input">
           <legend>*Coho Smolt Marked Morts:</legend>
           <input
-            name="Coho Smolt Marked Marked"
+            name="Coho Smolt Marked Mort"
             type="number"
             id="cohoSmoltMarkedMort"
             class="feedback-input"
@@ -587,6 +589,72 @@
         <input type="submit" value="SUBMIT" class="btn btn-submit" />
       </form>
     </main>
+
+    <!-- Trap Status Modal -->
+    <div id="trapStatusModal" class="modal hidden">
+      <div class="modal-overlay" id="trapStatusModalOverlay"></div>
+      <div class="modal-content trap-status-modal-content">
+        <button
+          id="trapStatusModalCloseBtn"
+          class="modal-close-btn"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+        <h2 class="trap-status-modal-title">Trap Status Entry</h2>
+        <p class="trap-status-modal-subtitle">
+          All other form fields will be set to their null values (<i>N</i>, <i>0</i>, <i>-</i>, or <i>no reading</i>) automatically.
+        </p>
+        <div class="trap-status-form">
+          <fieldset class="feedback-input">
+            <legend>*Date:</legend>
+            <input
+              type="date"
+              id="trapStatusDate"
+              class="feedback-input"
+              required
+            />
+          </fieldset>
+          <fieldset class="feedback-input">
+            <legend>*Time:</legend>
+            <input
+              type="time"
+              id="trapStatusTime"
+              class="feedback-input"
+              value="00:00"
+              required
+            />
+          </fieldset>
+          <fieldset class="feedback-input trap-status-comments-field">
+            <legend>*Comments:</legend>
+            <div class="trap-status-radio-group">
+              <label class="trap-status-radio-label">
+                <input
+                  type="radio"
+                  name="trapStatusComment"
+                  value="No trap check."
+                  id="commentNoCheck"
+                  required
+                />
+                <span>No trap check.</span>
+              </label>
+              <label class="trap-status-radio-label">
+                <input
+                  type="radio"
+                  name="trapStatusComment"
+                  value="Cone lowered."
+                  id="commentConeLowered"
+                />
+                <span>Cone lowered.</span>
+              </label>
+            </div>
+          </fieldset>
+          <button type="button" id="trapStatusApplyBtn" class="btn btn-submit trap-status-apply-btn">
+            Apply to Form
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal popup for form submission response -->
     <div id="responseModal" class="modal hidden">
