@@ -42,6 +42,9 @@
 					<li><strong>Chum recaptured:</strong> <%= totals.totalChumRecap || 0 %></li>
 					<li><strong>Chum recapture morts:</strong> <%= totals.totalChumRecapMort || 0 %></li>
 					<li><strong>Chum DNA samples taken:</strong> <%= totals.totalChumDnaTaken || 0 %></li>
+					<li><strong>Chum trap efficiency:</strong>
+						<%= totals.chumTrapEfficiency !== null ? totals.chumTrapEfficiency + '%' : 'N/A (no marked fish released)' %>
+					</li>
 				</ul>
 
         <h3>Chum DNA Samples</h3>

@@ -84,12 +84,12 @@ exports.renderCommonQueries = async (req, res) => {
     // and add the results together.
     //
     // Key schema differences:
-    //   Chum Fry         — historical: Chum Fry + Chum Alevin; current: Chum Fry only
+    //   Chum Fry     — historical: Chum Fry + Chum Alevin; current: Chum Fry only
     //   Chum Marked Mort — both eras have this field, but it means chum that died
-    //                      WHILE BEING STAINED (never released upriver). Counted the
-    //                      same way in both schemas; displayed separately from recap morts.
-    //   Chum Recap Mort  — current schema has an explicit field; historical data has
-    //                      no such field, so it is derived as (Chum Marked - Chum Released).
+    //                  WHILE BEING STAINED (never released upriver). Counted the
+    //                  same way in both schemas; displayed separately from recap morts.
+    //   Chum Recap Mort — current schema has an explicit field; historical data has
+    //                  no such field, so it is derived as (Chum Marked - Chum Released).
     // -------------------------------------------------------------------------
     const CURRENT_DATA_CUTOFF = new Date(2025, 11, 1); // Dec 1, 2025 (month is 0-indexed)
 
@@ -145,6 +145,8 @@ exports.renderCommonQueries = async (req, res) => {
             },
           },
           totalChumDnaTaken: { $sum: '$Chum DNA Taken' },
+          // Needed to calculate trap efficiency for historical data
+          totalChumReleased: { $sum: '$Chum Released' },
           // Steelhead/Coho mark-recap fields did not exist in historical schema;
           // $sum of missing fields returns 0.
           totalSteelheadMarked: { $sum: '$Steelhead Marked' },
@@ -255,6 +257,35 @@ exports.renderCommonQueries = async (req, res) => {
     for (const key of totalsKeys) {
       totals[key] = (h[key] || 0) + (c[key] || 0);
     }
+
+    // -------------------------------------------------------------------------
+    // Chum trap efficiency = (Chum Recap / fish_at_risk) * 100
+    //
+    // The denominator differs by era:
+    //   Historical: sum of Chum Released (fish actually sent upriver)
+    //   Current:    sum of (Chum Marked - Chum Marked Mort) (marked fish that
+    //               survived staining and were released)
+    //
+    // Each era's recap and denominator are kept separate so we can compute a
+    // weighted combined efficiency when the query spans both eras.
+    // If the combined denominator is 0, efficiency is reported as null (N/A).
+    // -------------------------------------------------------------------------
+    const hRecap = h.totalChumRecap || 0;
+    const hDenominator = h.totalChumReleased || 0; // historical: Chum Released
+
+    const cRecap = c.totalChumRecap || 0;
+    const cDenominator = Math.max(
+      (c.totalChumMarked || 0) - (c.totalChumMarkedMort || 0),
+      0,
+    ); // current: Marked - Marked Mort
+
+    const combinedRecap = hRecap + cRecap;
+    const combinedDenominator = hDenominator + cDenominator;
+
+    totals.chumTrapEfficiency =
+      combinedDenominator > 0
+        ? ((combinedRecap / combinedDenominator) * 100).toFixed(2)
+        : null;
 
     // -------------------------------------------------------------------------
     // DNA records
