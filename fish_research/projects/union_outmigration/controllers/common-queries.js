@@ -71,6 +71,10 @@ function parseDateRange(query) {
 }
 
 exports.renderCommonQueries = async (req, res) => {
+  // Prevent the browser from caching GET responses so that every 'Run'
+  // click always fetches fresh data from the server.
+  res.set('Cache-Control', 'no-store');
+
   try {
     const { filter, startDateISO, endDateISO } = parseDateRange(
       req.query,
@@ -93,20 +97,30 @@ exports.renderCommonQueries = async (req, res) => {
     // -------------------------------------------------------------------------
     const CURRENT_DATA_CUTOFF = new Date(2025, 11, 1); // Dec 1, 2025 (month is 0-indexed)
 
-    const historicalFilter = {
-      ...filter,
-      Date: { $gte: filter.Date.$gte, $lt: CURRENT_DATA_CUTOFF },
-    };
-    const currentFilter = {
-      ...filter,
-      Date: { $gte: CURRENT_DATA_CUTOFF, $lte: filter.Date.$lte },
-    };
-
-    // Only run a sub-pipeline when the date window actually overlaps that era
     const queryStart = filter.Date.$gte;
     const queryEnd = filter.Date.$lte;
     const hasHistorical = queryStart < CURRENT_DATA_CUTOFF;
     const hasCurrent = queryEnd >= CURRENT_DATA_CUTOFF;
+
+    // Clamp each sub-filter to only the portion of the query window that
+    // overlaps its era, preventing any cross-era data from leaking through.
+    const historicalFilter = {
+      Date: {
+        $gte: queryStart,
+        $lt: CURRENT_DATA_CUTOFF,
+      },
+    };
+    const currentFilter = {
+      Date: {
+        // Use queryStart when it falls after the cutoff (current-only query);
+        // use the cutoff when the query spans both eras.
+        $gte:
+          queryStart > CURRENT_DATA_CUTOFF
+            ? queryStart
+            : CURRENT_DATA_CUTOFF,
+        $lte: queryEnd,
+      },
+    };
 
     // --- Historical pipeline ---
     // Chum Recap Mort = Chum Marked - Chum Released (per record, then summed)
@@ -255,7 +269,8 @@ exports.renderCommonQueries = async (req, res) => {
     ];
     const totals = {};
     for (const key of totalsKeys) {
-      totals[key] = (h[key] || 0) + (c[key] || 0);
+      totals[key] =
+        (h[key] != null ? h[key] : 0) + (c[key] != null ? c[key] : 0);
     }
 
     // -------------------------------------------------------------------------
@@ -270,14 +285,16 @@ exports.renderCommonQueries = async (req, res) => {
     // weighted combined efficiency when the query spans both eras.
     // If the combined denominator is 0, efficiency is reported as null (N/A).
     // -------------------------------------------------------------------------
-    const hRecap = h.totalChumRecap || 0;
-    const hDenominator = h.totalChumReleased || 0; // historical: Chum Released
+    const hRecap = h.totalChumRecap != null ? h.totalChumRecap : 0;
+    const hDenominator =
+      h.totalChumReleased != null ? h.totalChumReleased : 0;
 
-    const cRecap = c.totalChumRecap || 0;
+    const cRecap = c.totalChumRecap != null ? c.totalChumRecap : 0;
     const cDenominator = Math.max(
-      (c.totalChumMarked || 0) - (c.totalChumMarkedMort || 0),
+      (c.totalChumMarked != null ? c.totalChumMarked : 0) -
+        (c.totalChumMarkedMort != null ? c.totalChumMarkedMort : 0),
       0,
-    ); // current: Marked - Marked Mort
+    );
 
     const combinedRecap = hRecap + cRecap;
     const combinedDenominator = hDenominator + cDenominator;
@@ -291,7 +308,7 @@ exports.renderCommonQueries = async (req, res) => {
     // DNA records
     // -------------------------------------------------------------------------
     const dnaRecords = await UnionOutmigration.find({
-      ...filter,
+      Date: { $gte: queryStart, $lte: queryEnd },
       'Chum DNA Taken': { $gt: 0 },
     })
       .select({ Date: 1, 'Chum DNA Taken': 1, 'Chum DNA IDs': 1 })
@@ -318,21 +335,31 @@ exports.renderCommonQueries = async (req, res) => {
     //   When the query window spans both eras, each doc is routed to the
     //   appropriate logic based on its own date.
     // -------------------------------------------------------------------------
-    const trapDocs = await UnionOutmigration.find({
-      ...filter,
-      Comments: { $regex: /no trap check|cone lowered|cone raised/i },
-    })
-      .select({ Date: 1, Time: 1, Comments: 1 })
-      .sort({ Date: 1 })
-      .exec();
+    const trapCommentRegex = {
+      $regex: /no trap check|cone lowered|cone raised/i,
+    };
+    const trapSelect = { Date: 1, Time: 1, Comments: 1 };
 
-    // Split docs into historical and current sets
-    const historicalTrapDocs = trapDocs.filter(
-      (doc) => doc.Date && new Date(doc.Date) < CURRENT_DATA_CUTOFF,
-    );
-    const currentTrapDocs = trapDocs.filter(
-      (doc) => doc.Date && new Date(doc.Date) >= CURRENT_DATA_CUTOFF,
-    );
+    const [historicalTrapDocs, currentTrapDocs] = await Promise.all([
+      hasHistorical
+        ? UnionOutmigration.find({
+            ...historicalFilter,
+            Comments: trapCommentRegex,
+          })
+            .select(trapSelect)
+            .sort({ Date: 1 })
+            .exec()
+        : Promise.resolve([]),
+      hasCurrent
+        ? UnionOutmigration.find({
+            ...currentFilter,
+            Comments: trapCommentRegex,
+          })
+            .select(trapSelect)
+            .sort({ Date: 1 })
+            .exec()
+        : Promise.resolve([]),
+    ]);
 
     // --- Historical: collapse consecutive "no trap check" days into ranges ---
     // Each period: { start, startTime: '', end, endTime: '', historical: true }
