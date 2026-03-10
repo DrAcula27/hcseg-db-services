@@ -71,72 +71,410 @@ function parseDateRange(query) {
 }
 
 exports.renderCommonQueries = async (req, res) => {
+  // Prevent the browser from caching GET responses so that every 'Run'
+  // click always fetches fresh data from the server.
+  res.set('Cache-Control', 'no-store');
+
   try {
     const { filter, startDateISO, endDateISO } = parseDateRange(
       req.query,
     );
 
-    // Build aggregation pipeline
-    const pipeline = [{ $match: filter }];
+    // -------------------------------------------------------------------------
+    // Aggregation: totals across the date range.
+    //
+    // Historical data (before Dec 1, 2025) and current data (Dec 1, 2025+) have
+    // different schemas for several chum fields, so we run two separate pipelines
+    // and add the results together.
+    //
+    // Key schema differences:
+    //   Chum Fry     — historical: Chum Fry + Chum Alevin; current: Chum Fry only
+    //   Chum Marked Mort — both eras have this field, but it means chum that died
+    //                  WHILE BEING STAINED (never released upriver). Counted the
+    //                  same way in both schemas; displayed separately from recap morts.
+    //   Chum Recap Mort — current schema has an explicit field; historical data has
+    //                  no such field, so it is derived as (Chum Marked - Chum Released).
+    // -------------------------------------------------------------------------
+    const CURRENT_DATA_CUTOFF = new Date(2025, 11, 1); // Dec 1, 2025 (month is 0-indexed)
 
-    // Group to calculate sums
-    pipeline.push({
-      $group: {
-        _id: null,
-        totalChum: { $sum: '$Chum Fry' },
-        totalChumMorts: { $sum: '$Chum Fry Mort' },
-        totalChumMarked: { $sum: '$Chum Marked' },
-        totalChumRecap: { $sum: '$Chum Recap' },
-        totalChumRecapMort: { $sum: '$Chum Recap Mort' },
-        totalSteelheadMarked: { $sum: '$Steelhead Marked' },
-        totalSteelheadRecap: { $sum: '$Steelhead Recap' },
-        totalCohoSmoltMarked: { $sum: '$Coho Smolt Marked' },
-        totalCohoSmoltRecap: { $sum: '$Coho Smolt Recap' },
-        totalChumDnaTaken: { $sum: '$Chum DNA Taken' },
-        totalCohoFry: { $sum: '$Coho Fry' },
-        totalCohoSmolt: { $sum: '$Coho Smolt' },
-        totalCohoParr: { $sum: '$Coho Parr' },
-        totalSteelhead: { $sum: '$Steelhead' },
-        totalCutthroat: { $sum: '$Cutthroat' },
-        totalChinook: { $sum: '$Chinook' },
-        totalSculpin: { $sum: '$Sculpin' },
-        totalLamprey: { $sum: '$Lamprey' },
-        trapNotFishingCount: {
-          $sum: {
-            $cond: [{ $eq: ['$Trap Operating', 'N'] }, 1, 0],
+    const queryStart = filter.Date.$gte;
+    const queryEnd = filter.Date.$lte;
+    const hasHistorical = queryStart < CURRENT_DATA_CUTOFF;
+    const hasCurrent = queryEnd >= CURRENT_DATA_CUTOFF;
+
+    // Clamp each sub-filter to only the portion of the query window that
+    // overlaps its era, preventing any cross-era data from leaking through.
+    const historicalFilter = {
+      Date: {
+        $gte: queryStart,
+        $lt: CURRENT_DATA_CUTOFF,
+      },
+    };
+    const currentFilter = {
+      Date: {
+        // Use queryStart when it falls after the cutoff (current-only query);
+        // use the cutoff when the query spans both eras.
+        $gte:
+          queryStart > CURRENT_DATA_CUTOFF
+            ? queryStart
+            : CURRENT_DATA_CUTOFF,
+        $lte: queryEnd,
+      },
+    };
+
+    // --- Historical pipeline ---
+    // Chum Recap Mort = Chum Marked - Chum Released (per record, then summed)
+    const historicalPipeline = [
+      { $match: historicalFilter },
+      {
+        $group: {
+          _id: null,
+          // Chum Fry + Chum Alevin combined into one "fry" count
+          totalChum: {
+            $sum: {
+              $add: [
+                { $ifNull: ['$Chum Fry', 0] },
+                { $ifNull: ['$Chum Alevin', 0] },
+              ],
+            },
           },
+          totalChumMorts: { $sum: '$Chum Fry Mort' },
+          totalChumMarked: { $sum: '$Chum Marked' },
+          // Died while being stained — never released
+          totalChumMarkedMort: { $sum: '$Chum Marked Mort' },
+          totalChumRecap: { $sum: '$Chum Recap' },
+          // Recap mort derived per record: max(Chum Marked - Chum Released, 0)
+          // Using $max with 0 guards against any data anomalies where Released > Marked
+          totalChumRecapMort: {
+            $sum: {
+              $max: [
+                {
+                  $subtract: [
+                    { $ifNull: ['$Chum Marked', 0] },
+                    { $ifNull: ['$Chum Released', 0] },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          totalChumDnaTaken: { $sum: '$Chum DNA Taken' },
+          // Needed to calculate trap efficiency for historical data
+          totalChumReleased: { $sum: '$Chum Released' },
+          // Steelhead/Coho mark-recap fields did not exist in historical schema;
+          // $sum of missing fields returns 0.
+          totalSteelheadMarked: { $sum: '$Steelhead Marked' },
+          totalSteelheadMarkedMort: {
+            $sum: '$Steelhead Marked Mort',
+          },
+          totalSteelheadRecap: { $sum: '$Steelhead Recap' },
+          totalSteelheadRecapMort: { $sum: '$Steelhead Recap Mort' },
+          totalCohoSmoltMarked: { $sum: '$Coho Smolt Marked' },
+          totalCohoSmoltMarkedMort: {
+            $sum: '$Coho Smolt Marked Mort',
+          },
+          totalCohoSmoltRecap: { $sum: '$Coho Smolt Recap' },
+          totalCohoSmoltRecapMort: { $sum: '$Coho Smolt Recap Mort' },
+          // Other species
+          totalCohoFry: { $sum: '$Coho Fry' },
+          totalCohoSmolt: { $sum: '$Coho Smolt' },
+          totalCohoParr: { $sum: '$Coho Parr' },
+          totalSteelhead: { $sum: '$Steelhead' },
+          totalCutthroat: { $sum: '$Cutthroat' },
+          totalChinook: { $sum: '$Chinook' },
+          totalSculpin: { $sum: '$Sculpin' },
+          totalLamprey: { $sum: '$Lamprey' },
         },
       },
-    });
+    ];
 
-    const aggResults =
-      await UnionOutmigration.aggregate(pipeline).allowDiskUse(true);
-    const totals = (aggResults && aggResults[0]) || {};
+    // --- Current pipeline ---
+    const currentPipeline = [
+      { $match: currentFilter },
+      {
+        $group: {
+          _id: null,
+          totalChum: { $sum: '$Chum Fry' },
+          totalChumMorts: { $sum: '$Chum Fry Mort' },
+          totalChumMarked: { $sum: '$Chum Marked' },
+          totalChumMarkedMort: { $sum: '$Chum Marked Mort' },
+          totalChumRecap: { $sum: '$Chum Recap' },
+          totalChumRecapMort: { $sum: '$Chum Recap Mort' },
+          totalChumDnaTaken: { $sum: '$Chum DNA Taken' },
+          totalSteelheadMarked: { $sum: '$Steelhead Marked' },
+          totalSteelheadMarkedMort: {
+            $sum: '$Steelhead Marked Mort',
+          },
+          totalSteelheadRecap: { $sum: '$Steelhead Recap' },
+          totalSteelheadRecapMort: { $sum: '$Steelhead Recap Mort' },
+          totalCohoSmoltMarked: { $sum: '$Coho Smolt Marked' },
+          totalCohoSmoltMarkedMort: {
+            $sum: '$Coho Smolt Marked Mort',
+          },
+          totalCohoSmoltRecap: { $sum: '$Coho Smolt Recap' },
+          totalCohoSmoltRecapMort: { $sum: '$Coho Smolt Recap Mort' },
+          totalCohoFry: { $sum: '$Coho Fry' },
+          totalCohoSmolt: { $sum: '$Coho Smolt' },
+          totalCohoParr: { $sum: '$Coho Parr' },
+          totalSteelhead: { $sum: '$Steelhead' },
+          totalCutthroat: { $sum: '$Cutthroat' },
+          totalChinook: { $sum: '$Chinook' },
+          totalSculpin: { $sum: '$Sculpin' },
+          totalLamprey: { $sum: '$Lamprey' },
+        },
+      },
+    ];
 
-    // Find records with DNA samples for the date range
-    // Select fields with spaces using an object projection (string form splits on spaces)
+    const [historicalAgg, currentAgg] = await Promise.all([
+      hasHistorical
+        ? UnionOutmigration.aggregate(
+            historicalPipeline,
+          ).allowDiskUse(true)
+        : Promise.resolve([]),
+      hasCurrent
+        ? UnionOutmigration.aggregate(currentPipeline).allowDiskUse(
+            true,
+          )
+        : Promise.resolve([]),
+    ]);
+
+    const h = (historicalAgg && historicalAgg[0]) || {};
+    const c = (currentAgg && currentAgg[0]) || {};
+
+    // Merge by adding each key from both result objects
+    const totalsKeys = [
+      'totalChum',
+      'totalChumMorts',
+      'totalChumMarked',
+      'totalChumMarkedMort',
+      'totalChumRecap',
+      'totalChumRecapMort',
+      'totalChumDnaTaken',
+      'totalSteelheadMarked',
+      'totalSteelheadMarkedMort',
+      'totalSteelheadRecap',
+      'totalSteelheadRecapMort',
+      'totalCohoSmoltMarked',
+      'totalCohoSmoltMarkedMort',
+      'totalCohoSmoltRecap',
+      'totalCohoSmoltRecapMort',
+      'totalCohoFry',
+      'totalCohoSmolt',
+      'totalCohoParr',
+      'totalSteelhead',
+      'totalCutthroat',
+      'totalChinook',
+      'totalSculpin',
+      'totalLamprey',
+    ];
+    const totals = {};
+    for (const key of totalsKeys) {
+      totals[key] =
+        (h[key] != null ? h[key] : 0) + (c[key] != null ? c[key] : 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // Chum trap efficiency = (Chum Recap / fish_at_risk) * 100
+    //
+    // The denominator differs by era:
+    //   Historical: sum of Chum Released (fish actually sent upriver)
+    //   Current:    sum of (Chum Marked - Chum Marked Mort) (marked fish that
+    //               survived staining and were released)
+    //
+    // Each era's recap and denominator are kept separate so we can compute a
+    // weighted combined efficiency when the query spans both eras.
+    // If the combined denominator is 0, efficiency is reported as null (N/A).
+    // -------------------------------------------------------------------------
+    const hRecap = h.totalChumRecap != null ? h.totalChumRecap : 0;
+    const hDenominator =
+      h.totalChumReleased != null ? h.totalChumReleased : 0;
+
+    const cRecap = c.totalChumRecap != null ? c.totalChumRecap : 0;
+    const cDenominator = Math.max(
+      (c.totalChumMarked != null ? c.totalChumMarked : 0) -
+        (c.totalChumMarkedMort != null ? c.totalChumMarkedMort : 0),
+      0,
+    );
+
+    const combinedRecap = hRecap + cRecap;
+    const combinedDenominator = hDenominator + cDenominator;
+
+    totals.chumTrapEfficiency =
+      combinedDenominator > 0
+        ? ((combinedRecap / combinedDenominator) * 100).toFixed(2)
+        : null;
+
+    // -------------------------------------------------------------------------
+    // DNA records
+    // -------------------------------------------------------------------------
     const dnaRecords = await UnionOutmigration.find({
-      ...filter,
+      Date: { $gte: queryStart, $lte: queryEnd },
       'Chum DNA Taken': { $gt: 0 },
     })
       .select({ Date: 1, 'Chum DNA Taken': 1, 'Chum DNA IDs': 1 })
+      .sort({ Date: 1 })
       .exec();
 
-    // Trap not fishing dates (list)
-    const trapNotFishingDocs = await UnionOutmigration.find({
-      ...filter,
-      'Trap Operating': 'N',
-    }).select('Date');
+    // -------------------------------------------------------------------------
+    // Trap not fishing — search Comments field for relevant keywords.
+    //
+    // Terminology:
+    //   "Cone raised"    → trap STOPPED fishing at the time recorded on this doc
+    //   "No trap check"  → trap was not checked that day (not fishing)
+    //   "Cone lowered"   → trap RESUMED fishing at the time recorded on this doc
+    //
+    // Strategy:
+    //   Historical data (before Dec 1, 2025): only "no trap check" in Comments
+    //     indicates the trap was not fishing. Each matching doc is treated as a
+    //     standalone not-fishing day. Consecutive days are collapsed into ranges.
+    //
+    //   Current data (Dec 1, 2025 and later): uses "cone raised" / "cone lowered"
+    //     to mark the start and end of a not-fishing period, with "no trap check"
+    //     as interior days. Periods are built by walking docs in date order.
+    //
+    //   When the query window spans both eras, each doc is routed to the
+    //   appropriate logic based on its own date.
+    // -------------------------------------------------------------------------
+    const trapCommentRegex = {
+      $regex: /no trap check|cone lowered|cone raised/i,
+    };
+    const trapSelect = { Date: 1, Time: 1, Comments: 1 };
 
-    const trapNotFishingDates = trapNotFishingDocs
-      .map((d) => d.Date)
-      .filter(Boolean);
+    const [historicalTrapDocs, currentTrapDocs] = await Promise.all([
+      hasHistorical
+        ? UnionOutmigration.find({
+            ...historicalFilter,
+            Comments: trapCommentRegex,
+          })
+            .select(trapSelect)
+            .sort({ Date: 1 })
+            .exec()
+        : Promise.resolve([]),
+      hasCurrent
+        ? UnionOutmigration.find({
+            ...currentFilter,
+            Comments: trapCommentRegex,
+          })
+            .select(trapSelect)
+            .sort({ Date: 1 })
+            .exec()
+        : Promise.resolve([]),
+    ]);
+
+    // --- Historical: collapse consecutive "no trap check" days into ranges ---
+    // Each period: { start, startTime: '', end, endTime: '', historical: true }
+    const historicalPeriods = [];
+    const noCheckDates = historicalTrapDocs
+      .filter((doc) => /no trap check/i.test(doc.Comments || ''))
+      .map((doc) => new Date(doc.Date))
+      .sort((a, b) => a - b);
+
+    if (noCheckDates.length > 0) {
+      let rangeStart = noCheckDates[0];
+      let rangeEnd = noCheckDates[0];
+
+      for (let i = 1; i < noCheckDates.length; i++) {
+        const nextDay = new Date(rangeEnd);
+        nextDay.setDate(nextDay.getDate() + 1);
+        const curr = noCheckDates[i];
+
+        if (
+          curr.getFullYear() === nextDay.getFullYear() &&
+          curr.getMonth() === nextDay.getMonth() &&
+          curr.getDate() === nextDay.getDate()
+        ) {
+          rangeEnd = curr;
+        } else {
+          historicalPeriods.push({
+            start: rangeStart,
+            startTime: '',
+            end: rangeEnd,
+            endTime: '',
+            historical: true,
+          });
+          rangeStart = curr;
+          rangeEnd = curr;
+        }
+      }
+      historicalPeriods.push({
+        start: rangeStart,
+        startTime: '',
+        end: rangeEnd,
+        endTime: '',
+        historical: true,
+      });
+    }
+
+    // --- Current: build periods from cone raised / no trap check / cone lowered ---
+    // Each period: { start: Date|null, startTime, end: Date|null, endTime, historical: false }
+    const currentPeriods = [];
+    let openPeriod = null;
+
+    for (const doc of currentTrapDocs) {
+      const comment = doc.Comments || '';
+      const date = doc.Date ? new Date(doc.Date) : null;
+      const time = doc.Time || '';
+
+      if (/cone raised/i.test(comment)) {
+        // Close any previously open period that was never explicitly closed
+        if (openPeriod) {
+          currentPeriods.push(openPeriod);
+        }
+        openPeriod = {
+          start: date,
+          startTime: time,
+          end: null,
+          endTime: '',
+          historical: false,
+        };
+      } else if (/cone lowered/i.test(comment)) {
+        if (openPeriod) {
+          openPeriod.end = date;
+          openPeriod.endTime = time;
+          currentPeriods.push(openPeriod);
+          openPeriod = null;
+        } else {
+          // Cone lowered with no matching raise in this window — period began
+          // before the query range.
+          currentPeriods.push({
+            start: null,
+            startTime: '',
+            end: date,
+            endTime: time,
+            historical: false,
+          });
+        }
+      } else if (/no trap check/i.test(comment)) {
+        if (!openPeriod) {
+          // Stand-alone unchecked day with no preceding cone raise
+          openPeriod = {
+            start: date,
+            startTime: '',
+            end: null,
+            endTime: '',
+            historical: false,
+          };
+        }
+        // If inside an open period the day is already covered — nothing to do.
+      }
+    }
+
+    // If a period was opened but never closed within the query window, push it
+    if (openPeriod) {
+      currentPeriods.push(openPeriod);
+    }
+
+    // Combine both eras in chronological order
+    const trapNotFishingPeriods = [
+      ...historicalPeriods,
+      ...currentPeriods,
+    ];
 
     res.render('union_outmigration/views/common-queries', {
       user: req.user,
       totals,
       dnaRecords,
-      trapNotFishingDates,
+      trapNotFishingPeriods,
       query: { startDate: startDateISO, endDate: endDateISO },
     });
   } catch (err) {

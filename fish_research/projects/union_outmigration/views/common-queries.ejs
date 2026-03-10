@@ -14,7 +14,7 @@
         <a href="/projects" class="btn btn-nav">Return to Projects</a>
       </div>
 			<section class="query-controls">
-				<form method="get" action="">
+			<form method="get" action="/projects/union_outmigration/common-queries">
           <h2>Enter a Date Range:</h2>
           <div>
             <div>
@@ -38,9 +38,13 @@
 					<li><strong>Chum caught:</strong> <%= totals.totalChum || 0 %></li>
 					<li><strong>Chum morts:</strong> <%= totals.totalChumMorts || 0 %></li>
 					<li><strong>Chum marked:</strong> <%= totals.totalChumMarked || 0 %></li>
+					<li><strong>Chum marked morts:</strong> <%= totals.totalChumMarkedMort || 0 %></li>
 					<li><strong>Chum recaptured:</strong> <%= totals.totalChumRecap || 0 %></li>
 					<li><strong>Chum recapture morts:</strong> <%= totals.totalChumRecapMort || 0 %></li>
 					<li><strong>Chum DNA samples taken:</strong> <%= totals.totalChumDnaTaken || 0 %></li>
+					<li><strong>Chum trap efficiency:</strong>
+						<%= totals.chumTrapEfficiency !== null ? totals.chumTrapEfficiency + '%' : 'N/A (no marked fish released)' %>
+					</li>
 				</ul>
 
         <h3>Chum DNA Samples</h3>
@@ -77,19 +81,55 @@
 
         <h3>Steelhead and Coho Mark and Recapture:</h3>
 				<ul>
-					<li><strong>Marked steelhead:</strong> <%= totals.totalSteelheadMarked || 0 %></li>
-					<li><strong>Recaptured steelhead:</strong> <%= totals.totalSteelheadRecap || 0 %></li>
-					<li><strong>Marked coho smolt:</strong> <%= totals.totalCohoSmoltMarked || 0 %></li>
-					<li><strong>Recaptured coho smolt:</strong> <%= totals.totalCohoSmoltRecap || 0 %></li>
+					<li><strong>Steelhead marked:</strong> <%= totals.totalSteelheadMarked || 0 %></li>
+					<li><strong>Steelhead marked morts:</strong> <%= totals.totalSteelheadMarkedMort || 0 %></li>
+					<li><strong>Steelhead recaptured:</strong> <%= totals.totalSteelheadRecap || 0 %></li>
+					<li><strong>Steelhead recapture morts:</strong> <%= totals.totalSteelheadRecapMort || 0 %></li>
+					<li><strong>Coho smolt marked:</strong> <%= totals.totalCohoSmoltMarked || 0 %></li>
+					<li><strong>Coho smolt marked morts:</strong> <%= totals.totalCohoSmoltMarkedMort || 0 %></li>
+					<li><strong>Coho smolt recaptured:</strong> <%= totals.totalCohoSmoltRecap || 0 %></li>
+					<li><strong>Coho smolt recapture morts:</strong> <%= totals.totalCohoSmoltRecapMort || 0 %></li>
 				</ul>
 
 				<h3>Dates Trap Not Fishing:</h3>
-				<% if (trapNotFishingDates && trapNotFishingDates.length) { %>
-					<ul>
-						<% trapNotFishingDates.forEach(function(d){ %>
-							<li><%= d ? new Date(d).toISOString().slice(0,10) : '' %></li>
-						<% }) %>
-					</ul>
+				<%
+          function fmtDate(d) {
+            if (!d) return '?';
+            return new Date(d).toISOString().slice(0, 10);
+          }
+        %>
+				<% if (trapNotFishingPeriods && trapNotFishingPeriods.length) { %>
+					<table class="results-table">
+						<thead>
+							<tr>
+								<th>Date Cone Raised</th>
+								<th>Time Raised</th>
+								<th>Date Cone Lowered</th>
+								<th>Time Lowered</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% trapNotFishingPeriods.forEach(function(p) { %>
+								<tr>
+									<% if (p.historical) { %>
+										<%
+                      var s = fmtDate(p.start);
+                      var e = fmtDate(p.end);
+                    %>
+										<td><%= s === e ? s : s + ' to ' + e %></td>
+										<td>&mdash;</td>
+										<td>&mdash;</td>
+										<td>&mdash;</td>
+									<% } else { %>
+										<td><%= p.start ? fmtDate(p.start) : 'Before query range' %></td>
+										<td><%= p.startTime || '&mdash;' %></td>
+										<td><%= p.end ? fmtDate(p.end) : 'Still not fishing' %></td>
+										<td><%= p.endTime || '&mdash;' %></td>
+									<% } %>
+								</tr>
+							<% }) %>
+						</tbody>
+					</table>
 				<% } else { %>
 					<p>No trap 'not fishing' records in the selected range.</p>
 				<% } %>
