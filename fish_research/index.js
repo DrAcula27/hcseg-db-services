@@ -224,7 +224,6 @@ app.get('/projects/:projectName', (req, res) => {
 app.get(
   '/projects/:projectName/common-queries',
   ensureAuthenticated,
-  ensureRole('admin'),
   async (req, res) => {
     try {
       const { projectName } = req.params;
