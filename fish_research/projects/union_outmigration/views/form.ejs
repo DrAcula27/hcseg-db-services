@@ -11,9 +11,7 @@
 
     <main class="container">
       <div class="btn-container">
-        <% if (user && user.role === 'admin') { %>
-          <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
-        <% } %>
+        <a href="/projects/union_outmigration/common-queries" class="btn btn-nav">Common Queries</a>
         <a href="/projects" class="btn btn-nav">Return to Projects</a>
         <button type="button" id="trapStatusBtn" class="btn btn-nav btn-trap-status">Trap Status</button>
       </div>
@@ -215,9 +213,9 @@
             type="text"
             id="chumDnaIds"
             class="feedback-input"
-            placeholder="eg: AA26-123 to AA26-456"
+            placeholder="eg: 26AA-123 to 26AA-456"
             required
-            title="eg: AA26-123 to AA26-456, or if none, type '-'"
+            title="eg: 26AA-123 to 26AA-456, or if none, type '-'"
           />
         </fieldset>
         <fieldset class="feedback-input">

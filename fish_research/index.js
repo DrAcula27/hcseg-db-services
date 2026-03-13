@@ -57,7 +57,9 @@ const mongoDbName =
 
 async function connectWithRetry(attempt = 1, maxAttempts = 5) {
   try {
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri, {
+      ...(mongoDbName ? { dbName: mongoDbName } : {}),
+    });
     console.log(
       `MongoDB connection successful.${
         mongoDbName ? ` (db: ${mongoDbName})` : ''
@@ -135,8 +137,9 @@ app.use(
     proxy: process.env.NODE_ENV === 'production',
     store: MongoStore.create({
       mongoUrl: mongoUri,
-      ...(mongoDbName ? { dbName: mongoDbName } : {}),
-      ttl: 24 * 60 * 60, // 1 day
+      dbName: mongoDbName,
+      collectionName: 'sessions',
+      ttl: 24 * 60 * 60,
     }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
@@ -221,7 +224,6 @@ app.get('/projects/:projectName', (req, res) => {
 app.get(
   '/projects/:projectName/common-queries',
   ensureAuthenticated,
-  ensureRole('admin'),
   async (req, res) => {
     try {
       const { projectName } = req.params;
