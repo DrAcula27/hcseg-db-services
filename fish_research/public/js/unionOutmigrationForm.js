@@ -52,9 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const localToday = new Date(today.getTime() - timezoneOffset);
   dateInput.max = localToday.toISOString().split('T')[0];
 
-  // regex pattern for "Chum DNA IDs" field: must be in the format "AA26-123 to AA26-456" or "-" if no IDs were taken
+  // regex pattern for "Chum DNA IDs" field: must be in the format "26AA-123 to 26AA-456" or "-" if no IDs were taken
   const chumDnaIdsPattern =
-    /^([A-Z]{2}\d{2})-(\d{1,3}) to \1-(\d{1,3})$|^-$/;
+    /^(\d{2}[A-Z]{2})-(\d{1,3}) to \1-(\d{1,3})$|^-$/;
 
   // automatically convert the letters after the leading ## to uppercase, and show them in the form that way,
   //  but keep the " to " lowercase
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
   chumDnaIdsInput.addEventListener('input', function () {
     if (!chumDnaIdsPattern.test(this.value)) {
       this.setCustomValidity(
-        'Please enter a valid Chum DNA ID range (e.g., AA26-123 to AA26-456) or "-" if no IDs were taken.',
+        'Please enter a valid Chum DNA ID range (e.g., 26AA-123 to 26AA-456) or "-" if no IDs were taken.',
       );
     } else {
       this.setCustomValidity('');
