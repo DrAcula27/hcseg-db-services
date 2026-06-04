@@ -3,21 +3,325 @@
   <head>
     <%- include("./partials/head", { title: "HCSEG - Union Adult Return" }) %>
     <link rel="stylesheet" href="/css/form.css" />
+    <!-- <script src="/js/unionAdultReturnForm.js" defer></script> -->
+    <!-- <script src="/js/unionAdultTrapStatus.js" defer></script> -->
   </head>
   <body>
     <%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Adult Return Program" }) %>
 
     <main class="container">
-      <a href="/projects" class="btn btn-nav">
-        Return to Project Selection
-      </a>
-      <div class="form-container">
-        <form>
-          <h2>Union Adult Return Form</h2>
-          <p>This form is under development. Please check back soon.</p>
-        </form>
+      <div class="btn-container">
+        <!-- <a href="/projects/union_adult_return/common-queries" class="btn btn-nav">Common Queries</a> -->
+        <a href="/projects" class="btn btn-nav">Return to Projects</a>
+        <!-- <button type="button" id="trapStatusBtn" class="btn btn-nav btn-trap-status">Trap Status</button> -->
       </div>
+
+      <h3>*All Form Fields are Required*</h3>
+        <form id="unionAdultReturnForm" class="union-adult-return-form">
+        <!-- pre trap check information -->
+        <fieldset class="feedback-input">
+          <legend>*Date:</legend>
+          <input
+            name="Date"
+            type="date"
+            id="date"
+            required
+            class="feedback-input"
+            max=""
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Number of Visitors:</legend>
+          <input
+            name="NumberofVisitors"
+            type="number"
+            id="numberofVisitors"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+
+        <div class="form-divider">Daily Catch Totals</div>
+
+        <!-- trap check information -->
+        <fieldset class="feedback-input">
+          <legend>*Chum Males:</legend>
+          <input
+            name="ChumMales"
+            type="number"
+            id="chumMales"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chum Females:</legend>
+          <input
+            name="ChumFemales"
+            type="number"
+            id="chumFemales"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Males - Adipose Present:</legend>
+          <input
+            name="CohoMalesAdiposePresent"
+            type="number"
+            id="cohoMalesAdiposePresent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Females - Adipose Present:</legend>
+          <input
+            name="CohoFemalesAdiposePresent"
+            type="number"
+            id="cohoFemalesAdiposePresent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Males - Adipose Absent:</legend>
+          <input
+            name="CohoMalesAdiposeAbsent"
+            type="number"
+            id="cohoMalesAdiposeAbsent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Coho Females - Adipose Absent:</legend>
+          <input
+            name="CohoFemalesAdiposeAbsent"
+            type="number"
+            id="cohoFemalesAdiposeAbsent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Males - Adipose Present:</legend>
+          <input
+            name="ChinookMalesAdiposePresent"
+            type="number"
+            id="chinookMalesAdiposePresent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Females - Adipose Present:</legend>
+          <input
+            name="ChinookFemalesAdiposePresent"
+            type="number"
+            id="chinookFemalesAdiposePresent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Males - Adipose Absent:</legend>
+          <input
+            name="ChinookMalesAdiposeAbsent"
+            type="number"
+            id="chinookMalesAdiposeAbsent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Chinook Females - Adipose Absent:</legend>
+          <input
+            name="ChinookFemalesAdiposeAbsent"
+            type="number"
+            id="chinookFemalesAdiposeAbsent"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Pink Males:</legend>
+          <input
+            name="PinkMales"
+            type="number"
+            id="pinkMales"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+        <fieldset class="feedback-input">
+          <legend>*Pink Females:</legend>
+          <input
+            name="PinkFemales"
+            type="number"
+            id="pinkFemales"
+            class="feedback-input"
+            placeholder="If there are none, type 0"
+            step="1"
+            required
+            title="if none, type 0"
+          />
+        </fieldset>
+
+        <div class="form-divider">Weather, Observations, & Comments</div>
+
+        <fieldset class="feedback-input comments-section col-span-2">
+          <legend>*Weather, Observations, & Comments:</legend>
+          <textarea
+            name="Comments"
+            id="comments"
+            class="feedback-input"
+            placeholder="Enter all comments here. If there are no comments, please type a '-'."
+            required
+          ></textarea>
+        </fieldset>
+        <fieldset class="comment-notes-container col-span-2">
+          <legend>Weather, Observations, & Comments Notes:</legend>
+          <ul class="comment-notes">
+            <li>Record weather conditions in comments.</li>
+            <li>
+              Please take photos of any unidentified species and note in
+              comments.
+            </li>
+          </ul>
+        </fieldset>
+        <input type="submit" value="SUBMIT" class="btn btn-submit" />
+      </form>
     </main>
+
+    <!-- Trap Status Modal -->
+    <div id="trapStatusModal" class="modal hidden">
+      <div class="modal-overlay" id="trapStatusModalOverlay"></div>
+      <div class="modal-content trap-status-modal-content">
+        <button
+          id="trapStatusModalCloseBtn"
+          class="modal-close-btn"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+        <h2 class="trap-status-modal-title">Trap Status Entry</h2>
+        <p class="trap-status-modal-subtitle">
+          All other form fields will be set to their null values (<i>N</i>, <i>0</i>, <i>-</i>, or <i>no reading</i>) automatically.
+        </p>
+        <div class="trap-status-form">
+          <fieldset class="feedback-input">
+            <legend>*Date:</legend>
+            <input
+              type="date"
+              id="trapStatusDate"
+              class="feedback-input"
+              required
+            />
+          </fieldset>
+          <fieldset class="feedback-input">
+            <legend>*Time:</legend>
+            <input
+              type="time"
+              id="trapStatusTime"
+              class="feedback-input"
+              value="00:00"
+              required
+            />
+          </fieldset>
+          <fieldset class="feedback-input trap-status-comments-field">
+            <legend>*Comments:</legend>
+            <div class="trap-status-radio-group">
+              <label class="trap-status-radio-label">
+                <input
+                  type="radio"
+                  name="trapStatusComment"
+                  value="No trap check."
+                  id="commentNoCheck"
+                  required
+                  title="No trap check = trap wasn't checked (not fishing that day)"
+                />
+                <span>No trap check.</span>
+              </label>
+              <label class="trap-status-radio-label">
+                <input
+                  type="radio"
+                  name="trapStatusComment"
+                  value="Cone raised."
+                  id="commentConeRaised"
+                  title="Cone raised = trap stopped fishing (start of not-fishing period)"
+                />
+                <span>Cone raised.</span>
+              </label>
+              <label class="trap-status-radio-label">
+                <input
+                  type="radio"
+                  name="trapStatusComment"
+                  value="Cone lowered."
+                  id="commentConeLowered"
+                  title="Cone lowered = trap resumed fishing (end of not-fishing period)"
+                />
+                <span>Cone lowered.</span>
+              </label>
+            </div>
+          </fieldset>
+          <button type="button" id="trapStatusApplyBtn" class="btn btn-submit trap-status-apply-btn">
+            Apply to Form
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal popup for form submission response -->
+    <div id="responseModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <button
+          id="modalCloseBtn"
+          class="modal-close-btn"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+        <div id="responseMessage"></div>
+      </div>
+    </div>
 
     <%- include("./partials/footer", { pageType: "Data Input Form" }) %>
   </body>
