@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// connect to the database with retry/backoff
+// # connect to the database with retry/backoff
 const mongoUri =
   process.env.MONGODB_URI || process.env.MONGODB_URI_DEV;
 if (!mongoUri) {
@@ -88,7 +88,7 @@ async function connectWithRetry(attempt = 1, maxAttempts = 5) {
 
 connectWithRetry();
 
-// Mongoose connection events
+// # Mongoose connection events
 mongoose.connection.on('connected', () => {
   console.log(`Mongoose connected to db: ${mongoDbName})`);
 });
@@ -102,20 +102,20 @@ mongoose.connection.on('reconnected', () => {
   console.log('Mongoose reconnected.');
 });
 
-// set up view engine
+// # set up view engine
 app.set('view engine', 'ejs');
 app.set('views', [
   path.join(__dirname, 'views'),
   path.join(__dirname, 'projects'),
 ]);
 
-// middleware
+// # middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 
-// session management
+// # session management
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   console.error(
@@ -150,7 +150,7 @@ app.use(
   }),
 );
 
-// passport initialization
+// # passport initialization
 require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -160,11 +160,15 @@ const {
   ensureRole,
 } = require('./middleware/auth');
 
-// routes
+// # routes
 app.use('/auth', require('./routes/auth'));
 app.use(
   '/api/Union_Outmigration',
   require('./projects/union_outmigration/routes/union-outmigration'),
+);
+app.use(
+  '/api/Union_Adult_Return',
+  require('./projects/union_adult_return/routes/union-adult-return'),
 );
 app.use('/api/users', require('./routes/users'));
 
@@ -220,7 +224,7 @@ app.get('/projects/:projectName', (req, res) => {
   }
 });
 
-// Admin-only common queries for union_outmigration
+// common queries for union_outmigration
 app.get(
   '/projects/:projectName/common-queries',
   ensureAuthenticated,
@@ -256,7 +260,7 @@ app.get(
   },
 );
 
-// start the server with graceful shutdown handlers
+// # start the server with graceful shutdown handlers
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`),
