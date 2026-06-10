@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function openResponseModal(message, isSuccess) {
-    responseMessage.innerHTML = `<p>${message}</p>`;
+    responseMessage.textContent = message;
     responseMessage.className = isSuccess ? 'success' : 'error';
     responseModal.classList.remove('hidden');
   }

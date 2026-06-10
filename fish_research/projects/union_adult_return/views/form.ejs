@@ -3,8 +3,8 @@
   <head>
     <%- include("./partials/head", { title: "HCSEG - Union Adult Return" }) %>
     <link rel="stylesheet" href="/css/form.css" />
-    <!-- <script src="/js/unionAdultReturnForm.js" defer></script> -->
-    <!-- <script src="/js/unionAdultTrapStatus.js" defer></script> -->
+    <script src="/js/unionAdultReturnForm.js" defer></script>
+    <script src="/js/unionAdultTrapStatus.js" defer></script>
   </head>
   <body>
     <%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum - Adult Return Program" }) %>
@@ -13,12 +13,52 @@
       <div class="btn-container">
         <!-- <a href="/projects/union_adult_return/common-queries" class="btn btn-nav">Common Queries</a> -->
         <a href="/projects" class="btn btn-nav">Return to Projects</a>
-        <!-- <button type="button" id="trapStatusBtn" class="btn btn-nav btn-trap-status">Trap Status</button> -->
+        <button type="button" id="trapStatusBtn" class="btn btn-nav btn-trap-status">Trap Status</button>
       </div>
 
       <h3>*All Form Fields are Required*</h3>
         <form id="unionAdultReturnForm" class="union-adult-return-form">
-        <!-- pre trap check information -->
+
+        <!-- # hidden inputs with default values -->
+        <fieldset class="feedback-input hidden">
+          <legend>*Time:</legend>
+          <input
+            name="Time"
+            type="time"
+            id="time"
+            class="feedback-input"
+            required
+            value="00:00"
+          />
+        </fieldset>
+        <fieldset id="trapOperating" class="feedback-input hidden">
+          <legend>*Trap Operating (Y/N):</legend>
+          <div>
+            <span class="radio-btn">
+              <input
+                type="radio"
+                id="yes"
+                name="Trap Operating"
+                value="Y"
+                required
+                checked
+              />
+              <label for="yes">Y</label>
+            </span>
+            <span class="radio-btn">
+              <input
+                type="radio"
+                id="no"
+                name="Trap Operating"
+                value="N"
+                required
+              />
+              <label for="no">N</label>
+            </span>
+          </div>
+        </fieldset>
+
+        <!-- # pre trap check information -->
         <fieldset class="feedback-input">
           <legend>*Date:</legend>
           <input
@@ -33,9 +73,9 @@
         <fieldset class="feedback-input">
           <legend>*Number of Visitors:</legend>
           <input
-            name="NumberofVisitors"
+            name="Number of Visitors"
             type="number"
-            id="numberofVisitors"
+            id="numberOfVisitors"
             class="feedback-input"
             placeholder="If there are none, type 0"
             step="1"
@@ -46,11 +86,11 @@
 
         <div class="form-divider">Daily Catch Totals</div>
 
-        <!-- trap check information -->
+        <!-- # trap check information -->
         <fieldset class="feedback-input">
           <legend>*Chum Males:</legend>
           <input
-            name="ChumMales"
+            name="Chum Males"
             type="number"
             id="chumMales"
             class="feedback-input"
@@ -63,7 +103,7 @@
         <fieldset class="feedback-input">
           <legend>*Chum Females:</legend>
           <input
-            name="ChumFemales"
+            name="Chum Females"
             type="number"
             id="chumFemales"
             class="feedback-input"
@@ -76,7 +116,7 @@
         <fieldset class="feedback-input">
           <legend>*Coho Males - Adipose Present:</legend>
           <input
-            name="CohoMalesAdiposePresent"
+            name="Coho Males - Adipose Present"
             type="number"
             id="cohoMalesAdiposePresent"
             class="feedback-input"
@@ -89,7 +129,7 @@
         <fieldset class="feedback-input">
           <legend>*Coho Females - Adipose Present:</legend>
           <input
-            name="CohoFemalesAdiposePresent"
+            name="Coho Females - Adipose Present"
             type="number"
             id="cohoFemalesAdiposePresent"
             class="feedback-input"
@@ -102,7 +142,7 @@
         <fieldset class="feedback-input">
           <legend>*Coho Males - Adipose Absent:</legend>
           <input
-            name="CohoMalesAdiposeAbsent"
+            name="Coho Males - Adipose Absent"
             type="number"
             id="cohoMalesAdiposeAbsent"
             class="feedback-input"
@@ -115,7 +155,7 @@
         <fieldset class="feedback-input">
           <legend>*Coho Females - Adipose Absent:</legend>
           <input
-            name="CohoFemalesAdiposeAbsent"
+            name="Coho Females - Adipose Absent"
             type="number"
             id="cohoFemalesAdiposeAbsent"
             class="feedback-input"
@@ -128,7 +168,7 @@
         <fieldset class="feedback-input">
           <legend>*Chinook Males - Adipose Present:</legend>
           <input
-            name="ChinookMalesAdiposePresent"
+            name="Chinook Males - Adipose Present"
             type="number"
             id="chinookMalesAdiposePresent"
             class="feedback-input"
@@ -141,7 +181,7 @@
         <fieldset class="feedback-input">
           <legend>*Chinook Females - Adipose Present:</legend>
           <input
-            name="ChinookFemalesAdiposePresent"
+            name="Chinook Females - Adipose Present"
             type="number"
             id="chinookFemalesAdiposePresent"
             class="feedback-input"
@@ -154,7 +194,7 @@
         <fieldset class="feedback-input">
           <legend>*Chinook Males - Adipose Absent:</legend>
           <input
-            name="ChinookMalesAdiposeAbsent"
+            name="Chinook Males - Adipose Absent"
             type="number"
             id="chinookMalesAdiposeAbsent"
             class="feedback-input"
@@ -167,7 +207,7 @@
         <fieldset class="feedback-input">
           <legend>*Chinook Females - Adipose Absent:</legend>
           <input
-            name="ChinookFemalesAdiposeAbsent"
+            name="Chinook Females - Adipose Absent"
             type="number"
             id="chinookFemalesAdiposeAbsent"
             class="feedback-input"
@@ -180,7 +220,7 @@
         <fieldset class="feedback-input">
           <legend>*Pink Males:</legend>
           <input
-            name="PinkMales"
+            name="Pink Males"
             type="number"
             id="pinkMales"
             class="feedback-input"
@@ -193,7 +233,7 @@
         <fieldset class="feedback-input">
           <legend>*Pink Females:</legend>
           <input
-            name="PinkFemales"
+            name="Pink Females"
             type="number"
             id="pinkFemales"
             class="feedback-input"
@@ -230,7 +270,7 @@
       </form>
     </main>
 
-    <!-- Trap Status Modal -->
+    <!-- # Trap Status Modal -->
     <div id="trapStatusModal" class="modal hidden">
       <div class="modal-overlay" id="trapStatusModalOverlay"></div>
       <div class="modal-content trap-status-modal-content">
@@ -243,7 +283,7 @@
         </button>
         <h2 class="trap-status-modal-title">Trap Status Entry</h2>
         <p class="trap-status-modal-subtitle">
-          All other form fields will be set to their null values (<i>N</i>, <i>0</i>, <i>-</i>, or <i>no reading</i>) automatically.
+          All other form fields will be set to their null values automatically.
         </p>
         <div class="trap-status-form">
           <fieldset class="feedback-input">
@@ -267,39 +307,13 @@
           </fieldset>
           <fieldset class="feedback-input trap-status-comments-field">
             <legend>*Comments:</legend>
-            <div class="trap-status-radio-group">
-              <label class="trap-status-radio-label">
-                <input
-                  type="radio"
-                  name="trapStatusComment"
-                  value="No trap check."
-                  id="commentNoCheck"
-                  required
-                  title="No trap check = trap wasn't checked (not fishing that day)"
-                />
-                <span>No trap check.</span>
-              </label>
-              <label class="trap-status-radio-label">
-                <input
-                  type="radio"
-                  name="trapStatusComment"
-                  value="Cone raised."
-                  id="commentConeRaised"
-                  title="Cone raised = trap stopped fishing (start of not-fishing period)"
-                />
-                <span>Cone raised.</span>
-              </label>
-              <label class="trap-status-radio-label">
-                <input
-                  type="radio"
-                  name="trapStatusComment"
-                  value="Cone lowered."
-                  id="commentConeLowered"
-                  title="Cone lowered = trap resumed fishing (end of not-fishing period)"
-                />
-                <span>Cone lowered.</span>
-              </label>
-            </div>
+            <textarea
+              name="TrapStatusComments"
+              id="trapStatusComments"
+              class="feedback-input"
+              placeholder="Enter the reason the trap was not trapping."
+              required
+            >Trap out due to </textarea>
           </fieldset>
           <button type="button" id="trapStatusApplyBtn" class="btn btn-submit trap-status-apply-btn">
             Apply to Form
@@ -308,7 +322,7 @@
       </div>
     </div>
 
-    <!-- Modal popup for form submission response -->
+    <!-- # Modal popup for form submission response -->
     <div id="responseModal" class="modal hidden">
       <div class="modal-overlay"></div>
       <div class="modal-content">

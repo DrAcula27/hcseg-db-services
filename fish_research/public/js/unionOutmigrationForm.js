@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function openModal(message, isSuccess) {
-    responseMessage.innerHTML = `<p>${message}</p>`;
+    responseMessage.textContent = message;
     responseMessage.className = isSuccess ? 'success' : 'error';
     responseModal.classList.remove('hidden');
   }
@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fetch('/api/Union_Outmigration', {
       method: 'POST',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return response.json().then((data) => {
             console.error('Server error response:', data);
             throw new Error(
-              `HTTP error! <br> status: ${response.status} - ${data.message || data.error}`,
+              `HTTP error! status: ${response.status} - ${data.message || data.error}`,
             );
           });
         }
@@ -185,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch((error) => {
         console.error('Fetch error:', error);
         openModal(
-          `Error submitting the form: <br> ${error.message}`,
+          `Error submitting the form: ${error.message}`,
           false,
         );
       });
