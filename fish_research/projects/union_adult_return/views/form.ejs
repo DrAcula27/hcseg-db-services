@@ -305,15 +305,40 @@
               required
             />
           </fieldset>
+          <fieldset class="feedback-input trap-status-radio-field">
+            <legend>*Trap Status:</legend>
+            <div>
+              <span class="radio-btn">
+                <input
+                  type="radio"
+                  id="trapStopped"
+                  name="Trap Status"
+                  value="Trapping stopped."
+                  required
+                />
+                <label for="trapStopped">Trapping Stopped</label>
+              </span>
+              <span class="radio-btn">
+                <input
+                  type="radio"
+                  id="trapStarted"
+                  name="Trap Status"
+                  value="Trapping started."
+                  required
+                />
+                <label for="trapStarted">Trapping Started</label>
+              </span>
+            </div>
+          </fieldset>
           <fieldset class="feedback-input trap-status-comments-field">
             <legend>*Comments:</legend>
             <textarea
               name="TrapStatusComments"
               id="trapStatusComments"
               class="feedback-input"
-              placeholder="Enter the reason the trap was not trapping."
+              placeholder="Enter the reason the trap status changed."
               required
-            >Trap out due to </textarea>
+            ></textarea>
           </fieldset>
           <button type="button" id="trapStatusApplyBtn" class="btn btn-submit trap-status-apply-btn">
             Apply to Form
