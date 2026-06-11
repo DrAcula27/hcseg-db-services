@@ -1,4 +1,4 @@
-/* *
+/* # Union Adult Trap Status Modal
  * Handles the "Trap Status" button flow:
  *  1. Opens a focused modal to collect Date, Time, and Comments.
  *  2. On "Apply to Form", pre-fills every main form field with null
@@ -8,51 +8,39 @@
 
 (function () {
   const TRAP_STATUS_DEFAULTS = {
-    'Trap Operating': 'N',
-    'Number of Visitors': 0,
-    'Chum Males': 0,
-    'Chum Females': 0,
-    'Coho Males - Adipose Present': 0,
-    'Coho Females - Adipose Present': 0,
-    'Coho Males - Adipose Absent': 0,
-    'Coho Females - Adipose Absent': 0,
-    'Chinook Males - Adipose Present': 0,
-    'Chinook Females - Adipose Present': 0,
-    'Chinook Males - Adipose Absent': 0,
-    'Chinook Females - Adipose Absent': 0,
-    'Pink Males': 0,
-    'Pink Females': 0,
+    numberOfVisitors: 0,
+    chumMales: 0,
+    chumFemales: 0,
+    cohoMalesAdiposePresent: 0,
+    cohoFemalesAdiposePresent: 0,
+    cohoMalesAdiposeAbsent: 0,
+    cohoFemalesAdiposeAbsent: 0,
+    chinookMalesAdiposePresent: 0,
+    chinookFemalesAdiposePresent: 0,
+    chinookMalesAdiposeAbsent: 0,
+    chinookFemalesAdiposeAbsent: 0,
+    pinkMales: 0,
+    pinkFemales: 0,
   };
 
-  // * Set a field value by its [name] attribute, handling radios.
-  function setFieldByName(form, fieldName, value) {
-    const els = form.querySelectorAll(
-      `[name="${CSS.escape(fieldName)}"]`,
-    );
-
-    if (!els.length) return;
-
-    const first = els[0];
-
-    if (first.type === 'radio') {
-      els.forEach((el) => {
-        el.checked = el.value === String(value);
-      });
-    } else {
-      first.value =
-        value !== null && value !== undefined ? value : '';
+  // * Set TRAP_STATUS_DEFAULTS by their [id] attributes.
+  function setFieldById(form, id, value) {
+    const field = form.querySelector(`#${id}`);
+    if (field) {
+      field.value = value;
     }
   }
 
   // * Today's date as YYYY-MM-DD (local time).
   function todayISO() {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    const date = new Date();
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
+  // * DOM elements
   const trapStatusBtn = document.getElementById('trapStatusBtn');
   const trapStatusModal = document.getElementById('trapStatusModal');
   const trapStatusModalOverlay = document.getElementById(
@@ -73,8 +61,10 @@
   );
   const mainForm = document.getElementById('unionAdultReturnForm');
 
-  if (!trapStatusBtn || !trapStatusModal || !mainForm) return; // guard
+  // * Guard against missing elements.
+  if (!trapStatusBtn || !trapStatusModal || !mainForm) return;
 
+  // * Modal handlers
   function openModal() {
     // Restrict date to today or earlier
     trapStatusDateInput.max = todayISO();
@@ -128,25 +118,42 @@
 
     // 1. Fill every zero/null field
     Object.entries(TRAP_STATUS_DEFAULTS).forEach(([field, val]) => {
-      setFieldByName(mainForm, field, val);
+      setFieldById(mainForm, field, val);
     });
 
-    // 2. Fill Date, Time, Comments from modal
-    setFieldByName(mainForm, 'Date', date);
-    setFieldByName(mainForm, 'Time', time);
+    // 2. Fill Date, Time, Trap Operating, and Comments from modal
+    setFieldById(mainForm, 'time', time);
+    setFieldById(mainForm, 'date', date);
 
-    // combine value of radio button "Trap Status" with comments
+    /*
+     If the `Trapping Stopped` radio button is selected, the `Trap Operating` the `N` radio button should be checked.
+     If the `Trapping Started` radio button is selected, the `Trap Operating` the `Y` radio button should be checked.
+    */
     const trapStatus = document.querySelector(
       'input[name="Trap Status"]:checked',
     );
+    const trapOperatingYes = document.getElementById('trapOperatingYes');
+    const trapOperatingNo = document.getElementById('trapOperatingNo');
+    if (trapStatus.value === 'Trapping stopped.') {
+      // check the `N` radio button for `Trap Operating`
+      trapOperatingNo.checked = true;
+    } else if (trapStatus.value === 'Trapping started.') {
+      // check the `Y` radio button for `Trap Operating`
+      trapOperatingYes.checked = true;
+    } else {
+      // default to `Y` for `Trap Operating` if no radio button is selected
+      trapOperatingYes.checked = true;
+    }
+
+    // combine value of radio button "Trap Status" with comments
     if (trapStatus) {
-      setFieldByName(
+      setFieldById(
         mainForm,
-        'Comments',
+        'comments',
         `${trapStatus.value} ${comments}`,
       );
     } else {
-      setFieldByName(mainForm, 'Comments', comments);
+      setFieldById(mainForm, 'comments', comments);
     }
 
     // 3. Close modal and scroll to top of form so user can review
