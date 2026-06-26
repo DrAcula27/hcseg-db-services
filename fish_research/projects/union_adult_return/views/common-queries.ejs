@@ -33,6 +33,101 @@
 			<section class="results">
 				<h2>Query Results for: <em><%= query.startDate %> to <%= query.endDate %></em></h2>
 
+        <h3>Species Summary</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Species</th>
+              <th>Males</th>
+              <th>Females</th>
+              <th>Unknowns</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% speciesSummary.forEach((species) => { %>
+              <tr>
+                <td><%= species.label %></td>
+                <td><%= species.males.toLocaleString() %></td>
+                <td><%= species.females.toLocaleString() %></td>
+                <td><%= species.unknowns.toLocaleString() %></td>
+                <td><%= species.total.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Daily Totals by Species</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chum</th>
+              <th>Coho</th>
+              <th>Chinook</th>
+              <th>Pink</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% dailyTotalsRows.forEach((row) => { %>
+              <tr>
+                <td><%= row.dateLabel %></td>
+                <td><%= row.speciesTotals.chum.toLocaleString() %></td>
+                <td><%= row.speciesTotals.coho.toLocaleString() %></td>
+                <td><%= row.speciesTotals.chinook.toLocaleString() %></td>
+                <td><%= row.speciesTotals.pink.toLocaleString() %></td>
+                <td><%= row.totalDaily.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Running Totals by Species</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chum</th>
+              <th>Coho</th>
+              <th>Chinook</th>
+              <th>Pink</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% dailyTotalsRows.forEach((row) => { %>
+              <tr>
+                <td><%= row.dateLabel %></td>
+                <td><%= row.runningTotals.chum.toLocaleString() %></td>
+                <td><%= row.runningTotals.coho.toLocaleString() %></td>
+                <td><%= row.runningTotals.chinook.toLocaleString() %></td>
+                <td><%= row.runningTotals.pink.toLocaleString() %></td>
+                <td><%= row.totalRunning.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Daily Totals Charts</h3>
+        <div class="chart-grid">
+          <% speciesSummary.forEach((species) => { %>
+            <% const values = dailyTotalsRows.map((row) => row.speciesTotals[species.key] || 0); const maxValue = Math.max(...values, 1); %>
+            <div class="chart-card">
+              <h4><%= species.label %></h4>
+              <svg class="species-chart" viewBox="0 0 320 180" role="img" aria-label="<%= species.label %> daily totals chart">
+                <line class="chart-axis" x1="16" y1="150" x2="304" y2="150"></line>
+                <line class="chart-axis" x1="16" y1="20" x2="16" y2="150"></line>
+                <% values.forEach((value, index) => { %>
+                  <% const x = 24 + index * ((304 - 24) / Math.max(values.length, 1)); const barHeight = Math.max(6, (value / maxValue) * 110); const y = 150 - barHeight; %>
+                  <rect class="chart-bar" x="<%= x - 4 %>" y="<%= y %>" width="8" height="<%= barHeight %>"></rect>
+                <% }); %>
+              </svg>
+              <p class="chart-caption">Maximum daily total: <%= maxValue.toLocaleString() %></p>
+            </div>
+          <% }); %>
+        </div>
+
         <h3>Trap Not Fishing Periods</h3>
         <% if (trapNotFishingPeriods && trapNotFishingPeriods.length) { %>
           <table class="results-table">
