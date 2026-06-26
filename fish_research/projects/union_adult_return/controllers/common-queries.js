@@ -80,8 +80,6 @@ exports.renderCommonQueries = async (req, res) => {
       req.query,
     );
 
-    const CURRENT_DATA_CUTOFF = new Date(2026, 7, 15); // Aug 15, 2026 (month is 0-indexed)
-
     const queryStart = filter.Date.$gte;
     const queryEnd = filter.Date.$lte;
 
@@ -89,18 +87,69 @@ exports.renderCommonQueries = async (req, res) => {
     // Trap not fishing — search Comments field for relevant keywords.
     // -------------------------------------------------------------------------
     const trapCommentRegex = {
-      $regex: /trapping stopped|trapping started/i,
+      $regex: /trapping stopped|trapping started|no trap check/i,
     };
     const trapSelect = { Date: 1, Time: 1, Comments: 1 };
 
     // Query for trap not fishing periods within the date range
-    const trapNotFishingPeriods = await UnionAdultReturn.find({
+    const trapNotFishingRows = await UnionAdultReturn.find({
       Date: { $gte: queryStart, $lte: queryEnd },
       Comments: trapCommentRegex,
     })
       .select(trapSelect)
       .sort({ Date: 1, Time: 1 })
       .lean();
+
+    const trapNotFishingPeriods = [];
+    let openPeriod = null;
+
+    for (const row of trapNotFishingRows) {
+      const comment =
+        typeof row.Comments === 'string' ? row.Comments : '';
+      const date = row.Date;
+      const time = row.Time;
+
+      if (/trapping stopped/i.test(comment)) {
+        if (!openPeriod) {
+          openPeriod = {
+            start: date,
+            startTime: time,
+            end: null,
+            endTime: '',
+            historical: false,
+          };
+        }
+      } else if (/trapping started/i.test(comment)) {
+        if (openPeriod) {
+          openPeriod.end = date;
+          openPeriod.endTime = time;
+          trapNotFishingPeriods.push(openPeriod);
+          openPeriod = null;
+        } else {
+          trapNotFishingPeriods.push({
+            start: null,
+            startTime: '',
+            end: date,
+            endTime: time,
+            historical: false,
+          });
+        }
+      } else if (/no trap check/i.test(comment)) {
+        if (!openPeriod) {
+          openPeriod = {
+            start: date,
+            startTime: '',
+            end: null,
+            endTime: '',
+            historical: false,
+          };
+        }
+      }
+    }
+
+    if (openPeriod) {
+      trapNotFishingPeriods.push(openPeriod);
+    }
 
     res.render('union_adult_return/views/common-queries', {
       user: req.user,

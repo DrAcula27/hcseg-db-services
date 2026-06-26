@@ -34,13 +34,30 @@
 				<h2>Query Results for: <em><%= query.startDate %> to <%= query.endDate %></em></h2>
 
         <h3>Trap Not Fishing Periods</h3>
-        <ul>
-          <% trapNotFishingPeriods.forEach((period) => { %>
-            <li>
-              <strong><%= period.Date.toLocaleDateString() %></strong> at <strong><%= period.Time %></strong> - <%= period.Comments %>
-            </li>
-          <% }); %>
-        </ul>
+        <% if (trapNotFishingPeriods && trapNotFishingPeriods.length) { %>
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Date Trap Stopped</th>
+                <th>Time Stopped</th>
+                <th>Date Trap Started</th>
+                <th>Time Started</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% trapNotFishingPeriods.forEach((period) => { %>
+                <tr>
+                  <td><%= period.start ? period.start.toLocaleDateString() : 'Before query range' %></td>
+                  <td><%= period.startTime || '&mdash;' %></td>
+                  <td><%= period.end ? period.end.toLocaleDateString() : 'Still not fishing' %></td>
+                  <td><%= period.endTime || '&mdash;' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p class="no-results">No trap not fishing records found for the selected range.</p>
+        <% } %>
 
 			</section>
 		</main>
