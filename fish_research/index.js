@@ -224,18 +224,23 @@ app.get('/projects/:projectName', (req, res) => {
   }
 });
 
-// common queries for union_outmigration
+// common queries for all projects
 app.get(
   '/projects/:projectName/common-queries',
   ensureAuthenticated,
   async (req, res) => {
     try {
+      const validProjects = [
+        'union_outmigration',
+        'union_adult_return',
+        'steelhead_coho_vsp',
+      ];
       const { projectName } = req.params;
-      if (projectName !== 'union_outmigration') {
+      if (!validProjects.includes(projectName)) {
         return res.status(404).send('Not found');
       }
 
-      const commonQueriesController = require('./projects/union_outmigration/controllers/common-queries');
+      const commonQueriesController = require(`./projects/${projectName}/controllers/common-queries`);
       return commonQueriesController.renderCommonQueries(req, res);
     } catch (err) {
       console.error('Error rendering common queries:', err);

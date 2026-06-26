@@ -111,8 +111,9 @@ textarea {
   resize: vertical;
 }
 
-/* Form Divider */
-.form-divider {
+/* Form Dividers */
+.form-divider,
+.mini-form-divider {
   grid-column: 1 / -1;
   text-align: left;
   background: var(--background-color-gray);
@@ -122,6 +123,13 @@ textarea {
   text-transform: uppercase;
   padding: 6px 8px;
   font-size: 1em;
+}
+
+.mini-form-divider {
+  padding: 2px 4px;
+  margin: 4px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Trap operating radio buttons */
