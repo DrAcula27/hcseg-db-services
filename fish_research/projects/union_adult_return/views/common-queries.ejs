@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include("./partials/head", { title: "HCSEG - Union  Adult Return - Common Queries" }) %>
+		<link rel="stylesheet" href="/css/form.css" />
+    <link rel="stylesheet" href="/css/common-queries.css" />
+	</head>
+	<body>
+		<%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum -  Adult Return Program - Common Queries" }) %>
+
+		<main class="container">
+      <div class="btn-container">
+        <a href="/projects/union_adult_return" class="btn btn-nav">Return to Union  Adult Return Form</a>
+        <a href="/projects" class="btn btn-nav">Return to Projects</a>
+      </div>
+			<section class="query-controls">
+			<form method="get" action="/projects/union_adult_return/common-queries" autocomplete="off">
+          <h2>Enter a Date Range:</h2>
+          <div>
+            <div>
+              <label for="startDate">Start date:</label>
+              <input type="date" id="startDate" name="startDate" value="<%= query.startDate || '' %>" />
+            </div>
+            <div>
+              <label for="endDate">End date:</label>
+              <input type="date" id="endDate" name="endDate" value="<%= query.endDate || '' %>" />
+            </div>
+            <button type="submit" class="btn">Run</button>
+          </div>
+				</form>
+			</section>
+
+			<section class="results">
+				<h2>Query Results for: <em><%= query.startDate %> to <%= query.endDate %></em></h2>
+
+        <h3>Trap Not Fishing Periods</h3>
+        <ul>
+          <% trapNotFishingPeriods.forEach((period) => { %>
+            <li>
+              <strong><%= period.Date.toLocaleDateString() %></strong> at <strong><%= period.Time %></strong> - <%= period.Comments %>
+            </li>
+          <% }); %>
+        </ul>
+
+			</section>
+		</main>
+
+		<%- include("./partials/footer", { pageType: "Data Portal" }) %>
+	</body>
+</html>
