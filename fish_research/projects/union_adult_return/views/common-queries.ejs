@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include("./partials/head", { title: "HCSEG - Union  Adult Return - Common Queries" }) %>
+		<link rel="stylesheet" href="/css/form.css" />
+    <link rel="stylesheet" href="/css/common-queries.css" />
+	</head>
+	<body>
+		<%- include("./partials/header", { user: user, pageTitle: "Union River Summer Chum -  Adult Return Program - Common Queries" }) %>
+
+		<main class="container">
+      <div class="btn-container">
+        <a href="/projects/union_adult_return" class="btn btn-nav">Return to Union  Adult Return Form</a>
+        <a href="/projects" class="btn btn-nav">Return to Projects</a>
+      </div>
+			<section class="query-controls">
+			<form method="get" action="/projects/union_adult_return/common-queries" autocomplete="off">
+          <h2>Enter a Date Range:</h2>
+          <div>
+            <div>
+              <label for="startDate">Start date:</label>
+              <input type="date" id="startDate" name="startDate" value="<%= query.startDate || '' %>" />
+            </div>
+            <div>
+              <label for="endDate">End date:</label>
+              <input type="date" id="endDate" name="endDate" value="<%= query.endDate || '' %>" />
+            </div>
+            <button type="submit" class="btn">Run</button>
+          </div>
+				</form>
+			</section>
+
+			<section class="results">
+				<h2>Query Results for: <em><%= query.startDate %> to <%= query.endDate %></em></h2>
+
+        <h3>Species Summary</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Species</th>
+              <th>Males</th>
+              <th>Females</th>
+              <th>Unknowns</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% speciesSummary.forEach((species) => { %>
+              <tr>
+                <td><%= species.label %></td>
+                <td><%= species.males.toLocaleString() %></td>
+                <td><%= species.females.toLocaleString() %></td>
+                <td><%= species.unknowns.toLocaleString() %></td>
+                <td><%= species.total.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Daily Totals by Species</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chum</th>
+              <th>Coho</th>
+              <th>Chinook</th>
+              <th>Pink</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% dailyTotalsRows.forEach((row) => { %>
+              <tr>
+                <td><%= row.dateLabel %></td>
+                <td><%= row.speciesTotals.chum.toLocaleString() %></td>
+                <td><%= row.speciesTotals.coho.toLocaleString() %></td>
+                <td><%= row.speciesTotals.chinook.toLocaleString() %></td>
+                <td><%= row.speciesTotals.pink.toLocaleString() %></td>
+                <td><%= row.totalDaily.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Running Totals by Species</h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Chum</th>
+              <th>Coho</th>
+              <th>Chinook</th>
+              <th>Pink</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% dailyTotalsRows.forEach((row) => { %>
+              <tr>
+                <td><%= row.dateLabel %></td>
+                <td><%= row.runningTotals.chum.toLocaleString() %></td>
+                <td><%= row.runningTotals.coho.toLocaleString() %></td>
+                <td><%= row.runningTotals.chinook.toLocaleString() %></td>
+                <td><%= row.runningTotals.pink.toLocaleString() %></td>
+                <td><%= row.totalRunning.toLocaleString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+
+        <h3>Daily Totals Charts</h3>
+        <div class="chart-grid">
+          <% speciesSummary.forEach((species) => { %>
+            <% const values = dailyTotalsRows.map((row) => row.speciesTotals[species.key] || 0); const maxValue = Math.max(...values, 1); %>
+            <div class="chart-card">
+              <h4><%= species.label %></h4>
+              <svg class="species-chart" viewBox="0 0 320 180" role="img" aria-label="<%= species.label %> daily totals chart">
+                <line class="chart-axis" x1="16" y1="150" x2="304" y2="150"></line>
+                <line class="chart-axis" x1="16" y1="20" x2="16" y2="150"></line>
+                <% values.forEach((value, index) => { %>
+                  <% const x = 24 + index * ((304 - 24) / Math.max(values.length, 1)); const barHeight = Math.max(6, (value / maxValue) * 110); const y = 150 - barHeight; %>
+                  <rect class="chart-bar" x="<%= x - 4 %>" y="<%= y %>" width="8" height="<%= barHeight %>"></rect>
+                <% }); %>
+              </svg>
+              <p class="chart-caption">Maximum daily total: <%= maxValue.toLocaleString() %></p>
+            </div>
+          <% }); %>
+        </div>
+
+        <h3>Trap Not Fishing Periods</h3>
+        <% if (trapNotFishingPeriods && trapNotFishingPeriods.length) { %>
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Date Trap Stopped</th>
+                <th>Time Stopped</th>
+                <th>Date Trap Started</th>
+                <th>Time Started</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% trapNotFishingPeriods.forEach((period) => { %>
+                <tr>
+                  <td><%= period.start ? period.start.toLocaleDateString() : 'Before query range' %></td>
+                  <td><%= period.startTime || '&mdash;' %></td>
+                  <td><%= period.end ? period.end.toLocaleDateString() : 'Still not fishing' %></td>
+                  <td><%= period.endTime || '&mdash;' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p class="no-results">No trap not fishing records found for the selected range.</p>
+        <% } %>
+
+			</section>
+		</main>
+
+		<%- include("./partials/footer", { pageType: "Data Portal" }) %>
+	</body>
+</html>

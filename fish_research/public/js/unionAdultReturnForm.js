@@ -70,29 +70,47 @@ document.addEventListener('DOMContentLoaded', function () {
       ).value,
       'Chum Males': document.getElementById('chumMales').value,
       'Chum Females': document.getElementById('chumFemales').value,
-      'Coho Males - Adipose Present': document.getElementById(
+      'Coho Males Adipose Unknown': document.getElementById(
+        'cohoMalesAdiposeUnknown',
+      ).value,
+      'Coho Females Adipose Unknown': document.getElementById(
+        'cohoFemalesAdiposeUnknown',
+      ).value,
+      'Coho Males Adipose Present': document.getElementById(
         'cohoMalesAdiposePresent',
       ).value,
-      'Coho Females - Adipose Present': document.getElementById(
+      'Coho Females Adipose Present': document.getElementById(
         'cohoFemalesAdiposePresent',
       ).value,
-      'Coho Males - Adipose Absent': document.getElementById(
+      'Coho Males Adipose Absent': document.getElementById(
         'cohoMalesAdiposeAbsent',
       ).value,
-      'Coho Females - Adipose Absent': document.getElementById(
+      'Coho Females Adipose Absent': document.getElementById(
         'cohoFemalesAdiposeAbsent',
       ).value,
-      'Chinook Males - Adipose Present': document.getElementById(
+      'Coho Unknown Adipose Absent': document.getElementById(
+        'cohoUnknownAdiposeAbsent',
+      ).value,
+      'Chinook Males Adipose Unknown': document.getElementById(
+        'chinookMalesAdiposeUnknown',
+      ).value,
+      'Chinook Females Adipose Unknown': document.getElementById(
+        'chinookFemalesAdiposeUnknown',
+      ).value,
+      'Chinook Males Adipose Present': document.getElementById(
         'chinookMalesAdiposePresent',
       ).value,
-      'Chinook Females - Adipose Present': document.getElementById(
+      'Chinook Females Adipose Present': document.getElementById(
         'chinookFemalesAdiposePresent',
       ).value,
-      'Chinook Males - Adipose Absent': document.getElementById(
+      'Chinook Males Adipose Absent': document.getElementById(
         'chinookMalesAdiposeAbsent',
       ).value,
-      'Chinook Females - Adipose Absent': document.getElementById(
+      'Chinook Females Adipose Absent': document.getElementById(
         'chinookFemalesAdiposeAbsent',
+      ).value,
+      'Chinook Unknown Adipose Absent': document.getElementById(
+        'chinookUnknownAdiposeAbsent',
       ).value,
       'Pink Males': document.getElementById('pinkMales').value,
       'Pink Females': document.getElementById('pinkFemales').value,
